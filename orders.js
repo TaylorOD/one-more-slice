@@ -40,7 +40,7 @@ export const customers = [
     job: 'private road signal tech',
     neighborhood: 'Valley burbclave perimeter',
     pizza: 'Perimeter heat',
-    call: 'C0saNostra. Signal cabinet nine. Bacon, red onion and jalapeños. The light is stuck on red. Your kourier can use the service lane.',
+    call: 'C0saN0stra. Signal cabinet nine. Bacon, red onion and jalapeños. The light is stuck on red. Your kourier can use the service lane.',
     toppings: { bacon: 5, onion: 5, jalapeno: 5 }
   },
   {
