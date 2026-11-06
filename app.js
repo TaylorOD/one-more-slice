@@ -130,7 +130,10 @@ const cheeseSpots=[];
 for(let i=0;i<85;i++){const a=i*2.39996;const r=Math.sqrt((i+.5)/85)*1.82;const x=Math.cos(a)*r,z=Math.sin(a)*r;const spot=ball(x,.25,z,.035+(i%4)*.014,.004,.025+(i%3)*.012,mats.char,slices[sliceIndex(x,z)]);spot.visible=false;cheeseSpots.push(spot);}
 for(let i=0;i<64;i++){const a=i*Math.PI*2/64;const x=Math.cos(a)*2.05,z=Math.sin(a)*2.05;ball(x,.35,z,.028+(i%3)*.01,.012,.028,mats.char,slices[sliceIndex(x,z)]);}
 
-const toppingGeometry={disc:new THREE.CylinderGeometry(.205,.205,.048,18),ring:new THREE.TorusGeometry(.115,.041,7,14),chunk:new THREE.BoxGeometry(.23,.12,.18),stem:new THREE.CylinderGeometry(.045,.06,.18,9),cap:new THREE.SphereGeometry(.18,12,8,0,Math.PI*2,0,Math.PI/2)};
+// Toppings borrow these resources for the lifetime of the scene. Removing one
+// only detaches its meshes. Disposing shared geometry would break other toppings.
+const toppingGeometry={disc:new THREE.CylinderGeometry(.205,.205,.048,18),ring:new THREE.TorusGeometry(.115,.041,7,14),chunk:new THREE.BoxGeometry(.23,.12,.18),stem:new THREE.CylinderGeometry(.045,.06,.18,9),cap:new THREE.SphereGeometry(.18,12,8,0,Math.PI*2,0,Math.PI/2),gills:new THREE.CircleGeometry(.17,12),basilStem:new THREE.BoxGeometry(.009,.03,.34)};
+const basilStemMaterial=material('#9aa45d');
 function makeTopping(type){
   const group=new THREE.Group();
   if(type==='pepperoni'){
@@ -142,12 +145,12 @@ function makeTopping(type){
     const chunk=mesh(toppingGeometry.chunk,mats.pineapple,group);chunk.rotation.z=.12;
   } else if(type==='basil'){
     const leaf=ball(0,0,0,.105,.027,.24,mats.basil,group);leaf.rotation.z=.2;
-    box(.009,.03,.34,material('#9aa45d'),group,0,.013,0);
+    const stem=mesh(toppingGeometry.basilStem,basilStemMaterial,group);stem.position.y=.013;
   } else {
     const mushroom=new THREE.Group();group.add(mushroom);mushroom.rotation.x=Math.PI/2;
     mesh(toppingGeometry.stem,mats.mushroom,mushroom);
     const cap=mesh(toppingGeometry.cap,mats.mushroom,mushroom);cap.position.y=.09;
-    const gills=mesh(new THREE.CircleGeometry(.17,12),mats.gill,mushroom);gills.rotation.x=Math.PI/2;gills.position.y=.09;
+    const gills=mesh(toppingGeometry.gills,mats.gill,mushroom);gills.rotation.x=Math.PI/2;gills.position.y=.09;
   }
   return group;
 }

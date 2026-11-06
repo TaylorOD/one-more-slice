@@ -128,6 +128,47 @@ await phases.locator('#dispatch').click();
 await phases.clock.fastForward(500);
 assert.equal(await phases.locator('body').getAttribute('data-courier-phase'),'collect');
 await phases.close();
+// Count actual GPU buffers across repeated orders, rather than only checking
+// that meshes disappear. The old basil and mushroom geometry leaked here.
+const memoryPage = await browser.newPage();
+await memoryPage.addInitScript(() => {
+  window.liveBuffers = 0;
+  for (const Context of [WebGLRenderingContext, WebGL2RenderingContext]) {
+    const create = Context.prototype.createBuffer;
+    const remove = Context.prototype.deleteBuffer;
+    Context.prototype.createBuffer = function () {
+      const buffer = create.call(this);
+      if (buffer) window.liveBuffers++;
+      return buffer;
+    };
+    Context.prototype.deleteBuffer = function (buffer) {
+      if (buffer) window.liveBuffers--;
+      return remove.call(this, buffer);
+    };
+  }
+});
+await memoryPage.goto(baseUrl);
+memoryPage.on('dialog', dialog => dialog.accept());
+async function renderOrder() {
+  await memoryPage.evaluate(() => new Promise(resolve => {
+    requestAnimationFrame(() => requestAnimationFrame(resolve));
+  }));
+}
+await memoryPage.locator('#special').click();
+await renderOrder();
+const warmBuffers = await memoryPage.evaluate(() => window.liveBuffers);
+assert.ok(warmBuffers > 0, 'the test must observe real WebGL buffers');
+for (let i = 0; i < 8; i++) {
+  await memoryPage.locator('#special').click();
+  await renderOrder();
+  await memoryPage.locator('#undo').click();
+  await memoryPage.locator('#reset').click();
+  await memoryPage.locator('#special').click();
+  await renderOrder();
+  assert.equal(await memoryPage.evaluate(() => window.liveBuffers), warmBuffers,
+    'replacing and resetting orders must reuse GPU buffers');
+}
+await memoryPage.close();
 } finally {
   await browser.close();
 }
