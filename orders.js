@@ -16,7 +16,7 @@ export const customers = [
     job: 'freelance data kourier',
     neighborhood: 'Long Beach container stacks',
     pizza: 'Night shift chicken',
-    call: 'C0saNostra? Container 88, upper deck. Chicken, peppers and extra sauce. Knock twice. The doorbell belongs to a company I no longer work for.',
+    call: 'C0saN0stra? Container 88, upper deck. Chicken, peppers and extra sauce. Knock twice. The doorbell belongs to a company I no longer work for.',
     toppings: { chicken: 5, pepper: 5, sauce: 1 }
   },
   {

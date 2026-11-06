@@ -88,7 +88,7 @@ export function createPizzaOven(parent) {
   ctx.fillStyle = '#e8b96c';
   ctx.font = 'bold 66px monospace';
   ctx.textAlign = 'center';
-  ctx.fillText('C0saNostra Pizza', 384, 85);
+  ctx.fillText('C0saN0stra Pizza', 384, 85);
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   const sign = mesh(

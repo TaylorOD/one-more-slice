@@ -208,9 +208,9 @@ export function createCourier(scene) {
   for (const z of [6.2]) box(root, -5.96, 1.35, z, 0.04, 1.9, 1.2, glass);
   for (const z of [4.4, 6.2, 8]) box(root, -5.96, 4.6, z, 0.04, 1.35, 0.9, glass);
   box(root, -5.5, 2.65, 4.5, 1.1, 0.12, 2, steel);
-  const shopName = label(root, 'C0saNostra Pizza', 4.5, 0.7, -5.86, 3.5, 6, '#e4b76b');
+  const shopName = label(root, 'C0saN0stra Pizza', 4.5, 0.7, -5.86, 3.5, 6, '#e4b76b');
   shopName.rotation.y = Math.PI / 2;
-  label(root, 'C0saNostra Pizza', 5, 0.7, -9, 3.5, 2.85, '#e4b76b');
+  label(root, 'C0saN0stra Pizza', 5, 0.7, -9, 3.5, 2.85, '#e4b76b');
   // The pickup hatch belongs to the shop, leaving the street and rider path clear.
   box(root, -5.94, 1.65, pickup.z, 0.1, 1.15, 1.9, dark);
   box(root, -5.35, 1.15, pickup.z, 1.3, 0.12, 1.9, alloy);
@@ -332,7 +332,7 @@ export function createCourier(scene) {
   root.add(parcel);
   box(parcel, 0, 0, 0, 0.92, 0.13, 0.92, material('#bbae85'));
   box(parcel, 0, -0.06, 0, 0.94, 0.04, 0.94, trim);
-  const logo = label(parcel, 'C0saNostra', 0.75, 0.19, 0, 0.072, 0, '#ac4439', '#bbae85');
+  const logo = label(parcel, 'C0saN0stra', 0.75, 0.19, 0, 0.072, 0, '#ac4439', '#bbae85');
   logo.rotation.x = -Math.PI / 2;
   box(parcel, 0, 0.075, 0, 0.045, 0.009, 0.95, bagMat);
   for (const x of [-0.35, 0.35])
