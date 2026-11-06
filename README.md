@@ -32,7 +32,9 @@ open http://localhost:5177
 npm test
 ```
 
-with the local server running, run `npm run test:browser`. install the browser once with `npx playwright install chromium`.
+install the browser once with `npx playwright install chromium`, then run `npm run test:browser`. it builds the site and starts its own server on a free port.
+
+github runs both sets of tests on every pr and before publishing. browser screenshots are saved with the workflow run, including failed runs.
 
 ## where it fits
 
