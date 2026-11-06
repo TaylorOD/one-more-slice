@@ -44,9 +44,14 @@ try {
   await page.locator('#primary').click();
   await page.waitForTimeout(500);
   assert.equal(await page.locator('body').getAttribute('data-mode'), 'sliced');
+  await expect(page.locator('#bite')).toBeVisible();
+  await page.locator('#bite').click();
+  await expect(page.locator('body')).toHaveAttribute('data-bitten', 'true');
+  await expect(page.locator('#bite')).toBeDisabled();
   await page.screenshot({ path: 'screenshots/baked.png', fullPage: true });
   await page.locator('#dispatch').click();
   assert.equal(await page.locator('body').getAttribute('data-mode'), 'pickup');
+  await expect(page.locator('#delivery-comment')).toBeVisible();
   await page.waitForTimeout(1400);
   await page.screenshot({ path: 'screenshots/collection.png', fullPage: true });
   await page.waitForTimeout(3400);
@@ -58,6 +63,8 @@ try {
   assert.ok(await page.locator('#replay').isVisible());
   await page.locator('#primary').click();
   assert.equal(await page.locator('body').getAttribute('data-mode'), 'prep');
+  await expect(page.locator('body')).toHaveAttribute('data-bitten', 'false');
+  await expect(page.locator('#delivery-comment')).toBeHidden();
   page.on('dialog', (d) => d.accept());
   await page.locator('#reset').click();
   assert.equal(await page.locator('body').getAttribute('data-toppings'), '0');

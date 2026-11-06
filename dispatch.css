@@ -269,3 +269,22 @@ body[data-mode='pickup'] .drag-hint,
 body[data-mode='dispatched'] .drag-hint {
   display: none;
 }
+
+.bite-button {
+  margin-top: 12px;
+  padding: 13px;
+  border: 1px solid var(--green);
+  color: var(--green);
+  background: #14251c;
+  cursor: pointer;
+}
+.bite-button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+#delivery-comment {
+  color: #e8b96c;
+  border-left: 2px solid #e8b96c;
+  padding-left: 12px;
+  line-height: 1.6;
+}

@@ -1,12 +1,17 @@
 import { maxToppings } from './recipe.js';
 const $ = (id) => document.getElementById(id);
 export const say = (text) => ($('status').textContent = text);
-export function updateOrderView({ mode, toppingCount }) {
+export function updateOrderView({ mode, toppingCount, bitten = false }) {
   document.body.dataset.mode = mode;
+  document.body.dataset.bitten = String(bitten);
+  $('bite').hidden = mode !== 'sliced';
+  $('bite').disabled = bitten;
+  $('bite').textContent = bitten ? 'bite taken' : 'take a bite';
   document.body.dataset.toppings = toppingCount;
   $('topping-count').textContent = `${toppingCount} / ${maxToppings}`;
   $('undo').disabled = !toppingCount || mode !== 'prep';
   const delivering = mode === 'pickup' || mode === 'dispatched';
+  $('delivery-comment').hidden = !delivering || !bitten;
   $('primary').disabled = mode === 'baking' || mode === 'pickup';
   $('dispatch').hidden = !['baked', 'sliced'].includes(mode);
   $('replay').hidden = mode !== 'dispatched';

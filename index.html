@@ -117,6 +117,7 @@
           </button>
           <div id="delivery-status" hidden>
             <p id="delivery-phase" role="status">Collecting pizza</p>
+            <p id="delivery-comment" role="status" hidden>hey someone took a bite out of this!</p>
             <ol class="delivery-steps" aria-label="Courier progress">
               <li data-phase="collect"><span>01</span> collect the box</li>
               <li data-phase="approach"><span>02</span> approach traffic</li>
@@ -127,6 +128,7 @@
           <button id="primary" class="primary" disabled>
             <span>bake pizza</span><span>↗</span>
           </button>
+          <button id="bite" class="bite-button" hidden>take a bite</button>
           <button id="replay" hidden>replay delivery ↗</button>
           <div class="bottom-actions">
             <button id="reset">reset order</button><button id="share">share recipe ↗</button>

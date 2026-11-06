@@ -1,3 +1,4 @@
+import { sliceShape } from './slice-shape.js';
 import * as THREE from './vendor/three.module.js';
 import { createGeometry } from './geometry.js';
 import { createKitchenRoom } from './kitchen-room.js';
@@ -95,17 +96,16 @@ export function createKitchen(scene) {
   const pizza = new THREE.Group();
   carriage.add(pizza);
   const slices = [];
+  const biteLayers = [];
+  let isBitten = false;
+  let cooked = 0;
   for (let i = 0; i < 8; i++) {
     const group = new THREE.Group();
     pizza.add(group);
     slices.push(group);
     const start = (i * Math.PI) / 4;
     // Wedges allow a real slice to pull away after baking.
-    const wedge = new THREE.Shape();
-    wedge.moveTo(0, 0);
-    wedge.lineTo(Math.cos(start) * 2.12, Math.sin(start) * 2.12);
-    wedge.absarc(0, 0, 2.12, start, start + Math.PI / 4, false);
-    wedge.lineTo(0, 0);
+    const wedge = sliceShape(start, 2.12);
     const base = mesh(
       new THREE.ExtrudeGeometry(wedge, {
         depth: 0.17,
@@ -119,15 +119,29 @@ export function createKitchen(scene) {
       mats.dough,
       group
     );
+    if (i === 6) {
+      const bittenGeometry = new THREE.ExtrudeGeometry(sliceShape(start, 2.12, true), {
+        depth: 0.17,
+        bevelEnabled: true,
+        bevelSegments: 2,
+        steps: 1,
+        bevelSize: 0.035,
+        bevelThickness: 0.035,
+        curveSegments: 16
+      });
+      biteLayers.push({ mesh: base, whole: base.geometry, bitten: bittenGeometry });
+    }
     base.rotation.x = -Math.PI / 2;
     base.position.y = 0.025;
     function layer(radius, y, mat) {
-      const sh = new THREE.Shape();
-      sh.moveTo(0, 0);
-      sh.lineTo(Math.cos(start) * radius, Math.sin(start) * radius);
-      sh.absarc(0, 0, radius, start, start + Math.PI / 4, false);
-      sh.lineTo(0, 0);
+      const sh = sliceShape(start, radius);
       const m = mesh(new THREE.ShapeGeometry(sh, 24), mat, group);
+      if (i === 6)
+        biteLayers.push({
+          mesh: m,
+          whole: m.geometry,
+          bitten: new THREE.ShapeGeometry(sliceShape(start, radius, true), 24)
+        });
       m.rotation.x = -Math.PI / 2;
       m.position.y = y;
       return m;
@@ -245,11 +259,18 @@ export function createKitchen(scene) {
   createIngredientStation(root, makeTopping);
 
   function setCooked(t) {
+    cooked = t;
     mats.crust.color.set('#e9b96b').lerp(new THREE.Color('#b96d2e'), t);
     mats.cheese.color.set('#f4d575').lerp(new THREE.Color('#e8b94f'), t);
     mats.dough.color.set('#edc986').lerp(new THREE.Color('#dca057'), t);
     cheeseSpots.forEach((spot, i) => {
-      spot.visible = t > 0.18 + (i % 8) * 0.065;
+      spot.visible =
+        t > 0.18 + (i % 8) * 0.065 &&
+        !(
+          isBitten &&
+          spot.parent === slices[6] &&
+          Math.hypot(spot.position.x, spot.position.z) < 0.59
+        );
     });
   }
   return {
@@ -260,6 +281,11 @@ export function createKitchen(scene) {
     makeTopping,
     sliceIndex,
     setCooked,
+    setBitten(value) {
+      isBitten = value;
+      for (const layer of biteLayers) layer.mesh.geometry = value ? layer.bitten : layer.whole;
+      setCooked(cooked);
+    },
     setVisible(visible) {
       root.visible = visible;
       rimLight.visible = !visible;

@@ -37,9 +37,10 @@ export function startOrder({
     lastTime = 0,
     sliceTarget = 0;
   let rotationTarget = 0;
+  let bitten = false;
   const bakeSeconds = 8;
   function update() {
-    updateOrderView({ mode, toppingCount: toppings.length });
+    updateOrderView({ mode, toppingCount: toppings.length, bitten });
   }
   function dispatch() {
     if (!['baked', 'sliced', 'dispatched'].includes(mode)) return;
@@ -89,6 +90,8 @@ export function startOrder({
     slices[6].position.set(0, 0, 0);
     pizza.rotation.y = 0;
     rotationTarget = 0;
+    bitten = false;
+    kitchen.setBitten(false);
     setCooked(0);
   }
   function reset() {
@@ -166,6 +169,17 @@ export function startOrder({
       update();
       say('Slice returned.');
     }
+  });
+  $('bite').addEventListener('click', () => {
+    if (mode !== 'sliced' || bitten) return;
+    bitten = true;
+    kitchen.setBitten(true);
+    for (const topping of toppings) {
+      if (sliceIndex(topping.x, topping.z) === 6 && Math.hypot(topping.x, topping.z) < 0.59)
+        topping.group.visible = false;
+    }
+    update();
+    say('Bite taken.');
   });
   $('turn-left').addEventListener('click', () => (rotationTarget -= Math.PI / 6));
   $('turn-right').addEventListener('click', () => (rotationTarget += Math.PI / 6));
