@@ -89,6 +89,9 @@ h2 {
 }
 .scene-caption {
   color: #a0adb7;
+  background: #080e16e6;
+  padding: 7px 9px;
+  width: fit-content;
 }
 .drag-hint {
   color: var(--red);
