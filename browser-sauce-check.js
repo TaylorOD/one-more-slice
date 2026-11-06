@@ -30,7 +30,11 @@ export async function checkSauce(page, baseUrl) {
     (await page.locator('canvas').screenshot()).equals(covered),
     'shared sauce must restore the same coverage'
   );
-  page.on('dialog', (dialog) => dialog.accept());
+  // Native confirm suspends RAF on Linux while the mocked clock keeps advancing.
+  // Dialog acceptance is covered by the real-clock order tests. Here we compare paint.
+  await page.evaluate(() => {
+    window.confirm = () => true;
+  });
   await page.locator('#reset').click();
   await expect(page.locator('body')).toHaveAttribute('data-toppings', '0');
   await page.clock.runFor(50);
