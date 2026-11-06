@@ -16,17 +16,17 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.setClearColor('#e3e3d1');
+renderer.setClearColor('#070c12');
 renderer.domElement.setAttribute('aria-hidden', 'true');
 host.appendChild(renderer.domElement);
 $('loading').remove();
 const scene = new THREE.Scene();
-scene.fog = new THREE.Fog('#e3e3d1', 23, 45);
+scene.fog = new THREE.Fog('#070c12', 23, 45);
 const camera = new THREE.PerspectiveCamera(34, 1, .1, 80);
 camera.position.set(6.8, 9.7, 11.7);
 camera.lookAt(0, .1, -.5);
-scene.add(new THREE.HemisphereLight('#fff3d9', '#9b9e73', 2.8));
-const sun = new THREE.DirectionalLight('#fff0ce', 4.2);
+scene.add(new THREE.HemisphereLight('#c2defd', '#152330', 2.2));
+const sun = new THREE.DirectionalLight('#e5f0ff', 3.1);
 sun.position.set(-5, 10, 6); sun.castShadow = true;
 sun.shadow.mapSize.set(2048, 2048);
 sun.shadow.camera.left = sun.shadow.camera.bottom = -10;
@@ -38,13 +38,13 @@ fireLight.position.set(0, 1, -3.2); scene.add(fireLight);
 
 const material = (color, extra = {}) => new THREE.MeshStandardMaterial({color, roughness: .8, ...extra});
 const mats = {
-  wood: material('#b47b48'), edge: material('#9b6035'), crust: material('#e9b96b'),
+  wood: material('#364753', {metalness:.65,roughness:.4}), edge: material('#192833'), crust: material('#e9b96b'),
   dough: material('#edc986'), cheese: material('#f4d575', {roughness: .52}), sauce: material('#b84125'),
   pepperoni: material('#b33c26'), fleck: material('#edb16d'), mushroom: material('#d8c5a5'),
   gill: material('#806246'), basil: material('#447344'), olive: material('#35392d'), pepper: material('#648b34'),
-  pineapple: material('#f0c94b'), brick: material('#b86544'), grout: material('#dba97d'),
-  oven: material('#514639'), black: material('#201f19'), coal: material('#382a21'), char: material('#96603a'),
-  cream: material('#e9dfc5'), metal: material('#79796b', {metalness:.3}), towel: material('#b84c36')
+  pineapple: material('#f0c94b'), brick: material('#273747', {metalness:.35}), grout: material('#485d70', {metalness:.5}),
+  oven: material('#17222d'), black: material('#201f19'), coal: material('#382a21'), char: material('#96603a'),
+  cream: material('#8999a5'), metal: material('#79796b', {metalness:.3}), towel: material('#243d51')
 };
 const sphereGeo = new THREE.SphereGeometry(1, 16, 10);
 function mesh(geometry, mat, parent = scene) {const m = new THREE.Mesh(geometry, mat); m.castShadow = true; m.receiveShadow = true; parent.add(m); return m;}
@@ -53,11 +53,30 @@ function ball(x,y,z,sx,sy,sz,mat,parent){const m=mesh(sphereGeo,mat,parent);m.po
 
 // A subtle tiled countertop, drawn here so the kitchen doesn't need image downloads.
 const tile = document.createElement('canvas'); tile.width = tile.height = 256;
-const ctx = tile.getContext('2d'); ctx.fillStyle='#e1e0cd';ctx.fillRect(0,0,256,256);
-ctx.fillStyle='#d5d7c0';ctx.fillRect(0,0,128,128);ctx.fillRect(128,128,128,128);
-ctx.strokeStyle='#f3f0dc';ctx.lineWidth=2;ctx.strokeRect(0,0,128,128);ctx.strokeRect(128,0,128,128);ctx.strokeRect(0,128,128,128);ctx.strokeRect(128,128,128,128);
+const ctx = tile.getContext('2d'); ctx.fillStyle='#101a23';ctx.fillRect(0,0,256,256);
+ctx.fillStyle='#111d27';ctx.fillRect(0,0,128,128);ctx.fillRect(128,128,128,128);
+ctx.strokeStyle='#274154';ctx.lineWidth=2;ctx.strokeRect(0,0,128,128);ctx.strokeRect(128,0,128,128);ctx.strokeRect(0,128,128,128);ctx.strokeRect(128,128,128,128);
 const texture = new THREE.CanvasTexture(tile);texture.wrapS=texture.wrapT=THREE.RepeatWrapping;texture.repeat.set(8,8);texture.colorSpace=THREE.SRGBColorSpace;
 const floor=mesh(new THREE.PlaneGeometry(30,30),new THREE.MeshStandardMaterial({map:texture,roughness:1}));floor.rotation.x=-Math.PI/2;floor.position.y=-.32;
+
+// A small city beyond the kitchen. The food stays warm under the work light.
+const city = new THREE.Group();scene.add(city);
+const buildingMat = material('#101b28');
+const windowMat = material('#569cd6', {emissive:'#569cd6',emissiveIntensity:1.2});
+for(let i=0;i<12;i++){
+  const x=-11+i*2, height=2.5+(i*7%5)*.85;
+  box(1.4,height,1.5,buildingMat,city,x,height/2-.3,-10-(i%2)*1.3);
+  for(let y=.7;y<height-.4;y+=.8)for(const dx of [-.35,.35]){
+    if((i+Math.round(y*10)+Math.round(dx*10))%3===0)continue;
+    box(.17,.25,.02,windowMat,city,x+dx,y,-9.24-(i%2)*1.3);
+  }
+}
+const neon = material('#569cd6',{emissive:'#569cd6',emissiveIntensity:2});
+box(4.4,.045,.045,neon,scene,0,2.37,-4.0);
+box(.045,.035,8,neon,scene,-5,-.28,-1.8);
+box(.045,.035,8,neon,scene,5,-.28,-1.8);
+const rimLight=new THREE.PointLight('#569cd6',35,16,2);
+rimLight.position.set(-3,3,-5);scene.add(rimLight);
 
 // The brick oven is made from individual blocks around an arched opening.
 const oven = new THREE.Group(); oven.position.set(0,0,-4.5); scene.add(oven);
@@ -126,7 +145,15 @@ function makeTopping(type){
 
 let toppings=[], selected='pepperoni', mode='prep', bakingStarted=0, lastTime=0, sliceTarget=0;
 let rotationTarget=0, pointerStart=null;
-const reducedBakeSeconds = 8;
+const bakeSeconds = 8;
+let pickupStarted=null, pickupFinished=null;
+function updateClock(now){
+  const elapsed=pickupStarted===null?0:((pickupFinished??now)-pickupStarted)/1000;
+  const remaining=Math.max(0,90-Math.floor(elapsed));
+  $('pickup-clock').textContent=String(Math.floor(remaining/60)).padStart(2,'0')+':'+String(remaining%60).padStart(2,'0');
+  $('dispatch-clock').classList.toggle('expired',remaining===0);
+  $('clock-label').textContent=pickupFinished!==null?'ready for pickup':remaining===0?'courier waiting':pickupStarted===null?'pickup window':'pickup in';
+}
 const say=text=>$('status').textContent=text;
 function update(){
   document.body.dataset.mode=mode; document.body.dataset.toppings=toppings.length;
@@ -134,25 +161,26 @@ function update(){
   $('undo').disabled=!toppings.length||mode!=='prep';
   $('primary').disabled=mode==='baking';
   $('prep-controls').hidden=mode!=='prep';$('bake-progress').hidden=mode!=='baking';$('finished').hidden=!['baked','sliced'].includes(mode);
-  $('primary').innerHTML=mode==='prep'?'<span>Into the oven</span><span>↗</span>':mode==='baking'?'<span>Baking your masterpiece…</span><span>◌</span>':mode==='baked'?'<span>Cut me a slice</span><span>↗</span>':'<span>Put the slice back</span><span>↙</span>';
-  $('panel-title').innerHTML=mode==='prep'?'Good things<br>start with cheese.':mode==='baking'?'Patience.<br>It’s getting good.':'Look at you.<br>A pizza person.';
-  $('panel-copy').innerHTML=mode==='prep'?'Sauce and mozzarella are on the house.<br>The rest is on you.':mode==='baking'?'Watch those edges turn golden.':'Your very own questionable masterpiece.';
-  $('scene-label').textContent=mode==='baking'?'THE HOT SEAT':mode==='prep'?'THE PREP COUNTER':'THE GOOD PART';
+  $('primary').innerHTML=mode==='prep'?'<span>fire oven()</span><span>↗</span>':mode==='baking'?'<span>oven.running</span><span>◌</span>':mode==='baked'?'<span>inspect slice()</span><span>↗</span>':'<span>return slice()</span><span>↙</span>';
+  $('panel-title').innerHTML=mode==='prep'?'Incoming order.<br>Make it yours.':mode==='baking'?'Thermal cycle<br>in progress.':'Order complete.<br>Ready for pickup.';
+  $('panel-copy').innerHTML=mode==='prep'?'Base loaded: sauce + mozzarella.<br>Add toppings to start the pickup clock.':mode==='baking'?'Eight seconds. Watch the crust.':'Inspect a slice. Quality control is your job.';
+  $('scene-label').textContent=mode==='baking'?'THERMAL BAY / 01':mode==='prep'?'PREP BAY / 01':'DISPATCH BAY / 01';
   $('oven-label').textContent=mode==='baking'?'BAKING AT 450°':'OVEN READY';
   $('scene-instruction').textContent=mode==='prep'?'pick a topping, then tap the pizza':mode==='baking'?'a little heat goes a long way':mode==='sliced'?'that one’s yours. you earned it.':'golden, bubbly, ready for a slice';
   ['prep','bake','eat'].forEach((s,i)=>$('step-'+s).classList.toggle('active',i===(mode==='prep'?0:mode==='baking'?1:2)));
 }
 function addTopping(type, x, z, angle=Math.random()*Math.PI*2, animate=true){
   if(mode!=='prep'||toppings.length>=maxToppings)return;
+  if(pickupStarted===null)pickupStarted=performance.now();
   const group=makeTopping(type);const parent=slices[sliceIndex(x,z)];parent.add(group);
   let stack=0;for(const t of toppings)if(Math.hypot(t.x-x,t.z-z)<.2)stack=Math.min(stack+.045,.4);
   const y=.30+stack;group.position.set(x,animate&&!reduceMotion?y+2:y,z);group.rotation.y=angle;
   const topping={type,x,z,angle,group,y,velocity:0};toppings.push(topping);update();
 }
 function removeAll(){for(const t of toppings){t.group.removeFromParent();}toppings=[];}
-function reset(){removeAll();mode='prep';carriage.position.set(0,0,0);sliceTarget=0;slices[6].position.set(0,0,0);pizza.rotation.y=0;rotationTarget=0;setCooked(0);history.replaceState(null,'',location.pathname+location.search);update();say('Fresh dough. Another chance.');}
+function reset(){removeAll();pickupStarted=null;pickupFinished=null;mode='prep';carriage.position.set(0,0,0);sliceTarget=0;slices[6].position.set(0,0,0);pizza.rotation.y=0;rotationTarget=0;setCooked(0);history.replaceState(null,'',location.pathname+location.search);update();say('Order cleared. Dispatch is standing by.');}
 function setCooked(t){mats.crust.color.set('#e9b96b').lerp(new THREE.Color('#b96d2e'),t);mats.cheese.color.set('#f4d575').lerp(new THREE.Color('#e8b94f'),t);mats.dough.color.set('#edc986').lerp(new THREE.Color('#dca057'),t);cheeseSpots.forEach((spot,i)=>{spot.visible=t>.18+i%8*.065;});}
-function bake(){if(mode!=='prep')return;mode='baking';bakingStarted=performance.now();$('progress').value=0;update();say('Into the oven. Give it eight seconds.');}
+function bake(){if(mode!=='prep')return;mode='baking';bakingStarted=performance.now();if(pickupStarted===null)pickupStarted=bakingStarted;$('progress').value=0;update();say('Into the oven. Give it eight seconds.');}
 document.querySelectorAll('[data-topping]').forEach(button=>button.addEventListener('click',()=>{selected=button.dataset.topping;document.querySelectorAll('[data-topping]').forEach(b=>b.setAttribute('aria-pressed',b===button));say(selected==='pineapple'?'A controversial choice. We support you.':`${button.textContent.trim()} it is. Tap the pizza or add a handful.`);}));
 $('sprinkle').addEventListener('click',()=>{if(mode!=='prep')return;const before=toppings.length;for(let i=0;i<5;i++){const p=randomSpot();addTopping(selected,p.x,p.z,p.angle);}say(toppings.length===before?'That’s 80 toppings. The dough has limits.':'A handful of good decisions. Probably.');});
 $('undo').addEventListener('click',()=>{if(mode!=='prep')return;const t=toppings.pop();t?.group.removeFromParent();update();say('Nobody saw that.');});
@@ -177,21 +205,22 @@ host.addEventListener('pointerup',event=>{
 });
 $('share').addEventListener('click',()=>{const url=new URL(location.href);url.hash='recipe='+encodeRecipe(toppings);$('share-url').value=url.href;$('copy-status').textContent='';$('share-dialog').showModal();$('share-url').select();});
 $('copy-link').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('share-url').value);$('copy-status').textContent='Copied. Send it to someone hungry.';}catch{$('share-url').focus();$('share-url').select();$('copy-status').textContent='Select the link above and copy it.';}});
-function openRecipe(){if(!location.hash)return;const recipe=decodeRecipe(location.hash);if(!recipe){say('That recipe link looks broken. Fresh dough is ready instead.');return;}removeAll();mode='prep';carriage.position.set(0,0,0);sliceTarget=0;slices[6].position.set(0,0,0);setCooked(0);for(const [type,x,z,angle]of recipe.t)addTopping(type,x,z,angle,false);update();say('Special delivery. Your shared pizza is ready to bake.');}
+function openRecipe(){if(!location.hash)return;const recipe=decodeRecipe(location.hash);if(!recipe){say('That recipe link looks broken. Fresh dough is ready instead.');return;}removeAll();pickupStarted=null;pickupFinished=null;mode='prep';carriage.position.set(0,0,0);sliceTarget=0;slices[6].position.set(0,0,0);setCooked(0);for(const [type,x,z,angle]of recipe.t)addTopping(type,x,z,angle,false);update();say('Order received. Fresh pickup window. Ready to bake.');}
 window.addEventListener('hashchange',openRecipe);
 const observer=new ResizeObserver(()=>{const width=host.clientWidth,height=host.clientHeight;renderer.setSize(width,height);camera.aspect=width/height;camera.fov=width<500?43:34;camera.updateProjectionMatrix();});observer.observe(host);
 
 function animate(now){
   const dt=Math.min((now-lastTime)/1000,.04);lastTime=now;
+  updateClock(now);
   pizza.rotation.y+=(rotationTarget-pizza.rotation.y)*(reduceMotion?1:Math.min(dt*12,1));
   for(const t of toppings)if(t.group.position.y>t.y){t.velocity+=dt*14;t.group.position.y-=t.velocity*dt;if(t.group.position.y<t.y)t.group.position.y=t.y;}
   flames.forEach((f,i)=>{f.scale.y=reduceMotion?1:.8+Math.sin(now*.008+i*2)*.2;});
   if(mode==='baking'){
-    const t=Math.min((now-bakingStarted)/1000/reducedBakeSeconds,1);$('progress').value=t;
+    const t=Math.min((now-bakingStarted)/1000/bakeSeconds,1);$('progress').value=t;
     const travel=t<.16?t/.16:t>.82?(1-t)/.18:1;
     const ease=travel*travel*(3-2*travel);carriage.position.z=-2.8*ease;carriage.position.y=.02*ease;
     carriage.scale.setScalar(1-.28*ease);setCooked(Math.min(t*1.3,1));fireLight.intensity=18;
-    if(t===1){mode='baked';carriage.position.set(0,0,0);carriage.scale.setScalar(1);update();say('The crust has entered its golden era. Cut yourself a slice.');}
+    if(t===1){mode='baked';pickupFinished=now;carriage.position.set(0,0,0);carriage.scale.setScalar(1);update();say('Thermal cycle complete. Order ready for pickup.');}
   }else fireLight.intensity=13;
   if(mode==='prep')carriage.scale.setScalar(1);
   const s=slices[6],a=6.5*Math.PI/4;
