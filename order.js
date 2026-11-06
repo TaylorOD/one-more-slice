@@ -76,18 +76,24 @@ export function startOrder({ host, scene, camera, renderer, fireLight, frameCame
     }
     toppings = [];
   }
-  function reset() {
+  // Reset every part of an order together. Recipe loading uses the same path
+  // without removing its URL, including when it interrupts baking or pickup.
+  function clearOrder() {
     restoreKitchen();
     removeAll();
     pickupStarted = null;
     pickupFinished = null;
     mode = 'prep';
     carriage.position.set(0, 0, 0);
+    carriage.scale.setScalar(1);
     sliceTarget = 0;
     slices[6].position.set(0, 0, 0);
     pizza.rotation.y = 0;
     rotationTarget = 0;
     setCooked(0);
+  }
+  function reset() {
+    clearOrder();
     history.replaceState(null, '', location.pathname + location.search);
     update();
     say('Order cleared. Dispatch is standing by.');
@@ -193,18 +199,10 @@ export function startOrder({ host, scene, camera, renderer, fireLight, frameCame
     if (!location.hash) return;
     const recipe = decodeRecipe(location.hash);
     if (!recipe) {
-      say('That recipe link looks broken. Fresh dough is ready instead.');
+      say('That recipe link looks broken. Your current order is unchanged.');
       return;
     }
-    restoreKitchen();
-    removeAll();
-    pickupStarted = null;
-    pickupFinished = null;
-    mode = 'prep';
-    carriage.position.set(0, 0, 0);
-    sliceTarget = 0;
-    slices[6].position.set(0, 0, 0);
-    setCooked(0);
+    clearOrder();
     for (const [type, x, z, angle] of recipe.t) addTopping(type, x, z, angle, false);
     update();
     say('Order received. Fresh pickup window. Ready to bake.');
