@@ -1,9 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { courierPose, pickup } from './courier-motion.js';
+import {
+  courierPose,
+  pickup,
+  deliveryDuration,
+  trafficRoutes,
+  trafficPosition
+} from './courier-motion.js';
 
 test('courier and board stay clear of the shop and pickup counter', () => {
-  for (let i = 0; i <= 900; i++) {
+  for (let i = 0; i <= deliveryDuration * 100; i++) {
     const pose = courierPose(i / 100);
     // Conservative horizontal bounds include the board, shoes and backpack.
     const halfX = 0.85 * Math.cos(pose.yaw) + 0.5 * Math.sin(pose.yaw);
@@ -34,11 +40,25 @@ test('pizza pickup meets the hand without a position jump', () => {
 
 test('courier moves continuously and stays behind the tow car', () => {
   let previous = courierPose(0);
-  for (let i = 1; i <= 9000; i++) {
+  for (let i = 1; i <= deliveryDuration * 1000; i++) {
     const pose = courierPose(i / 1000);
     assert.ok(Math.hypot(pose.x - previous.x, pose.z - previous.z) < 0.02);
+    assert.ok(Math.abs(pose.yaw - previous.yaw) < 0.03, 'steering stays continuous');
     if (pose.t >= 4.65) assert.ok(Math.abs(pose.carX - pose.x - 4.6) < 0.001);
     previous = pose;
   }
   assert.deepEqual(courierPose(0, true), courierPose(9, true));
+});
+
+test('faster traffic keeps a car length between vehicles in the same lane', () => {
+  for (let t = 0; t < deliveryDuration; t += 0.01) {
+    const cars = [
+      { x: courierPose(t).carX, lane: -0.7 },
+      ...trafficRoutes.map((route) => ({ x: trafficPosition(route, t), lane: route.lane }))
+    ];
+    for (let i = 0; i < cars.length; i++)
+      for (let j = i + 1; j < cars.length; j++) {
+        if (cars[i].lane === cars[j].lane) assert.ok(Math.abs(cars[i].x - cars[j].x) > 4.4);
+      }
+  }
 });
