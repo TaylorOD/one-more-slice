@@ -16,7 +16,7 @@ export const customers = [
     job: 'freelance data kourier',
     neighborhood: 'Long Beach container stacks',
     pizza: 'Night shift chicken',
-    call: 'C0saNostra? Container 88, upper deck. Chicken, peppers and extra sauce. Knock twice. The doorbell belongs to a company I no longer work for.',
+    call: 'C0saN0stra? Container 88, upper deck. Chicken, peppers and extra sauce. Knock twice. The doorbell belongs to a company I no longer work for.',
     toppings: { chicken: 5, pepper: 5, sauce: 1 }
   },
   {
@@ -40,7 +40,7 @@ export const customers = [
     job: 'private road signal tech',
     neighborhood: 'Valley burbclave perimeter',
     pizza: 'Perimeter heat',
-    call: 'C0saNostra. Signal cabinet nine. Bacon, red onion and jalapeños. The light is stuck on red. Your kourier can use the service lane.',
+    call: 'C0saN0stra. Signal cabinet nine. Bacon, red onion and jalapeños. The light is stuck on red. Your kourier can use the service lane.',
     toppings: { bacon: 5, onion: 5, jalapeno: 5 }
   },
   {
