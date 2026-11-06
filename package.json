@@ -6,10 +6,19 @@
     "build": "node build.js",
     "start": "node server.js",
     "test": "node --test recipe.test.js",
-    "test:browser": "node run-browser-tests.js"
+    "test:browser": "node run-browser-tests.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@playwright/test": "1.65.0",
     "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.39.5",
+    "eslint": "9.39.5",
+    "globals": "17.14.0",
+    "prettier": "3.9.10"
   }
 }
