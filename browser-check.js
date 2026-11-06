@@ -218,9 +218,8 @@ try {
     if (mode === 'sliced') await recipePage.locator('#primary').click();
     if (mode === 'pickup') await recipePage.locator('#dispatch').click();
     await loadRecipe();
-    assert.deepEqual(
-      await recipePage.locator('canvas').screenshot(),
-      freshRecipe,
+    assert.ok(
+      (await recipePage.locator('canvas').screenshot()).equals(freshRecipe),
       `opening a recipe during ${mode} must clear the old pose`
     );
   }

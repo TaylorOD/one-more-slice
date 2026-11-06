@@ -39,6 +39,7 @@ export function startOrder({ host, scene, camera, renderer, fireLight, frameCame
   }
   function update() {
     updateOrderView({ mode, toppingCount: toppings.length });
+    updateClock(performance.now());
   }
   function dispatch() {
     if (!['baked', 'sliced', 'dispatched'].includes(mode)) return;
