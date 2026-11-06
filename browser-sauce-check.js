@@ -1,3 +1,4 @@
+import { sceneFrame } from './browser-scene-frame.js';
 import { expect } from '@playwright/test';
 
 export async function checkSauce(page, baseUrl) {
@@ -6,31 +7,30 @@ export async function checkSauce(page, baseUrl) {
   await page.goto(baseUrl);
   await page.locator('#reset').click();
   await expect(page.locator('body')).toHaveAttribute('data-toppings', '0');
-  const canvas = page.locator('canvas');
   await page.evaluate(
     () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)))
   );
-  const plain = await canvas.screenshot({ path: 'screenshots/sauce-plain.png' });
+  const plain = await sceneFrame(page, { path: 'screenshots/sauce-plain.png' });
   await page.locator('[data-topping="sauce"]').click();
   await page.locator('#sprinkle').click();
   await expect
     .poll(
       async () =>
-        (await canvas.screenshot({ path: 'screenshots/sauce-comparison.png' })).equals(plain),
+        (await sceneFrame(page, { path: 'screenshots/sauce-comparison.png' })).equals(plain),
       {
         timeout: 30000,
         message: 'sauce must visibly cover the pizza'
       }
     )
     .toBe(false);
-  const covered = await canvas.screenshot({ path: 'screenshots/sauce-covered.png' });
+  const covered = await sceneFrame(page, { path: 'screenshots/sauce-covered.png' });
   const recipe =
     baseUrl + '#recipe=' + encodeURIComponent(JSON.stringify({ v: 1, t: [['sauce', 0, 0, 0]] }));
   await page.locator('#undo').click();
   await expect
     .poll(
       async () =>
-        (await canvas.screenshot({ path: 'screenshots/sauce-comparison.png' })).equals(plain),
+        (await sceneFrame(page, { path: 'screenshots/sauce-comparison.png' })).equals(plain),
       {
         timeout: 30000,
         message: 'undo must remove all sauce'
@@ -39,7 +39,7 @@ export async function checkSauce(page, baseUrl) {
     .toBe(true);
   await page.goto(recipe);
   await expect
-    .poll(async () => (await canvas.screenshot()).equals(covered), {
+    .poll(async () => (await sceneFrame(page)).equals(covered), {
       timeout: 30000,
       message: 'shared sauce must restore the same coverage'
     })
@@ -49,7 +49,7 @@ export async function checkSauce(page, baseUrl) {
   await expect(page.locator('body')).toHaveAttribute('data-toppings', '0');
   await expect
     .poll(
-      async () => (await canvas.screenshot({ path: 'screenshots/sauce-reset.png' })).equals(plain),
+      async () => (await sceneFrame(page, { path: 'screenshots/sauce-reset.png' })).equals(plain),
       {
         timeout: 30000,
         message: 'reset must clear sauce'

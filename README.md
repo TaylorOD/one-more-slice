@@ -1,6 +1,6 @@
 # C0saNostra Pizza
 
-a pizza dispatch terminal inspired by snow crash. add toppings, fire the oven and inspect a slice before pickup.
+a pizza dispatch terminal. a customer calls from the franchise district, gives you an order and rates it after delivery. add toppings, fire the oven and send the courier.
 
 call the courier after baking. she collects the box while rolling, skates up to the street and hooks a passing car. traffic keeps moving in both directions.
 
@@ -16,7 +16,13 @@ old recipe links still open, but there is no sharing button.
 
 sauce spreads across the pizza instead of stacking as pieces. spread sauce coats the whole pizza. undo removes the last pour. `sauce-surface.js` paints one shared texture for all slices and stops updating it once the sauce settles.
 
-there is no timer or score. take your time making a pizza, watch it bake and call the courier when you want.
+four original callers rotate through the neighborhood. each has a named pizza and a ticket with exact topping counts. sauce and mozzarella are already on the base. ticket counts are extras.
+
+the two minute timer starts with your first topping or when you bake. it keeps running through pickup. going over time does not end the round. the receipt records an on time or late delivery.
+
+accuracy is 0 to 100. matched toppings divided by requested toppings plus extras, rounded to the nearest whole point. taking a bite costs 10 points. time is reported separately. an exact order gets 100. an empty or completely wrong order gets 0.
+
+reset clears the pizza and timer but keeps the caller. next call changes the customer. replay keeps the original score and delivery time.
 
 ## run it
 
@@ -53,20 +59,22 @@ npm run test:browser
 
 ## code layout
 
-| file                | job                                                          |
-| ------------------- | ------------------------------------------------------------ |
-| `app.js`            | put the scene, city, kitchen and order controller together   |
-| `scene.js`          | renderer, lighting, resize handling and camera framing       |
-| `city.js`           | ground and buildings at roughly one metre per unit           |
-| `geometry.js`       | small mesh helpers and shared sphere geometry                |
-| `kitchen.js`        | oven, pizza, toppings and cooked appearance                  |
-| `kitchen-room.js`   | kitchen walls, counters, shelves and room lighting           |
-| `courier.js`        | street, courier, traffic and pickup animation                |
-| `courier-motion.js` | pickup position and courier path shared with clearance tests |
-| `order.js`          | order state, transitions, controls and frame loop            |
-| `order-view.js`     | ticket text, buttons and delivery steps                      |
-| `pizza-input.js`    | pointer capture, turning and topping placement               |
-| `recipe.js`         | recipe encoding and validation without browser dependencies  |
+| file                | job                                                            |
+| ------------------- | -------------------------------------------------------------- |
+| `app.js`            | put the scene, city, kitchen and order controller together     |
+| `scene.js`          | renderer, lighting, resize handling and camera framing         |
+| `city.js`           | ground and buildings at roughly one metre per unit             |
+| `geometry.js`       | small mesh helpers and shared sphere geometry                  |
+| `kitchen.js`        | oven, pizza, toppings and cooked appearance                    |
+| `kitchen-room.js`   | kitchen walls, counters, shelves and room lighting             |
+| `courier.js`        | street, courier, traffic and pickup animation                  |
+| `courier-motion.js` | pickup position and courier path shared with clearance tests   |
+| `order.js`          | order state, transitions, controls and frame loop              |
+| `orders.js`         | callers, scoring and round timing without browser dependencies |
+| `order-ticket.js`   | caller transcript, ticket counts, clock and receipt            |
+| `order-view.js`     | ticket text, buttons and delivery steps                        |
+| `pizza-input.js`    | pointer capture, turning and topping placement                 |
+| `recipe.js`         | recipe encoding and validation without browser dependencies    |
 
 the normal order path is `prep → baking → baked → pickup → dispatched`. inspecting a slice toggles between `baked` and `sliced`. reset returns to `prep`, including during baking or pickup. replay starts another pickup with the same pizza.
 
@@ -80,7 +88,7 @@ toppings share their geometry and materials for the life of the page. clearing a
 
 the pickup counter is attached to the side of the shop. the courier follows a clear walkway and dropped curb before hooking the car. clearance tests cover the shop, counter and rear bumper through the full route. the box meets her hand at pickup without jumping.
 
-the courier uses elapsed seconds rather than accumulated frame steps. reset, replay and a slow frame should all land on the same pose. the timeline checks use a paused browser clock so they also work on slower github runners.
+the courier uses elapsed seconds rather than accumulated frame steps. reset, replay and a slow frame should all land on the same pose. the timeline checks use a paused browser clock so they also work on slower github runners. pickup runs at 1.2 times the original speed, with traffic and the tow line on the same timeline.
 
 the minimatch override keeps the lint tools on its patched release. it is a development dependency and is not shipped with the site.
 

@@ -1,4 +1,6 @@
+import { sceneFrame } from './browser-scene-frame.js';
 import { chromium, expect } from '@playwright/test';
+import { checkCustomerOrder } from './browser-order-check.js';
 import { checkSauce } from './browser-sauce-check.js';
 import { mkdir } from 'node:fs/promises';
 import assert from 'node:assert/strict';
@@ -86,7 +88,7 @@ try {
   await untimed.locator('#special').click();
   await untimed.clock.fastForward(600000);
   assert.equal(await untimed.locator('body').getAttribute('data-mode'), 'prep');
-  assert.equal(await untimed.locator('[id*="clock"], [role="timer"]').count(), 0);
+  await expect(untimed.locator('#order-clock')).toContainText('late');
   await untimed.close();
   const reduced = await checkedPage({
     reducedMotion: 'reduce',
@@ -244,7 +246,7 @@ try {
     await recipePage.clock.runFor(100);
   }
   await loadRecipe();
-  const freshRecipe = await recipePage.locator('canvas').screenshot();
+  const freshRecipe = await sceneFrame(recipePage, { clock: true });
   for (const mode of ['baking', 'sliced', 'pickup']) {
     await recipePage.locator('#turn-left').click();
     await recipePage.clock.runFor(100);
@@ -254,7 +256,7 @@ try {
     if (mode === 'pickup') await recipePage.locator('#dispatch').click();
     await loadRecipe();
     assert.ok(
-      (await recipePage.locator('canvas').screenshot()).equals(freshRecipe),
+      (await sceneFrame(recipePage, { clock: true })).equals(freshRecipe),
       `opening a recipe during ${mode} must clear the old pose`
     );
   }
@@ -268,10 +270,20 @@ try {
   assert.equal(await recipePage.locator('body').getAttribute('data-toppings'), '1');
   await recipePage.close();
   await checkSauce(await checkedPage({ reducedMotion: 'reduce' }), baseUrl);
+  for (const [name, width, height] of [
+    ['desktop', 1440, 1050],
+    ['mobile', 390, 844]
+  ]) {
+    await checkCustomerOrder(
+      await checkedPage({ viewport: { width, height }, reducedMotion: 'reduce' }),
+      baseUrl,
+      name
+    );
+  }
   assert.deepEqual(errors, [], 'all browser pages must be free of runtime errors');
 } finally {
   await browser.close();
 }
 console.log(
-  'desktop, mobile, bake, slice, undo, reset, untimed preparation, courier, interrupted pickup, reduced motion, gpu memory and recipe loading passed'
+  'desktop, mobile, bake, slice, undo, reset, late orders, courier, interrupted pickup, reduced motion, gpu memory and recipe loading passed'
 );

@@ -53,15 +53,15 @@ export function updateOrderView({ mode, toppingCount, bitten = false }) {
     )
   );
   if (delivering) {
-    $('panel-title').innerHTML = mode === 'pickup' ? 'Kourier pickup.' : 'Pizza dispatched.';
+    $('panel-title').innerHTML = mode === 'pickup' ? 'Kourier pickup.' : 'Pizza delivered.';
     $('panel-copy').textContent =
       mode === 'pickup'
         ? 'The skateboard courier collects the box and catches a tow.'
-        : 'Replay the delivery or start another pizza.';
+        : 'Check the receipt, replay the pickup or take the next call.';
     $('primary').innerHTML =
       mode === 'pickup'
         ? '<span>pickup in progress</span>'
-        : '<span>new pizza</span><span>↗</span>';
+        : '<span>next call</span><span>↗</span>';
     $('scene-label').textContent = 'STREET';
     $('oven-label').textContent = mode === 'pickup' ? 'COURIER ACTIVE' : 'DISPATCH COMPLETE';
     $('scene-instruction').textContent =
