@@ -40,6 +40,7 @@ export function startOrder({
   let bitten = false;
   const bakeSeconds = 8;
   function update() {
+    kitchen.updateSauce(toppings, performance.now());
     updateOrderView({ mode, toppingCount: toppings.length, bitten });
   }
   function dispatch() {
