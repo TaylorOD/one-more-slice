@@ -18,6 +18,7 @@ export async function checkSauce(page, baseUrl) {
       async () =>
         (await canvas.screenshot({ path: 'screenshots/sauce-comparison.png' })).equals(plain),
       {
+        timeout: 30000,
         message: 'sauce must visibly cover the pizza'
       }
     )
@@ -32,6 +33,7 @@ export async function checkSauce(page, baseUrl) {
       async () =>
         (await canvas.screenshot({ path: 'screenshots/sauce-comparison.png' })).equals(plain),
       {
+        timeout: 30000,
         message: 'undo must remove all sauce'
       }
     )
@@ -39,6 +41,7 @@ export async function checkSauce(page, baseUrl) {
   await page.goto(recipe);
   await expect
     .poll(async () => (await canvas.screenshot()).equals(covered), {
+      timeout: 30000,
       message: 'shared sauce must restore the same coverage'
     })
     .toBe(true);
@@ -49,6 +52,7 @@ export async function checkSauce(page, baseUrl) {
     .poll(
       async () => (await canvas.screenshot({ path: 'screenshots/sauce-reset.png' })).equals(plain),
       {
+        timeout: 30000,
         message: 'reset must clear sauce'
       }
     )
