@@ -1,6 +1,6 @@
 # Snowcrust
 
-Snowcrust is the project. C0saNostra Pizza is the franchise you work for. a customer calls from the franchise district, gives you an order and rates it after delivery. add toppings, fire the oven and send the courier.
+Snowcrust is the project. C0saN0stra Pizza is the franchise you work for. a customer calls from the franchise district, gives you an order and rates it after delivery. add toppings, fire the oven and send the courier.
 
 call the courier after baking. she collects the box while rolling, skates up to the street and hooks a passing car. traffic keeps moving in both directions.
 
