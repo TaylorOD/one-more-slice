@@ -8,15 +8,15 @@ export const customers = [
     job: 'burbclave gate operator',
     neighborhood: 'Valley franchise strip',
     pizza: 'Gatehouse double meat',
-    call: 'Gate six. The scanner thinks I am a visitor again. Pepperoni and sausage. Leave it at the guard window before the next shift locks me out.',
+    call: 'Deliverator. Gate six. The scanner thinks I am a visitor again. Pepperoni and sausage. Leave it at the guard window before the next shift locks me out.',
     toppings: { pepperoni: 5, sausage: 5 }
   },
   {
     name: 'Jax Relay',
-    job: 'freelance data courier',
+    job: 'freelance data kourier',
     neighborhood: 'Long Beach container stacks',
     pizza: 'Night shift chicken',
-    call: 'Container 88, upper deck. Chicken, peppers and extra sauce. Knock twice. The doorbell belongs to a company I no longer work for.',
+    call: 'Snowcrust? Container 88, upper deck. Chicken, peppers and extra sauce. Knock twice. The doorbell belongs to a company I no longer work for.',
     toppings: { chicken: 5, pepper: 5, sauce: 1 }
   },
   {
