@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   courierPose,
+  deliverySpeed,
   pickup,
   deliveryDuration,
   trafficRoutes,
@@ -24,7 +25,7 @@ test('courier and board stay clear of the shop and pickup counter', () => {
 });
 
 test('pizza pickup meets the hand without a position jump', () => {
-  const pose = courierPose(1.65);
+  const pose = courierPose(1.65 / deliverySpeed);
   assert.ok(
     Math.abs(
       pose.x + 0.35 * Math.cos(pose.yaw) + (pose.handZ + 0.1) * Math.sin(pose.yaw) - pickup.x
@@ -54,7 +55,10 @@ test('faster traffic keeps a car length between vehicles in the same lane', () =
   for (let t = 0; t < deliveryDuration; t += 0.01) {
     const cars = [
       { x: courierPose(t).carX, lane: -0.7 },
-      ...trafficRoutes.map((route) => ({ x: trafficPosition(route, t), lane: route.lane }))
+      ...trafficRoutes.map((route) => ({
+        x: trafficPosition(route, courierPose(t).t),
+        lane: route.lane
+      }))
     ];
     for (let i = 0; i < cars.length; i++)
       for (let j = i + 1; j < cars.length; j++) {
