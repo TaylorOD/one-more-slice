@@ -1,6 +1,6 @@
 # Snowcrust
 
-a Snowcrust franchise dispatch terminal. a customer calls from the franchise district, gives you an order and rates it after delivery. add toppings, fire the oven and send the courier.
+Snowcrust is the project. C0saNostra Pizza is the franchise you work for. a customer calls from the franchise district, gives you an order and rates it after delivery. add toppings, fire the oven and send the courier.
 
 call the courier after baking. she collects the box while rolling, skates up to the street and hooks a passing car. traffic keeps moving in both directions.
 
@@ -95,9 +95,9 @@ the minimatch override keeps the lint tools on its patched release. it is a deve
 
 ## where it fits
 
-keep it as a separate project at /one-more-slice/ with a pizza_delivery() link from the projects page. the homepage stays light. the game shares the site's colors and type, with a back home link.
+keep it as a separate project at /snowcrust/ with a pizza_delivery() link from the projects page. the homepage stays light. the game shares the site's colors and type, with a back home link.
 
-the public address stays the same so existing links keep working. Snowcrust is live at https://www.taylordorsett.com/one-more-slice/. changes deploy after merging to main.
+the project address is https://www.taylordorsett.com/snowcrust/. changes deploy after merging to main.
 
 the dist folder is the whole site. it works on static hosting. recipe links work once the site has a public address.
 
