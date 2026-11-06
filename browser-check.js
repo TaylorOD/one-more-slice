@@ -17,7 +17,6 @@ try {
   const baseUrl = process.env.TEST_BASE_URL ?? 'http://127.0.0.1:5177';
   await page.goto(baseUrl);
   await page.waitForSelector('canvas');
-  assert.equal(await page.locator('#pickup-clock').textContent(), '01:30');
   const canvas = await page.locator('canvas').boundingBox();
   await page.mouse.click(canvas.x + canvas.width * 0.47, canvas.y + canvas.height * 0.55);
   assert.equal(await page.locator('body').getAttribute('data-toppings'), '1');
@@ -42,11 +41,8 @@ try {
   await page.locator('#primary').click();
   await page.waitForTimeout(8500);
   await expect(page.locator('body')).toHaveAttribute('data-mode', 'baked');
-  await expect(page.locator('#clock-label')).toHaveText('ready for pickup');
-  const stoppedClock = await page.locator('#pickup-clock').textContent();
   await page.locator('#primary').click();
   await page.waitForTimeout(500);
-  assert.equal(await page.locator('#pickup-clock').textContent(), stoppedClock);
   assert.equal(await page.locator('body').getAttribute('data-mode'), 'sliced');
   await page.screenshot({ path: 'screenshots/baked.png', fullPage: true });
   await page.locator('#dispatch').click();
@@ -66,7 +62,6 @@ try {
   await page.locator('#reset').click();
   assert.equal(await page.locator('body').getAttribute('data-toppings'), '0');
   await page.waitForTimeout(100);
-  assert.equal(await page.locator('#pickup-clock').textContent(), '01:30');
   await page.setViewportSize({ width: 390, height: 844 });
   await page.locator('#special').click();
   await page.waitForTimeout(1200);
@@ -79,18 +74,15 @@ try {
   assert.equal(await page.locator('body').getAttribute('data-toppings'), '0');
   assert.deepEqual(errors, []);
   await page.close();
-  const timerPage = await checkedPage();
-  await timerPage.clock.install({ time: new Date('2026-01-01T00:00:00Z') });
-  await timerPage.clock.pauseAt(new Date('2026-01-01T00:00:01Z'));
-  await timerPage.goto(baseUrl);
-  await timerPage.locator('#special').click();
-  await timerPage.clock.fastForward(91000);
-  assert.equal(await timerPage.locator('#pickup-clock').textContent(), '00:00');
-  assert.equal(await timerPage.locator('#clock-label').textContent(), 'courier waiting');
-  await timerPage.locator('#primary').click();
-  await timerPage.clock.fastForward(9000);
-  assert.equal(await timerPage.locator('body').getAttribute('data-mode'), 'baked');
-  await timerPage.close();
+  const untimed = await checkedPage();
+  await untimed.clock.install({ time: new Date('2026-01-01T00:00:00Z') });
+  await untimed.clock.pauseAt(new Date('2026-01-01T00:00:01Z'));
+  await untimed.goto(baseUrl);
+  await untimed.locator('#special').click();
+  await untimed.clock.fastForward(600000);
+  assert.equal(await untimed.locator('body').getAttribute('data-mode'), 'prep');
+  assert.equal(await untimed.locator('[id*="clock"], [role="timer"]').count(), 0);
+  await untimed.close();
   const reduced = await checkedPage({
     reducedMotion: 'reduce',
     viewport: { width: 390, height: 844 }
@@ -258,5 +250,5 @@ try {
   await browser.close();
 }
 console.log(
-  'desktop, mobile, share, bake, slice, undo, reset, pickup clock, courier, interrupted pickup, reduced motion, gpu memory and recipe loading passed'
+  'desktop, mobile, share, bake, slice, undo, reset, untimed preparation, courier, interrupted pickup, reduced motion, gpu memory and recipe loading passed'
 );

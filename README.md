@@ -14,7 +14,7 @@ pick a topping and tap the cheese. drag sideways to turn it, or use the arrow bu
 
 share saves the toppings in the link. no account or database.
 
-the pickup clock starts when you add toppings or bake a plain cheese pizza. you get 90 seconds. it stops when baking finishes. if it runs out, the courier waits. you can still finish the order.
+there is no timer or score. take your time making a pizza, watch it bake and call the courier when you want.
 
 ## run it
 
@@ -60,7 +60,7 @@ npm run test:browser
 | `kitchen.js`     | oven, pizza, toppings and cooked appearance                 |
 | `courier.js`     | street, courier, traffic and pickup animation               |
 | `order.js`       | order state, transitions, controls and frame loop           |
-| `order-view.js`  | ticket text, buttons, clock and delivery steps              |
+| `order-view.js`  | ticket text, buttons and delivery steps                     |
 | `pizza-input.js` | pointer capture, turning and topping placement              |
 | `sharing.js`     | share dialog and clipboard fallback                         |
 | `recipe.js`      | recipe encoding and validation without browser dependencies |

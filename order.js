@@ -1,11 +1,6 @@
 import { createCourier } from './courier.js';
 import { maxToppings, decodeRecipe, randomSpot } from './recipe.js';
-import {
-  updateClock as renderClock,
-  updateOrderView,
-  updateCourierPhase,
-  say
-} from './order-view.js';
+import { updateOrderView, updateCourierPhase, say } from './order-view.js';
 import { bindPizzaInput } from './pizza-input.js';
 import { bindSharing } from './sharing.js';
 const $ = (id) => document.getElementById(id);
@@ -32,14 +27,8 @@ export function startOrder({ host, scene, camera, renderer, fireLight, frameCame
     sliceTarget = 0;
   let rotationTarget = 0;
   const bakeSeconds = 8;
-  let pickupStarted = null,
-    pickupFinished = null;
-  function updateClock(now) {
-    renderClock({ now, pickupStarted, pickupFinished, mode });
-  }
   function update() {
     updateOrderView({ mode, toppingCount: toppings.length });
-    updateClock(performance.now());
   }
   function dispatch() {
     if (!['baked', 'sliced', 'dispatched'].includes(mode)) return;
@@ -57,7 +46,6 @@ export function startOrder({ host, scene, camera, renderer, fireLight, frameCame
   $('replay').addEventListener('click', dispatch);
   function addTopping(type, x, z, angle = Math.random() * Math.PI * 2, animate = true) {
     if (mode !== 'prep' || toppings.length >= maxToppings) return;
-    if (pickupStarted === null) pickupStarted = performance.now();
     const group = makeTopping(type);
     const parent = slices[sliceIndex(x, z)];
     parent.add(group);
@@ -82,8 +70,6 @@ export function startOrder({ host, scene, camera, renderer, fireLight, frameCame
   function clearOrder() {
     restoreKitchen();
     removeAll();
-    pickupStarted = null;
-    pickupFinished = null;
     mode = 'prep';
     carriage.position.set(0, 0, 0);
     carriage.scale.setScalar(1);
@@ -103,10 +89,9 @@ export function startOrder({ host, scene, camera, renderer, fireLight, frameCame
     if (mode !== 'prep') return;
     mode = 'baking';
     bakingStarted = performance.now();
-    if (pickupStarted === null) pickupStarted = bakingStarted;
     $('progress').value = 0;
     update();
-    say('Into the oven. Give it eight seconds.');
+    say('Into the oven. Watch the cheese melt.');
   }
   document.querySelectorAll('[data-topping]').forEach((button) =>
     button.addEventListener('click', () => {
@@ -206,13 +191,12 @@ export function startOrder({ host, scene, camera, renderer, fireLight, frameCame
     clearOrder();
     for (const [type, x, z, angle] of recipe.t) addTopping(type, x, z, angle, false);
     update();
-    say('Order received. Fresh pickup window. Ready to bake.');
+    say('Recipe loaded. Make it yours.');
   }
   window.addEventListener('hashchange', openRecipe);
   function animate(now) {
     const dt = Math.min((now - lastTime) / 1000, 0.04);
     lastTime = now;
-    updateClock(now);
     if (mode === 'pickup') {
       const delivery = courier.frame((now - courierStarted) / 1000, reduceMotion);
       if (delivery.phase !== courierPhase) {
@@ -249,7 +233,6 @@ export function startOrder({ host, scene, camera, renderer, fireLight, frameCame
       fireLight.intensity = 18;
       if (t === 1) {
         mode = 'baked';
-        pickupFinished = now;
         carriage.position.set(0, 0, 0);
         carriage.scale.setScalar(1);
         update();

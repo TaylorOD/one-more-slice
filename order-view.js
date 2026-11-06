@@ -1,25 +1,6 @@
 import { maxToppings } from './recipe.js';
 const $ = (id) => document.getElementById(id);
 export const say = (text) => ($('status').textContent = text);
-export function updateClock({ now, pickupStarted, pickupFinished, mode }) {
-  const elapsed = pickupStarted === null ? 0 : ((pickupFinished ?? now) - pickupStarted) / 1000;
-  const remaining = Math.max(0, 90 - Math.floor(elapsed));
-  $('pickup-clock').textContent =
-    String(Math.floor(remaining / 60)).padStart(2, '0') +
-    ':' +
-    String(remaining % 60).padStart(2, '0');
-  $('dispatch-clock').classList.toggle('expired', remaining === 0);
-  $('clock-label').textContent =
-    pickupFinished !== null
-      ? 'ready for pickup'
-      : remaining === 0
-        ? 'courier waiting'
-        : pickupStarted === null
-          ? 'pickup window'
-          : 'pickup in';
-  if (mode === 'pickup' || mode === 'dispatched')
-    $('clock-label').textContent = mode === 'pickup' ? 'courier collecting' : 'order dispatched';
-}
 export function updateOrderView({ mode, toppingCount }) {
   document.body.dataset.mode = mode;
   document.body.dataset.toppings = toppingCount;
@@ -51,9 +32,9 @@ export function updateOrderView({ mode, toppingCount }) {
         : 'Order complete.<br>Ready for pickup.';
   $('panel-copy').innerHTML =
     mode === 'prep'
-      ? 'Base loaded: sauce + mozzarella.<br>Add toppings to start the pickup clock.'
+      ? 'Base loaded: sauce + mozzarella.<br>Take your time. Add what you like.'
       : mode === 'baking'
-        ? 'Eight seconds. Watch the crust.'
+        ? 'Watch the cheese melt and the crust turn golden.'
         : 'Inspect a slice. Quality control is your job.';
   $('scene-label').textContent =
     mode === 'baking'
