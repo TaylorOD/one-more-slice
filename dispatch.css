@@ -18,3 +18,6 @@ h2{font:normal 24px/1.25 monospace;letter-spacing:-1px;color:white}.intro-copy{f
 footer span:first-child{color:var(--green);letter-spacing:0}
 dialog{border-color:var(--red);border-radius:0}dialog::backdrop{background:#000c}dialog input{color:white;border-color:var(--line);border-radius:0}.dialog-close{color:white}
 @media(max-width:740px){.header{height:70px;gap:12px}.header .brand-dot{font-size:18px;margin-right:3px}.wordmark{font-size:13px}.home-link{font-size:10px}h1{font-size:30px}.intro-copy{font-size:11px}.workbench{min-height:390px}.recipe-panel h2{font-size:24px}.stage-top{letter-spacing:0}.ticket-top{padding-bottom:13px}.special{font-size:10px}}
+#dispatch{border-color:var(--green);background:#203328;margin-bottom:12px}
+#delivery-status{color:var(--green);font-size:12px;border:1px solid var(--line);padding:24px 12px;margin:20px 0;flex:1}
+body[data-mode="pickup"] .drag-hint,body[data-mode="dispatched"] .drag-hint{display:none}
