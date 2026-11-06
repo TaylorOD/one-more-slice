@@ -7,6 +7,7 @@ for (const file of [
   'app.js',
   'recipe.js',
   'courier.js',
+  'traffic-vehicles.js',
   'courier-motion.js',
   'scene.js',
   'city.js',

@@ -1,3 +1,4 @@
+import { createTrafficVehicles } from './traffic-vehicles.js';
 import * as THREE from './vendor/three.module.js';
 import {
   courierPose,
@@ -219,84 +220,24 @@ export function createCourier(scene) {
   label(root, 'NO PARKING', 1.2, 0.28, 5.3, 1.75, 2.8, '#c77569');
   box(root, 5.3, 0.7, 2.75, 0.07, 2, 0.07, steel);
 
-  const wheelSets = new Map();
-  function makeCar(color, number) {
-    const car = new THREE.Group();
-    const wheels = [];
-    wheelSets.set(car, wheels);
-    root.add(car);
-    const paint = material(color, { metalness: 0.65, roughness: 0.35 });
-    wedge(
-      car,
-      [
-        [-2, 0.35],
-        [-2.1, 0.74],
-        [-1.3, 0.9],
-        [0.8, 0.9],
-        [2.15, 0.57],
-        [2.1, 0.34]
-      ],
-      1.7,
-      paint
-    );
-    wedge(
-      car,
-      [
-        [-1.32, 0.83],
-        [-0.8, 1.43],
-        [0.52, 1.43],
-        [1.2, 0.83]
-      ],
-      1.4,
-      dark
-    );
-    box(car, -0.15, 1.48, 0, 1.55, 0.08, 1.55, paint);
-    for (const z of [-0.72, 0.72]) {
-      // Split windows and pillars, mirrors, inset door handles and a worn stripe.
-      box(
-        car,
-        -0.55,
-        1.13,
-        z,
-        0.55,
-        0.38,
-        0.024,
-        material('#3c677a', { metalness: 0.5, roughness: 0.22 })
-      );
-      box(
-        car,
-        0.2,
-        1.13,
-        z,
-        0.55,
-        0.38,
-        0.024,
-        material('#3c677a', { metalness: 0.5, roughness: 0.22 })
-      );
-      box(car, -0.13, 1.14, z, 0.055, 0.56, 0.035, paint);
-      box(car, 0.8, 0.95, z * 1.4, 0.2, 0.12, 0.18, paint);
-      box(car, -0.62, 0.78, z * 1.24, 0.25, 0.035, 0.025, alloy);
-      box(car, -0.1, 0.51, z * 1.24, 3.6, 0.08, 0.025, trim);
-      for (let i = 0; i < 5; i++)
-        box(car, -1.4 + i * 0.13, 0.52, z * 1.26, 0.07, 0.04, 0.025, paint);
-    }
-    for (const x of [-1.3, 1.35])
-      for (const z of [-0.94, 0.94]) wheels.push(wheel(car, x, 0.24, z, 0.39, 0.23));
-    box(car, 2.12, 0.45, 0, 0.08, 0.12, 1.85, steel);
-    box(car, -2.12, 0.49, 0, 0.09, 0.15, 1.85, steel);
-    for (const z of [-0.62, 0.62]) {
-      box(car, 2.12, 0.65, z, 0.04, 0.13, 0.4, white);
-      box(car, -2.13, 0.68, z, 0.04, 0.1, 0.45, red);
-    }
-    for (let i = 0; i < 7; i++) box(car, 2.15, 0.48, -0.35 + i * 0.12, 0.025, 0.07, 0.035, alloy);
-    const plate = label(car, number, 0.55, 0.16, -2.18, 0.48, 0, '#a9b5b9');
-    plate.rotation.y = -Math.PI / 2;
-    return car;
-  }
+  const { makeCar, wheelSets } = createTrafficVehicles({
+    root,
+    material,
+    box,
+    wedge,
+    wheel,
+    label,
+    steel,
+    dark,
+    alloy,
+    trim,
+    white,
+    red
+  });
   const targetCar = makeCar('#384e5a', '07 204');
   const traffic = trafficRoutes.map((route) => ({
     ...route,
-    car: makeCar(route.color, route.plate)
+    car: makeCar(route.color, route.plate, route.model)
   }));
   traffic.filter((t) => t.speed < 0).forEach((t) => (t.car.rotation.y = Math.PI));
 
