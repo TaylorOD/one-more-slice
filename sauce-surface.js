@@ -43,6 +43,8 @@ export function createSauceSurface() {
     wasMoving = false;
   function update(toppings, now) {
     const sauce = toppings.filter((t) => t.type === 'sauce');
+    // An empty coating should not draw, even before its cleared texture uploads.
+    material.visible = sauce.length > 0;
     const key = sauce.map((t) => t.x + ',' + t.z + ',' + t.placedAt).join('|');
     const moving = sauce.some((t) => now - t.placedAt < 1100);
     if (key === previousKey && !wasMoving) return;
