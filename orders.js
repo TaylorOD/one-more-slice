@@ -34,6 +34,22 @@ export const customers = [
     pizza: 'Tollbooth special',
     call: 'Dispatch booth, under the blue sign. Pepperoni, pineapple, extra cheese. Tell your kourier the east ramp is clear. I just towed the barricade.',
     toppings: { pepperoni: 5, pineapple: 5, cheese: 5 }
+  },
+  {
+    name: 'Rae Switch',
+    job: 'private road signal tech',
+    neighborhood: 'Valley burbclave perimeter',
+    pizza: 'Perimeter heat',
+    call: 'Snowcrust. Signal cabinet nine. Bacon, red onion and jalapeños. The light is stuck on red. Your kourier can use the service lane.',
+    toppings: { bacon: 5, onion: 5, jalapeno: 5 }
+  },
+  {
+    name: 'Len Port',
+    job: 'container lease broker',
+    neighborhood: 'Long Beach cargo district',
+    pizza: 'Dockside salt',
+    call: 'Anchovies, red onion, basil. Stack four, ground level. Ignore the eviction notice. It belongs to the previous tenant. So does the lock.',
+    toppings: { anchovy: 5, onion: 5, basil: 5 }
   }
 ];
 

@@ -29,7 +29,16 @@ test('random toppings stay on the cheese and survive sharing', () => {
 });
 
 test('the new ingredients survive recipe sharing', () => {
-  const toppings = ['cheese', 'sausage', 'sauce', 'chicken'].map((type) => ({
+  const toppings = [
+    'cheese',
+    'sausage',
+    'sauce',
+    'chicken',
+    'bacon',
+    'onion',
+    'jalapeno',
+    'anchovy'
+  ].map((type) => ({
     type,
     x: 0,
     z: 0,

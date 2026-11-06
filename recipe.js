@@ -8,7 +8,11 @@ export const types = [
   'cheese',
   'sausage',
   'sauce',
-  'chicken'
+  'chicken',
+  'bacon',
+  'onion',
+  'jalapeno',
+  'anchovy'
 ];
 export const maxToppings = 80;
 export const toppingRadius = 1.72;

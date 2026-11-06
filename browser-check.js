@@ -189,11 +189,20 @@ try {
   await memoryPage.close();
   const ingredientsPage = await checkedPage({ reducedMotion: 'reduce' });
   await ingredientsPage.goto(baseUrl);
-  for (const type of ['cheese', 'sausage', 'sauce', 'chicken']) {
+  for (const type of [
+    'cheese',
+    'sausage',
+    'sauce',
+    'chicken',
+    'bacon',
+    'onion',
+    'jalapeno',
+    'anchovy'
+  ]) {
     await ingredientsPage.locator(`[data-topping="${type}"]`).click();
     await ingredientsPage.locator('#sprinkle').click();
   }
-  assert.equal(await ingredientsPage.locator('body').getAttribute('data-toppings'), '16');
+  assert.equal(await ingredientsPage.locator('body').getAttribute('data-toppings'), '36');
   await ingredientsPage.screenshot({ path: 'screenshots/new-toppings.png', fullPage: true });
   await ingredientsPage.setViewportSize({ width: 390, height: 844 });
   await ingredientsPage.screenshot({ path: 'screenshots/new-toppings-mobile.png', fullPage: true });
