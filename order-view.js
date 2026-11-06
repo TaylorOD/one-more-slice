@@ -7,7 +7,6 @@ export function updateOrderView({ mode, toppingCount }) {
   $('topping-count').textContent = `${toppingCount} / ${maxToppings}`;
   $('undo').disabled = !toppingCount || mode !== 'prep';
   const delivering = mode === 'pickup' || mode === 'dispatched';
-  $('step-eat').innerHTML = delivering ? '<b>03</b> dispatch' : '<b>03</b> inspect';
   $('primary').disabled = mode === 'baking' || mode === 'pickup';
   $('dispatch').hidden = !['baked', 'sliced'].includes(mode);
   $('replay').hidden = mode !== 'dispatched';
@@ -15,42 +14,33 @@ export function updateOrderView({ mode, toppingCount }) {
   $('delivery-status').hidden = !delivering;
   $('prep-controls').hidden = mode !== 'prep';
   $('bake-progress').hidden = mode !== 'baking';
-  $('finished').hidden = !['baked', 'sliced'].includes(mode);
   $('primary').innerHTML =
     mode === 'prep'
-      ? '<span>fire oven()</span><span>↗</span>'
+      ? '<span>bake pizza</span><span>↗</span>'
       : mode === 'baking'
-        ? '<span>oven.running</span><span>◌</span>'
+        ? '<span>baking</span><span>◌</span>'
         : mode === 'baked'
-          ? '<span>inspect slice()</span><span>↗</span>'
-          : '<span>return slice()</span><span>↙</span>';
+          ? '<span>inspect slice</span><span>↗</span>'
+          : '<span>return slice</span><span>↙</span>';
   $('panel-title').innerHTML =
-    mode === 'prep'
-      ? 'Incoming order.<br>Make it yours.'
-      : mode === 'baking'
-        ? 'Thermal cycle<br>in progress.'
-        : 'Order complete.<br>Ready for pickup.';
+    mode === 'prep' ? 'Build the order.' : mode === 'baking' ? 'Baking.' : 'Ready for pickup.';
   $('panel-copy').innerHTML =
     mode === 'prep'
-      ? 'Base loaded: sauce + mozzarella.<br>Take your time. Add what you like.'
+      ? 'Sauce and mozzarella included.<br>Choose extra toppings below.'
       : mode === 'baking'
-        ? 'Watch the cheese melt and the crust turn golden.'
-        : 'Inspect a slice. Quality control is your job.';
+        ? 'Toppings are locked while the pizza bakes.'
+        : 'Inspect a slice or dispatch the pizza.';
   $('scene-label').textContent =
-    mode === 'baking'
-      ? 'THERMAL BAY / 01'
-      : mode === 'prep'
-        ? 'PREP BAY / 01'
-        : 'DISPATCH BAY / 01';
-  $('oven-label').textContent = mode === 'baking' ? 'BAKING AT 450°' : 'OVEN READY';
+    mode === 'baking' ? 'OVEN' : mode === 'prep' ? 'KITCHEN' : 'PICKUP';
+  $('oven-label').textContent = mode === 'baking' ? 'BAKING AT 450°C' : 'OVEN READY';
   $('scene-instruction').textContent =
     mode === 'prep'
       ? 'pick a topping, then tap the pizza'
       : mode === 'baking'
-        ? 'a little heat goes a long way'
+        ? 'pizza on the oven deck'
         : mode === 'sliced'
-          ? 'that one’s yours. you earned it.'
-          : 'golden, bubbly, ready for a slice';
+          ? 'return the slice or dispatch the pizza'
+          : 'drag to inspect the baked pizza';
   ['prep', 'bake', 'eat'].forEach((s, i) =>
     $('step-' + s).classList.toggle(
       'active',
@@ -58,24 +48,20 @@ export function updateOrderView({ mode, toppingCount }) {
     )
   );
   if (delivering) {
-    $('panel-title').innerHTML =
-      mode === 'pickup'
-        ? 'Courier incoming.<br>Keep it hot.'
-        : 'Order dispatched.<br>Catch you next shift.';
+    $('panel-title').innerHTML = mode === 'pickup' ? 'Kourier pickup.' : 'Pizza dispatched.';
     $('panel-copy').textContent =
       mode === 'pickup'
-        ? 'One board. One box. A borrowed ride.'
-        : 'Your pizza is on its way through sector 07.';
+        ? 'The skateboard courier collects the box and catches a tow.'
+        : 'Replay the delivery or start another pizza.';
     $('primary').innerHTML =
       mode === 'pickup'
         ? '<span>pickup in progress</span>'
-        : '<span>new order()</span><span>↗</span>';
-    $('scene-label').textContent = 'STREET CAM / 07';
+        : '<span>new pizza</span><span>↗</span>';
+    $('scene-label').textContent = 'STREET';
     $('oven-label').textContent = mode === 'pickup' ? 'COURIER ACTIVE' : 'DISPATCH COMPLETE';
     $('scene-instruction').textContent =
-      mode === 'pickup' ? 'collect the box. hook the car. go.' : 'another order out into the night';
-    $('delivery-phase').textContent =
-      mode === 'pickup' ? '01 / collect' : '// collected. hooked. dispatched.';
+      mode === 'pickup' ? 'courier pickup and magnetic tow' : 'delivery animation complete';
+    $('delivery-phase').textContent = mode === 'pickup' ? 'Collecting pizza' : 'Pickup complete';
     document.querySelectorAll('[data-phase]').forEach((item) => {
       item.classList.remove('active');
       item.classList.toggle('complete', mode === 'dispatched');
@@ -84,10 +70,10 @@ export function updateOrderView({ mode, toppingCount }) {
 }
 export function updateCourierPhase(phase) {
   const messages = {
-    collect: ['01 / collect', 'Box on the counter. She’s already rolling.'],
-    approach: ['02 / find a ride', 'Traffic moving. Courier approaching the street.'],
-    hook: ['03 / magnetic lock', 'Tow line fired. Catching the next car.'],
-    ride: ['04 / outbound', 'Cable tight. Pizza secure. Sector 07 outbound.']
+    collect: ['Collecting pizza', 'Courier collecting the pizza box.'],
+    approach: ['Approaching traffic', 'Traffic moving. Courier approaching the street.'],
+    hook: ['Attaching tow line', 'Tow line fired. Catching the next car.'],
+    ride: ['Leaving the franchise', 'Tow line attached. Courier departing.']
   };
   $('delivery-phase').textContent = messages[phase][0];
   const phases = ['collect', 'approach', 'hook', 'ride'];

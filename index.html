@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="An overnight pizza dispatch terminal. Build an order, fire the oven and inspect a slice."
+      content="A Snow Crash inspired pizza kitchen. Choose toppings, bake a pizza and dispatch a skateboard courier."
     />
     <title>C0saNostra Pizza | pizza dispatch</title>
     <link
@@ -21,32 +21,28 @@
       <a class="wordmark" href="./" aria-label="C0saNostra Pizza home"
         ><span class="brand-dot">&gt;_</span> C0saNostra Pizza<span class="period">()</span></a
       >
-      <span class="header-note">franchise dispatch <span>sector 07 / night shift</span></span>
-      <a class="home-link" href="https://www.taylordorsett.com/">// back home</a>
+      <span class="header-note">franchise kitchen</span>
+      <a class="home-link" href="https://www.taylordorsett.com/">back to site</a>
     </header>
     <main>
       <section class="intro">
         <div>
-          <p class="eyebrow"><span></span> // the family business</p>
-          <h1>The city is asleep.<br /><em>Your order is not.</em></h1>
+          <h1>Pizza dispatch.</h1>
         </div>
-        <p class="intro-copy">
-          <strong>sector 07 / overnight dispatch</strong><br />Build the order. Fire the oven. Feed
-          the city.
-        </p>
+        <p class="intro-copy">Prepare the pizza. Bake it. Send the courier.</p>
       </section>
       <div class="kitchen">
         <section class="workbench" aria-label="3D pizza kitchen">
           <div class="stage-top">
-            <span id="scene-label">PREP BAY / 01</span
+            <span id="scene-label">KITCHEN</span
             ><span class="live-badge"><i></i> <span id="oven-label">OVEN READY</span></span>
           </div>
           <div
             id="scene"
             role="img"
-            aria-label="A 3D pizza in an industrial kitchen overlooking a city at night. Select a topping and click the pizza to add it. Drag to rotate."
+            aria-label="A floating pizza paddle inside a neon kitchen with ingredient counters and a brick oven. Select a topping and click the pizza to add it. Drag to rotate."
           >
-            <p id="loading">connecting to prep bay…</p>
+            <p id="loading">Loading kitchen…</p>
           </div>
           <div class="scene-caption">
             <span id="scene-instruction">pick a topping, then tap the pizza</span
@@ -58,18 +54,17 @@
           </div>
           <div class="step-strip" aria-label="Pizza progress">
             <span class="active" id="step-prep"><b>01</b> assemble</span
-            ><span id="step-bake"><b>02</b> bake</span><span id="step-eat"><b>03</b> inspect</span>
+            ><span id="step-bake"><b>02</b> bake</span><span id="step-eat"><b>03</b> dispatch</span>
           </div>
         </section>
         <aside class="recipe-panel">
-          <div class="ticket-top"><span>order.ticket</span><span>#0001</span></div>
-          <h2 id="panel-title">Incoming order.<br />Make it yours.</h2>
+          <h2 id="panel-title">Build the order.</h2>
           <p class="panel-copy" id="panel-copy">
-            Base loaded: sauce + mozzarella.<br />Take your time. Add what you like.
+            Sauce and mozzarella included.<br />Choose extra toppings below.
           </p>
           <div id="prep-controls">
             <div class="section-label">
-              <span>order.toppings</span><span id="topping-count">0 / 80</span>
+              <span>Toppings</span><span id="topping-count">0 / 80</span>
             </div>
             <div class="toppings" role="group" aria-label="Toppings">
               <button data-topping="pepperoni" aria-pressed="true">
@@ -104,51 +99,43 @@
               </button>
             </div>
             <div class="small-actions">
-              <button id="sprinkle">+ add a handful</button><button id="undo" disabled>undo</button>
+              <button id="sprinkle">+ add 5</button><button id="undo" disabled>undo last</button>
             </div>
             <div class="ticket-line"></div>
             <button id="special" class="special">
-              // auto fill <strong>house special ↗</strong>
+              replace with <strong>house special ↗</strong>
             </button>
           </div>
           <div id="bake-progress" hidden>
-            <div class="heat-display">450<span>°</span></div>
-            <p>Thermal cycle active.<br />Keep the dispatch lane clear.</p>
+            <div class="heat-display">450<span>°C</span></div>
+            <p>Returns to the prep bay when baked.</p>
             <progress id="progress" value="0" max="1" aria-label="Baking progress"></progress>
           </div>
-          <div id="finished" hidden>
-            <div class="stamp">
-              ORDER STATUS<br /><b>READY FOR<br />PICKUP</b>
-            </div>
-            <p>Thermal cycle complete.<br />Inspect a slice before it goes.</p>
-          </div>
+
           <button id="dispatch" class="primary" hidden>
-            <span>call courier()</span><span>↗</span>
+            <span>dispatch pizza</span><span>↗</span>
           </button>
           <div id="delivery-status" hidden>
-            <p class="section-label">courier / 07 <span>freelance</span></p>
-            <p id="delivery-phase" role="status">01 / collect</p>
+            <p id="delivery-phase" role="status">Collecting pizza</p>
             <ol class="delivery-steps" aria-label="Courier progress">
               <li data-phase="collect"><span>01</span> collect the box</li>
-              <li data-phase="approach"><span>02</span> find a ride</li>
-              <li data-phase="hook"><span>03</span> magnetic lock</li>
-              <li data-phase="ride"><span>04</span> sector 07 outbound</li>
+              <li data-phase="approach"><span>02</span> approach traffic</li>
+              <li data-phase="hook"><span>03</span> attach tow line</li>
+              <li data-phase="ride"><span>04</span> depart</li>
             </ol>
-            <p class="delivery-note">// smartwheels. warm pizza.<br />// no time to park.</p>
           </div>
           <button id="primary" class="primary" disabled>
-            <span>fire oven()</span><span>↗</span>
+            <span>bake pizza</span><span>↗</span>
           </button>
-          <button id="replay" hidden>replay pickup ↗</button>
+          <button id="replay" hidden>replay delivery ↗</button>
           <div class="bottom-actions">
-            <button id="reset">reset order</button><button id="share">copy order ↗</button>
+            <button id="reset">reset order</button><button id="share">share recipe ↗</button>
           </div>
-          <p id="status" role="status" aria-live="polite">Drag to turn. Tap to top.</p>
+          <p id="status" role="status" aria-live="polite"></p>
         </aside>
       </div>
       <footer>
-        <span>// no actual deliveries</span
-        ><span>inspired by Snow Crash. built for hungry people.</span
+        <span>No real orders placed.</span><span>Inspired by Snow Crash.</span
         ><a href="https://www.taylordorsett.com/">taylor.dorsett ↗</a>
       </footer>
     </main>
@@ -156,8 +143,8 @@
       <form method="dialog">
         <button class="dialog-close" aria-label="Close share dialog">×</button>
       </form>
-      <p class="eyebrow">// outgoing transmission</p>
-      <h2>Transmit this order.</h2>
+
+      <h2>Share this recipe.</h2>
       <p>This link saves the toppings. Open it to make the same pizza.</p>
       <label for="share-url">Recipe link</label><input id="share-url" readonly /><button
         id="copy-link"

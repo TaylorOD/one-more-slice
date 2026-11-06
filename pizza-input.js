@@ -59,7 +59,7 @@ export function bindPizzaInput({
     if (!raycaster.ray.intersectPlane(groundPlane, point)) return;
     pizza.worldToLocal(point);
     if (Math.hypot(point.x, point.z) > toppingRadius) {
-      say('Aim for the cheese. The counter has enough crumbs.');
+      say('Tap inside the crust to add a topping.');
       return;
     }
     placeTopping(point.x, point.z);

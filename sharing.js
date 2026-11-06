@@ -12,7 +12,7 @@ export function bindSharing(getToppings) {
   $('copy-link').addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText($('share-url').value);
-      $('copy-status').textContent = 'Copied. Send it to someone hungry.';
+      $('copy-status').textContent = 'Recipe link copied.';
     } catch {
       $('share-url').focus();
       $('share-url').select();
