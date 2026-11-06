@@ -13,7 +13,8 @@ export function bindPizzaInput({
 }) {
   let pointerStart = null;
   const raycaster = new THREE.Raycaster();
-  const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -0.28);
+  const groundPlane = new THREE.Plane();
+  const up = new THREE.Vector3(0, 1, 0);
   host.addEventListener('pointerdown', (event) => {
     pointerStart = {
       x: event.clientX,
@@ -50,6 +51,11 @@ export function bindPizzaInput({
       camera
     );
     const point = new THREE.Vector3();
+    // Placement follows the floating pizza instead of the counter below it.
+    groundPlane.setFromNormalAndCoplanarPoint(
+      up,
+      pizza.localToWorld(new THREE.Vector3(0, 0.28, 0))
+    );
     if (!raycaster.ray.intersectPlane(groundPlane, point)) return;
     pizza.worldToLocal(point);
     if (Math.hypot(point.x, point.z) > toppingRadius) {

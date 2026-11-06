@@ -6,25 +6,25 @@ import { createGeometry } from './geometry.js';
 export function createKitchenRoom(root) {
   const { mesh, box } = createGeometry(root);
   const material = (color) => new THREE.MeshStandardMaterial({ color, roughness: 0.85 });
-  const plaster = material('#d4bc91');
-  const wood = material('#67442d');
-  const oak = material('#9b7047');
-  const stone = material('#d9c9a9');
+  const plaster = material('#26313b');
+  const wood = material('#172431');
+  const oak = material('#31404a');
+  const stone = material('#47545e');
   const copper = new THREE.MeshStandardMaterial({
     color: '#b77846',
     metalness: 0.55,
     roughness: 0.4
   });
-  const ceramic = material('#eee1bd');
+  const ceramic = material('#b0b6ac');
 
   const tileCanvas = document.createElement('canvas');
   tileCanvas.width = tileCanvas.height = 256;
   const ctx = tileCanvas.getContext('2d');
-  ctx.fillStyle = '#785643';
+  ctx.fillStyle = '#14202a';
   ctx.fillRect(0, 0, 256, 256);
   for (let row = 0; row < 2; row++)
     for (let col = 0; col < 2; col++) {
-      ctx.fillStyle = (row + col) % 2 ? '#a96847' : '#b77a54';
+      ctx.fillStyle = (row + col) % 2 ? '#28333d' : '#303944';
       ctx.fillRect(col * 128 + 3, row * 128 + 3, 122, 122);
     }
   const tiles = new THREE.CanvasTexture(tileCanvas);
@@ -44,19 +44,23 @@ export function createKitchenRoom(root) {
 
   // Green glazed backsplash with a cream border around the oven and shelves.
   box(13.7, 2.25, 0.08, ceramic, root, 0, 0.6, -6.64);
-  const glaze = new THREE.MeshStandardMaterial({ color: '#536b50', roughness: 0.25 });
+  const glaze = new THREE.MeshStandardMaterial({ color: '#264d49', roughness: 0.25 });
   for (let row = 0; row < 4; row++)
     for (let col = 0; col < 23; col++) {
       box(0.55, 0.48, 0.04, glaze, root, -6.55 + col * 0.59, -0.15 + row * 0.52, -6.58);
     }
   box(14, 0.15, 0.2, wood, root, 0, 4.7, -6.6);
 
-  // A real prep counter, with a stone top and cabinets reaching the tiled floor.
-  box(9.3, 0.28, 7, stone, root, 0, -0.4, 0.7);
-  box(8.7, 1.85, 6.45, wood, root, 0, -1.45, 0.7);
-  for (const x of [-3.25, -1.08, 1.08, 3.25]) {
-    box(1.95, 1.45, 0.07, oak, root, x, -1.35, 3.96);
-    box(0.34, 0.07, 0.08, copper, root, x, -0.82, 4.02);
+  // Counters surround an open levitation bay. Nothing sits under the pizza.
+  for (const x of [-4, 4]) {
+    box(2.4, 0.28, 7.5, stone, root, x, -0.4, 0.7);
+    box(2.1, 1.85, 7, wood, root, x, -1.45, 0.7);
+  }
+  box(10.4, 0.28, 1.5, stone, root, 0, -0.4, 4.1);
+  box(10, 1.85, 1.2, wood, root, 0, -1.45, 4.1);
+  for (const x of [-4, -2, 0, 2, 4]) {
+    box(1.7, 1.45, 0.07, oak, root, x, -1.35, 4.75);
+    box(0.34, 0.07, 0.08, copper, root, x, -0.82, 4.81);
   }
   box(12.5, 0.28, 3.3, stone, root, 0, -0.4, -4.65);
   box(12, 1.9, 2.8, wood, root, 0, -1.45, -4.65);
@@ -111,7 +115,40 @@ export function createKitchenRoom(root) {
   box(0.12, 0.08, 2.3, oak, root, -6.68, 2, -2.7);
   box(0.6, 0.12, 2.7, stone, root, -6.55, 0.85, -2.7);
 
-  const warmLight = new THREE.PointLight('#ffd89c', 60, 18, 2);
+  // Retrofitted lighting and exposed services keep the old kitchen's shape.
+  const cyan = new THREE.MeshStandardMaterial({
+    color: '#63e9f4',
+    emissive: '#27bad7',
+    emissiveIntensity: 2
+  });
+  const pink = new THREE.MeshStandardMaterial({
+    color: '#e58ab9',
+    emissive: '#be327b',
+    emissiveIntensity: 1.8
+  });
+  box(13.4, 0.045, 0.06, cyan, root, 0, 4.45, -6.55);
+  box(0.06, 0.045, 10, pink, root, -6.7, 4.45, -0.9);
+  for (const x of [-2.78, 2.78]) box(0.035, 0.045, 6.9, cyan, root, x, -0.22, 0.7);
+  box(10, 0.045, 0.035, pink, root, 0, -0.22, 3.35);
+  for (const y of [3.7, 4.05]) box(7, 0.09, 0.12, wood, root, -2.8, y, -6.45);
+  for (const x of [-5.8, -3.2, -0.6]) box(0.14, 0.55, 0.18, copper, root, x, 3.9, -6.4);
+  const accent = new THREE.PointLight('#ee4eaa', 22, 12, 2);
+  accent.position.set(-5, 3, 0);
+  root.add(accent);
+  const screen = new THREE.MeshStandardMaterial({
+    color: '#16303c',
+    emissive: '#16303c',
+    emissiveIntensity: 0.6
+  });
+  box(2.1, 1.15, 0.15, wood, root, -4.5, 0.65, -6.1);
+  box(1.9, 0.95, 0.04, screen, root, -4.5, 0.65, -5.99);
+  for (let i = 0; i < 4; i++)
+    box(1.3 - i * 0.2, 0.025, 0.02, i % 2 ? pink : cyan, root, -4.6, 0.95 - i * 0.19, -5.96);
+  // Lit signs and distant windows visible through the side window.
+  for (let i = 0; i < 4; i++)
+    for (let j = 0; j < 3; j++)
+      box(0.02, 0.11, 0.12, cyan, root, -6.67, 1.2 + i * 0.45, -3.4 + j * 0.6);
+  const warmLight = new THREE.PointLight('#83b9dc', 28, 18, 2);
   warmLight.position.set(1, 5, 2);
   root.add(warmLight);
 }
