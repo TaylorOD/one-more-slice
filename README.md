@@ -67,6 +67,8 @@ npm run test:browser
 
 the normal order path is `prep → baking → baked → pickup → dispatched`. inspecting a slice toggles between `baked` and `sliced`. reset returns to `prep`, including during baking or pickup. replay starts another pickup with the same pizza.
 
+opening a recipe replaces the current order and resets its rotation, slice and oven position. a broken link leaves the current order alone. browser checks compare the resulting pizza with a fresh recipe after interrupting baking, inspection and pickup.
+
 the order controller owns state. scene files own geometry. the view reads state and updates the page. keep those boundaries when adding things.
 
 toppings share their geometry and materials for the life of the page. clearing a topping removes its meshes without disposing shared resources. a new topping type should reuse resources too. the browser test counts gpu buffers across repeated orders to catch leaks.

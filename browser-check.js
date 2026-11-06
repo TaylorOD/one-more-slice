@@ -6,11 +6,15 @@ const browser = await chromium.launch({
   headless: true,
   args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader']
 });
+const errors = [];
+async function checkedPage(options) {
+  const page = await browser.newPage(options);
+  page.on('pageerror', (error) => errors.push(error.message));
+  return page;
+}
 try {
-  const page = await browser.newPage({ viewport: { width: 1440, height: 1050 } });
-  const errors = [];
+  const page = await checkedPage({ viewport: { width: 1440, height: 1050 } });
   const baseUrl = process.env.TEST_BASE_URL ?? 'http://127.0.0.1:5177';
-  page.on('pageerror', (e) => errors.push(e.message));
   await page.goto(baseUrl);
   await page.waitForSelector('canvas');
   assert.equal(await page.locator('#pickup-clock').textContent(), '01:30');
@@ -74,7 +78,8 @@ try {
   assert.equal(await page.locator('body').getAttribute('data-mode'), 'prep');
   assert.equal(await page.locator('body').getAttribute('data-toppings'), '0');
   assert.deepEqual(errors, []);
-  const timerPage = await browser.newPage();
+  await page.close();
+  const timerPage = await checkedPage();
   await timerPage.clock.install({ time: new Date('2026-01-01T00:00:00Z') });
   await timerPage.clock.pauseAt(new Date('2026-01-01T00:00:01Z'));
   await timerPage.goto(baseUrl);
@@ -86,7 +91,7 @@ try {
   await timerPage.clock.fastForward(9000);
   assert.equal(await timerPage.locator('body').getAttribute('data-mode'), 'baked');
   await timerPage.close();
-  const reduced = await browser.newPage({
+  const reduced = await checkedPage({
     reducedMotion: 'reduce',
     viewport: { width: 390, height: 844 }
   });
@@ -114,7 +119,7 @@ try {
   await reduced.clock.fastForward(10000);
   assert.equal(await reduced.locator('body').getAttribute('data-mode'), 'prep');
   await reduced.close();
-  const phases = await browser.newPage();
+  const phases = await checkedPage();
   await phases.clock.install({ time: new Date('2026-01-01T00:00:00Z') });
   await phases.clock.pauseAt(new Date('2026-01-01T00:00:01Z'));
   await phases.goto(baseUrl);
@@ -138,7 +143,7 @@ try {
   await phases.close();
   // Count actual GPU buffers across repeated orders, rather than only checking
   // that meshes disappear. The old basil and mushroom geometry leaked here.
-  const memoryPage = await browser.newPage();
+  const memoryPage = await checkedPage();
   await memoryPage.addInitScript(() => {
     window.liveBuffers = 0;
     for (const Context of [WebGLRenderingContext, WebGL2RenderingContext]) {
@@ -183,9 +188,54 @@ try {
     );
   }
   await memoryPage.close();
+  // A recipe opened mid order must render exactly like a fresh recipe.
+  // Comparing the canvas catches stale rotation, slice offsets and oven scale.
+  const recipePage = await checkedPage({
+    reducedMotion: 'reduce',
+    viewport: { width: 1200, height: 900 }
+  });
+  await recipePage.clock.install({ time: new Date('2026-01-01T00:00:00Z') });
+  await recipePage.clock.pauseAt(new Date('2026-01-01T00:00:01Z'));
+  await recipePage.goto(baseUrl);
+  const recipeHash =
+    '#recipe=' + encodeURIComponent(JSON.stringify({ v: 1, t: [['olive', 0.7, -0.4, 0]] }));
+  async function loadRecipe() {
+    await recipePage.evaluate((hash) => {
+      history.replaceState(null, '', location.pathname);
+      location.hash = hash;
+    }, recipeHash);
+    await expect(recipePage.locator('body')).toHaveAttribute('data-mode', 'prep');
+    await expect(recipePage.locator('body')).toHaveAttribute('data-toppings', '1');
+    await recipePage.clock.runFor(100);
+  }
+  await loadRecipe();
+  const freshRecipe = await recipePage.locator('canvas').screenshot();
+  for (const mode of ['baking', 'sliced', 'pickup']) {
+    await recipePage.locator('#turn-left').click();
+    await recipePage.clock.runFor(100);
+    await recipePage.locator('#primary').click();
+    await recipePage.clock.fastForward(mode === 'baking' ? 4000 : 9000);
+    if (mode === 'sliced') await recipePage.locator('#primary').click();
+    if (mode === 'pickup') await recipePage.locator('#dispatch').click();
+    await loadRecipe();
+    assert.ok(
+      (await recipePage.locator('canvas').screenshot()).equals(freshRecipe),
+      `opening a recipe during ${mode} must clear the old pose`
+    );
+  }
+  await recipePage.screenshot({ path: 'screenshots/recipe-reset.png', fullPage: true });
+  await recipePage.evaluate(() => {
+    location.hash = '#recipe=broken';
+  });
+  await expect(recipePage.locator('#status')).toHaveText(
+    'That recipe link looks broken. Your current order is unchanged.'
+  );
+  assert.equal(await recipePage.locator('body').getAttribute('data-toppings'), '1');
+  await recipePage.close();
+  assert.deepEqual(errors, [], 'all browser pages must be free of runtime errors');
 } finally {
   await browser.close();
 }
 console.log(
-  'desktop, mobile, share, bake, slice, undo, reset, pickup clock, courier, interrupted pickup and reduced motion passed'
+  'desktop, mobile, share, bake, slice, undo, reset, pickup clock, courier, interrupted pickup, reduced motion, gpu memory and recipe loading passed'
 );
