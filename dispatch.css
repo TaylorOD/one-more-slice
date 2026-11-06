@@ -121,22 +121,6 @@ h2 {
   color: var(--red);
   letter-spacing: 0.5px;
 }
-.dispatch-clock {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 17px;
-  color: var(--muted);
-  font-size: 10px;
-}
-.dispatch-clock output {
-  color: #e8b96c;
-  font-size: 25px;
-  line-height: 1;
-}
-.dispatch-clock.expired output {
-  color: #ff907f;
-}
 .panel-copy {
   font-size: 11px;
 }
