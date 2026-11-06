@@ -81,9 +81,6 @@ button {
   border-left: 1px solid var(--line);
   padding-left: 25px;
 }
-.header-note span {
-  display: block;
-}
 .home-link {
   margin-left: auto;
   font-size: 12px;
@@ -100,20 +97,6 @@ main {
   padding: 43px 0 31px;
   gap: 24px;
 }
-.eyebrow {
-  font-size: 10px;
-  letter-spacing: 1.8px;
-  font-weight: 700;
-  margin: 0 0 13px;
-}
-.eyebrow span {
-  display: inline-block;
-  background: var(--red);
-  border-radius: 50%;
-  width: 7px;
-  height: 7px;
-  margin-right: 7px;
-}
 h1 {
   font:
     600 clamp(32px, 3.4vw, 51px)/1.15 'Playfair Display',
@@ -121,9 +104,6 @@ h1 {
     serif;
   margin: 0;
   letter-spacing: -1.6px;
-}
-h1 em {
-  color: var(--red);
 }
 .intro-copy {
   font-size: 13px;
@@ -252,15 +232,6 @@ h1 em {
   display: flex;
   flex-direction: column;
   box-shadow: 0 5px 12px #51452c05;
-}
-.ticket-top {
-  display: flex;
-  justify-content: space-between;
-  font-size: 9px;
-  letter-spacing: 1.7px;
-  color: var(--muted);
-  padding-bottom: 18px;
-  border-bottom: 1px dashed #d2cebf;
 }
 h2 {
   font:
@@ -424,8 +395,7 @@ h2 {
 #prep-controls {
   margin-bottom: 23px;
 }
-#bake-progress,
-#finished {
+#bake-progress {
   text-align: center;
   flex: 1;
   color: var(--muted);
@@ -448,26 +418,6 @@ progress {
   height: 8px;
   accent-color: var(--red);
   margin-top: 15px;
-}
-.stamp {
-  border: 3px double #a74b34;
-  border-radius: 50%;
-  width: 158px;
-  height: 158px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  margin: 14px auto 20px;
-  transform: rotate(-10deg);
-  font-size: 8px;
-  letter-spacing: 1px;
-  color: var(--red);
-}
-.stamp b {
-  font-size: 14px;
-  line-height: 1.4;
-  margin-top: 7px;
 }
 footer {
   display: flex;
@@ -571,9 +521,6 @@ dialog label {
     margin-top: 14px;
     font-size: 12px;
   }
-  .intro-copy br {
-    display: block;
-  }
   h1 {
     font-size: 35px;
   }
@@ -616,9 +563,6 @@ dialog label {
   .recipe-panel {
     padding: 22px;
   }
-  .ticket-top {
-    padding-bottom: 13px;
-  }
   .recipe-panel h2 {
     margin: 17px 0 10px;
     font-size: 27px;
@@ -634,9 +578,6 @@ dialog label {
   }
   .recipe-panel > .primary {
     margin-top: 0;
-  }
-  .intro .eyebrow {
-    font-size: 9px;
   }
   .special {
     font-size: 11px;
@@ -656,9 +597,6 @@ dialog label {
   }
   .heat-display {
     margin: 0;
-  }
-  .stamp {
-    margin-top: 0;
   }
   .header .brand-dot {
     font-size: 27px;

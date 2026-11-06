@@ -39,18 +39,10 @@ a {
 .intro {
   padding: 30px 0 25px;
 }
-.eyebrow {
-  color: var(--green);
-  font-weight: 400;
-  letter-spacing: 0;
-}
 h1 {
   font: normal clamp(28px, 3.1vw, 43px)/1.2 monospace;
   letter-spacing: -1.5px;
   color: white;
-}
-h1 em {
-  font-style: normal;
 }
 h2 {
   font: normal 24px/1.25 monospace;
@@ -59,10 +51,6 @@ h2 {
 }
 .intro-copy {
   font-size: 11px;
-}
-.intro-copy strong {
-  color: #e8b96c;
-  font-weight: 400;
 }
 .kitchen {
   gap: 16px;
@@ -120,11 +108,6 @@ h2 {
   border-radius: 0;
   box-shadow: none;
 }
-.ticket-top {
-  border-color: var(--line);
-  color: var(--red);
-  letter-spacing: 0.5px;
-}
 .panel-copy {
   font-size: 11px;
 }
@@ -180,20 +163,6 @@ h2 {
   font-size: 64px;
   color: #e8b96c;
 }
-.stamp {
-  border: 1px solid var(--green);
-  border-radius: 0;
-  transform: none;
-  width: 100%;
-  height: auto;
-  padding: 25px 12px;
-  color: var(--green);
-  font-size: 10px;
-}
-.stamp b {
-  font-weight: 400;
-  font-size: 20px;
-}
 footer span:first-child {
   color: var(--green);
   letter-spacing: 0;
@@ -243,9 +212,6 @@ dialog input {
   .stage-top {
     letter-spacing: 0;
   }
-  .ticket-top {
-    padding-bottom: 13px;
-  }
   .special {
     font-size: 10px;
   }
@@ -254,6 +220,10 @@ dialog input {
   border-color: var(--green);
   background: #203328;
   margin-bottom: 12px;
+}
+body[data-mode='baked'] #primary,
+body[data-mode='sliced'] #primary {
+  margin-top: 0;
 }
 #delivery-status {
   color: var(--green);
@@ -283,11 +253,6 @@ dialog input {
 }
 .delivery-steps li.complete {
   color: var(--green);
-}
-.delivery-note {
-  color: var(--muted);
-  font-size: 10px;
-  line-height: 1.8;
 }
 #delivery-phase {
   margin: 24px 0 0;

@@ -52,7 +52,7 @@ export function startOrder({
     city.setVisible(true);
     courier.start();
     update();
-    say('Courier at the pickup bay.');
+    say('Courier approaching the pickup counter.');
   }
   $('dispatch').addEventListener('click', dispatch);
   $('replay').addEventListener('click', dispatch);
@@ -95,7 +95,7 @@ export function startOrder({
     clearOrder();
     history.replaceState(null, '', location.pathname + location.search);
     update();
-    say('Order cleared. Dispatch is standing by.');
+    say('Order cleared. Sauce and mozzarella remain.');
   }
   function bake() {
     if (mode !== 'prep') return;
@@ -103,7 +103,7 @@ export function startOrder({
     bakingStarted = performance.now();
     $('progress').value = 0;
     update();
-    say('Into the oven. Watch the cheese melt.');
+    say('Pizza entering the oven.');
   }
   document.querySelectorAll('[data-topping]').forEach((button) =>
     button.addEventListener('click', () => {
@@ -111,11 +111,7 @@ export function startOrder({
       document
         .querySelectorAll('[data-topping]')
         .forEach((b) => b.setAttribute('aria-pressed', b === button));
-      say(
-        selected === 'pineapple'
-          ? 'A controversial choice. We support you.'
-          : `${button.textContent.trim()} it is. Tap the pizza or add a handful.`
-      );
+      say(`${button.textContent.trim()} selected. Tap the pizza or add 5.`);
     })
   );
   $('sprinkle').addEventListener('click', () => {
@@ -127,8 +123,8 @@ export function startOrder({
     }
     say(
       toppings.length === before
-        ? 'That’s 80 toppings. The dough has limits.'
-        : 'A handful of good decisions. Probably.'
+        ? 'Topping limit reached. Undo a topping or bake the pizza.'
+        : `Added ${toppings.length - before} toppings.`
     );
   });
   $('undo').addEventListener('click', () => {
@@ -136,7 +132,7 @@ export function startOrder({
     const t = toppings.pop();
     t?.group.removeFromParent();
     update();
-    say('Nobody saw that.');
+    say('Last topping removed.');
   });
   $('special').addEventListener('click', () => {
     if (mode !== 'prep') return;
@@ -145,7 +141,7 @@ export function startOrder({
       const p = randomSpot();
       addTopping(i < 12 ? 'pepperoni' : i < 18 ? 'mushroom' : 'basil', p.x, p.z, p.angle);
     }
-    say('Pepperoni, mushrooms and basil. A solid life choice.');
+    say('Replaced toppings with pepperoni, mushrooms and basil.');
   });
   $('reset').addEventListener('click', () => {
     if (toppings.length || mode !== 'prep') {
@@ -163,12 +159,12 @@ export function startOrder({
       mode = 'sliced';
       sliceTarget = 1;
       update();
-      say('One slice. For quality control.');
+      say('Slice pulled out for inspection.');
     } else if (mode === 'sliced') {
       mode = 'baked';
       sliceTarget = 0;
       update();
-      say('Back with the others. For now.');
+      say('Slice returned.');
     }
   });
   $('turn-left').addEventListener('click', () => (rotationTarget -= Math.PI / 6));
@@ -185,11 +181,7 @@ export function startOrder({
     },
     placeTopping(x, z) {
       addTopping(selected, x, z);
-      say(
-        toppings.length >= maxToppings
-          ? 'That’s 80 toppings. Time for the oven.'
-          : 'Nicely placed. Keep going.'
-      );
+      say(toppings.length >= maxToppings ? '80 topping limit reached.' : 'Topping placed.');
     }
   });
   bindSharing(() => toppings);
@@ -203,7 +195,7 @@ export function startOrder({
     clearOrder();
     for (const [type, x, z, angle] of recipe.t) addTopping(type, x, z, angle, false);
     update();
-    say('Recipe loaded. Make it yours.');
+    say('Recipe loaded.');
   }
   window.addEventListener('hashchange', openRecipe);
   function animate(now) {
@@ -246,7 +238,7 @@ export function startOrder({
         carriage.position.set(0, ovenLayout.prepHeight, 0);
         carriage.scale.setScalar(1);
         update();
-        say('Thermal cycle complete. Order ready for pickup.');
+        say('Pizza baked. Ready to dispatch.');
       }
     } else fireLight.intensity = 13;
     if (mode === 'prep') carriage.scale.setScalar(1);
