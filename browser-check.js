@@ -75,7 +75,8 @@ try {
   assert.equal(await page.locator('body').getAttribute('data-toppings'), '0');
   assert.deepEqual(errors, []);
   const timerPage = await browser.newPage();
-  await timerPage.clock.install();
+  await timerPage.clock.install({ time: new Date('2026-01-01T00:00:00Z') });
+  await timerPage.clock.pauseAt(new Date('2026-01-01T00:00:01Z'));
   await timerPage.goto(baseUrl);
   await timerPage.locator('#special').click();
   await timerPage.clock.fastForward(91000);
@@ -89,7 +90,8 @@ try {
     reducedMotion: 'reduce',
     viewport: { width: 390, height: 844 }
   });
-  await reduced.clock.install();
+  await reduced.clock.install({ time: new Date('2026-01-01T00:00:00Z') });
+  await reduced.clock.pauseAt(new Date('2026-01-01T00:00:01Z'));
   await reduced.goto(baseUrl);
   await reduced.locator('#primary').click();
   await reduced.clock.fastForward(9000);
@@ -113,7 +115,8 @@ try {
   assert.equal(await reduced.locator('body').getAttribute('data-mode'), 'prep');
   await reduced.close();
   const phases = await browser.newPage();
-  await phases.clock.install();
+  await phases.clock.install({ time: new Date('2026-01-01T00:00:00Z') });
+  await phases.clock.pauseAt(new Date('2026-01-01T00:00:01Z'));
   await phases.goto(baseUrl);
   await phases.locator('#primary').click();
   await phases.clock.fastForward(9000);
