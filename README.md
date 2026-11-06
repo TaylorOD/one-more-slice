@@ -14,6 +14,8 @@ pick a topping and tap the cheese. drag sideways to turn it, or use the arrow bu
 
 share saves the toppings in the link. no account or database.
 
+sauce spreads across the pizza instead of stacking as pieces. spread sauce coats the whole pizza. undo removes the last pour. `sauce-surface.js` paints one shared texture for all slices and stops updating it once the sauce settles.
+
 there is no timer or score. take your time making a pizza, watch it bake and call the courier when you want.
 
 ## run it

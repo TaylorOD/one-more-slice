@@ -1,4 +1,5 @@
 import { chromium, expect } from '@playwright/test';
+import { checkSauce } from './browser-sauce-check.js';
 import { mkdir } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 await mkdir('screenshots', { recursive: true });
@@ -193,13 +194,13 @@ try {
     await ingredientsPage.locator(`[data-topping="${type}"]`).click();
     await ingredientsPage.locator('#sprinkle').click();
   }
-  assert.equal(await ingredientsPage.locator('body').getAttribute('data-toppings'), '20');
+  assert.equal(await ingredientsPage.locator('body').getAttribute('data-toppings'), '16');
   await ingredientsPage.locator('#share').click();
   const ingredientsLink = await ingredientsPage.locator('#share-url').inputValue();
   await ingredientsPage.keyboard.press('Escape');
   await ingredientsPage.goto(ingredientsLink);
   await ingredientsPage.reload();
-  assert.equal(await ingredientsPage.locator('body').getAttribute('data-toppings'), '20');
+  assert.equal(await ingredientsPage.locator('body').getAttribute('data-toppings'), '16');
   await ingredientsPage.screenshot({ path: 'screenshots/new-toppings.png', fullPage: true });
   await ingredientsPage.setViewportSize({ width: 390, height: 844 });
   await ingredientsPage.screenshot({ path: 'screenshots/new-toppings-mobile.png', fullPage: true });
@@ -275,6 +276,7 @@ try {
   );
   assert.equal(await recipePage.locator('body').getAttribute('data-toppings'), '1');
   await recipePage.close();
+  await checkSauce(await checkedPage({ reducedMotion: 'reduce' }), baseUrl);
   assert.deepEqual(errors, [], 'all browser pages must be free of runtime errors');
 } finally {
   await browser.close();

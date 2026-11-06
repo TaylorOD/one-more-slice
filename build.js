@@ -13,6 +13,7 @@ for (const file of [
   'city.js',
   'geometry.js',
   'kitchen.js',
+  'sauce-surface.js',
   'slice-shape.js',
   'kitchen-room.js',
   'ingredient-station.js',
