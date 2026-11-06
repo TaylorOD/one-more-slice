@@ -33,7 +33,7 @@ export function createScene(host) {
   sun.shadow.normalBias = 0.025;
   scene.add(sun);
   const fireLight = new THREE.PointLight('#ff8c31', 13, 7, 2);
-  fireLight.position.set(0, 1, -3.2);
+  fireLight.position.set(0, 0.3, -3);
   scene.add(fireLight);
 
   let deliveringNow = false;

@@ -5,7 +5,7 @@
   "scripts": {
     "build": "node build.js",
     "start": "node server.js",
-    "test": "node --test recipe.test.js",
+    "test": "node --test recipe.test.js oven-motion.test.js",
     "test:browser": "node run-browser-tests.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

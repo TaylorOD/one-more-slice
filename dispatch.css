@@ -92,6 +92,7 @@ h2 {
   background: #080e16e6;
   padding: 7px 9px;
   width: fit-content;
+  gap: 16px;
 }
 .drag-hint {
   color: var(--red);

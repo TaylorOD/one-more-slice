@@ -1,6 +1,8 @@
 import * as THREE from './vendor/three.module.js';
 import { createGeometry } from './geometry.js';
 import { createKitchenRoom } from './kitchen-room.js';
+import { createPizzaOven } from './pizza-oven.js';
+import { ovenLayout } from './oven-motion.js';
 export function createKitchen(scene) {
   const root = new THREE.Group();
   scene.add(root);
@@ -27,13 +29,8 @@ export function createKitchen(scene) {
     sausage: material('#815335'),
     chicken: material('#e4be83'),
     brick: material('#a85e3d'),
-    grout: material('#cfb997'),
-    oven: material('#17222d'),
-    black: material('#201f19'),
-    coal: material('#382a21'),
     char: material('#96603a'),
     cream: material('#e9d8b4'),
-    metal: material('#79796b', { metalness: 0.3 }),
     towel: material('#7d3730')
   };
   const rimLight = new THREE.PointLight('#569cd6', 35, 16, 2);
@@ -41,68 +38,7 @@ export function createKitchen(scene) {
   scene.add(rimLight);
   rimLight.visible = false;
 
-  // The brick oven is made from individual blocks around an arched opening.
-  const oven = new THREE.Group();
-  oven.position.set(0, 0, -4.5);
-  root.add(oven);
-  box(5, 0.3, 2.65, mats.grout, oven, 0, -0.1, 0);
-  box(4.1, 2, 1.7, mats.brick, oven, 0, 0.85, -0.45);
-  const arch = new THREE.Shape();
-  arch.moveTo(-1.2, 0);
-  arch.lineTo(1.2, 0);
-  arch.lineTo(1.2, 0.65);
-  arch.absarc(0, 0.65, 1.2, 0, Math.PI, false);
-  arch.lineTo(-1.2, 0);
-  const dark = mesh(new THREE.ShapeGeometry(arch), mats.black, oven);
-  dark.position.set(0, 0.03, 0.46);
-  for (let i = 0; i < 11; i++) {
-    const a = (i / 10) * Math.PI;
-    const b = box(
-      0.45,
-      0.45,
-      0.35,
-      i % 2 ? mats.brick : mats.grout,
-      oven,
-      Math.cos(a) * 1.47,
-      0.68 + Math.sin(a) * 1.47,
-      0.62
-    );
-    b.rotation.z = a;
-  }
-  for (const x of [-1.47, 1.47])
-    for (let j = 0; j < 2; j++) box(0.43, 0.32, 0.36, mats.brick, oven, x, 0.17 + j * 0.34, 0.62);
-  box(4.55, 0.24, 2.3, mats.grout, oven, 0, 2.2, -0.35);
-  box(0.85, 0.85, 0.8, mats.brick, oven, 1.05, 2.7, -0.65);
-  box(1, 0.15, 1, mats.oven, oven, 1.05, 3.16, -0.65);
-  const signCanvas = document.createElement('canvas');
-  signCanvas.width = 768;
-  signCanvas.height = 128;
-  const signContext = signCanvas.getContext('2d');
-  signContext.fillStyle = '#493021';
-  signContext.fillRect(0, 0, 768, 128);
-  signContext.fillStyle = '#e8b96c';
-  signContext.font = 'bold 66px monospace';
-  signContext.textAlign = 'center';
-  signContext.fillText('C0saNostra Pizza', 384, 85);
-  const signTexture = new THREE.CanvasTexture(signCanvas);
-  signTexture.colorSpace = THREE.SRGBColorSpace;
-  const shopSign = mesh(
-    new THREE.PlaneGeometry(4.7, 0.78),
-    new THREE.MeshBasicMaterial({ map: signTexture }),
-    oven
-  );
-  shopSign.position.set(0, 2.85, 0.85);
-  for (let i = 0; i < 8; i++) ball(-0.85 + i * 0.24, 0.12, 0.51, 0.13, 0.08, 0.12, mats.coal, oven);
-  const flames = [];
-  for (let i = 0; i < 7; i++) {
-    const m = mesh(
-      new THREE.ConeGeometry(0.12, 0.62, 7),
-      material('#ffb84a', { emissive: '#ff7221', emissiveIntensity: 2 }),
-      oven
-    );
-    m.position.set(-0.8 + i * 0.27, 0.38, 0.52);
-    flames.push(m);
-  }
+  const { flames } = createPizzaOven(root);
   // Flour bowl, basil pot and a folded tea towel.
   const bowl = mesh(new THREE.CylinderGeometry(0.55, 0.38, 0.36, 32), mats.cream);
   bowl.position.set(-3.6, -0.03, -1.65);
@@ -133,7 +69,11 @@ export function createKitchen(scene) {
 
   const carriage = new THREE.Group();
   root.add(carriage);
-  const peel = mesh(new THREE.CylinderGeometry(2.65, 2.65, 0.16, 80), mats.wood, carriage);
+  const peel = mesh(
+    new THREE.CylinderGeometry(ovenLayout.peelRadius, ovenLayout.peelRadius, 0.16, 80),
+    mats.wood,
+    carriage
+  );
   peel.position.y = -0.1;
   box(0.48, 0.16, 2.1, mats.edge, carriage, 0, -0.1, 3.1);
   for (let i = 0; i < 9; i++) {
