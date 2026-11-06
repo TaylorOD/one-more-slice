@@ -1,4 +1,4 @@
-import { chromium } from '@playwright/test';
+import { chromium, expect } from '@playwright/test';
 import { mkdir } from 'node:fs/promises';
 import assert from 'node:assert/strict';
 await mkdir('screenshots', { recursive: true });
@@ -37,8 +37,8 @@ try {
   assert.equal(await page.locator('body').getAttribute('data-toppings'), '22');
   await page.locator('#primary').click();
   await page.waitForTimeout(8500);
-  assert.equal(await page.locator('body').getAttribute('data-mode'), 'baked');
-  assert.equal(await page.locator('#clock-label').textContent(), 'ready for pickup');
+  await expect(page.locator('body')).toHaveAttribute('data-mode', 'baked');
+  await expect(page.locator('#clock-label')).toHaveText('ready for pickup');
   const stoppedClock = await page.locator('#pickup-clock').textContent();
   await page.locator('#primary').click();
   await page.waitForTimeout(500);
