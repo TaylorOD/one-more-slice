@@ -10,7 +10,7 @@ reduced motion shows a still handoff instead of the moving chase.
 
 black background, monospace and the same syntax colors as my website. inside the shop is an italian kitchen retrofitted with neon lighting, dark counters and a wall display. the pizza floats between stocked ingredient counters, with a brick oven behind it. the courier heads out into the city at night.
 
-14 toppings, including bacon, red onion, jalapeño and anchovies. the trays use the same meshes as the pizza. pick a topping and tap the cheese. drag sideways to turn it, or use the arrow buttons. add a handful if you want less precision. the house special makes one for you.
+14 toppings, including bacon, red onion, jalapeño and anchovies. the trays use the same meshes as the pizza. pick a topping and tap the cheese. drag sideways to turn it, or use the arrow buttons. add a handful if you want less precision. the house special makes one for you. solid toppings land with a small rebound and squash, then settle. sauce still spreads. reduced motion and old recipe links place toppings directly.
 
 old recipe links still open, but there is no sharing button.
 
@@ -69,6 +69,7 @@ npm run test:browser
 | `kitchen-room.js`   | kitchen walls, counters, shelves and room lighting             |
 | `courier.js`        | street, courier, traffic and pickup animation                  |
 | `courier-motion.js` | pickup position and courier path shared with clearance tests   |
+| `topping-motion.js` | elapsed time poses for the drop, rebound and settling          |
 | `order.js`          | order state, transitions, controls and frame loop              |
 | `orders.js`         | callers, scoring and round timing without browser dependencies |
 | `order-ticket.js`   | caller transcript, ticket counts, clock and receipt            |

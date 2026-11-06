@@ -23,6 +23,7 @@ for (const file of [
   'pizza-oven.js',
   'oven-motion.js',
   'order.js',
+  'topping-motion.js',
   'order-view.js',
   'pizza-input.js'
 ]) {
