@@ -1,7 +1,7 @@
 import * as THREE from './vendor/three.module.js';
+import { courierPose, pickup } from './courier-motion.js';
 
 const clamp = THREE.MathUtils.clamp;
-const mix = THREE.MathUtils.lerp;
 const smooth = (t) => {
   t = clamp(t, 0, 1);
   return t * t * (3 - 2 * t);
@@ -150,7 +150,11 @@ export function createCourier(scene) {
   const asphalt = material('#18212a', { roughness: 0.38 });
   box(root, 0, -0.23, -1.3, 42, 0.12, 7.7, asphalt);
   box(root, 0, -0.19, 3.4, 28, 0.2, 1.8, material('#34414b'));
-  box(root, 0, -0.06, 2.5, 28, 0.3, 0.18, alloy);
+  // The side walkway meets a dropped curb, so the board never passes through a curb.
+  box(root, -4, -0.19, 6.65, 4, 0.2, 4.7, material('#34414b'));
+  box(root, -9.3, -0.06, 2.5, 9.4, 0.3, 0.18, alloy);
+  box(root, 5.95, -0.06, 2.5, 16.1, 0.3, 0.18, alloy);
+  box(root, -3.35, -0.15, 2.5, 2.5, 0.04, 0.5, asphalt).rotation.x = -Math.atan(0.08 / 0.5);
   for (let x = -20; x < 22; x += 3) box(root, x, -0.16, -2.1, 1.4, 0.014, 0.07, trim);
   for (let x = -13; x < 14; x += 2) box(root, x, -0.075, 3.4, 0.015, 0.012, 1.7, steel);
   for (let x = -12; x < 14; x += 7) {
@@ -191,29 +195,29 @@ export function createCourier(scene) {
   }
   for (const x of [-10.6, -8.8, -7]) box(root, x, 4.6, 2.96, 0.9, 1.35, 0.04, glass);
   // The visible side entrance is taller than the courier.
-  box(root, -5.96, 1.08, 4.4, 0.04, 2.3, 1.1, dark);
-  box(root, -5.92, 1.35, 4.4, 0.04, 1.25, 0.85, glass);
-  box(root, -5.88, 1.05, 4.83, 0.08, 0.09, 0.2, trim);
-  for (const z of [6.2, 8]) box(root, -5.96, 1.35, z, 0.04, 1.9, 1.2, glass);
+  box(root, -5.96, 1.08, 7.5, 0.04, 2.3, 1.1, dark);
+  box(root, -5.92, 1.35, 7.5, 0.04, 1.25, 0.85, glass);
+  box(root, -5.88, 1.05, 7.93, 0.08, 0.09, 0.2, trim);
+  for (const z of [6.2]) box(root, -5.96, 1.35, z, 0.04, 1.9, 1.2, glass);
   for (const z of [4.4, 6.2, 8]) box(root, -5.96, 4.6, z, 0.04, 1.35, 0.9, glass);
   box(root, -5.5, 2.65, 4.5, 1.1, 0.12, 2, steel);
   const shopName = label(root, 'C0saNostra Pizza', 4.5, 0.7, -5.86, 3.5, 6, '#e4b76b');
   shopName.rotation.y = Math.PI / 2;
   label(root, 'C0saNostra Pizza', 5, 0.7, -9, 3.5, 2.85, '#e4b76b');
-  // Pickup locker and street furniture.
-  box(root, -4, 0.48, 2.9, 2.1, 1.25, 1.2, steel);
-  box(root, -4, 1.15, 2.9, 2.25, 0.12, 1.3, alloy);
-  box(root, -4, 0.55, 3.51, 1.7, 0.73, 0.025, dark);
-  label(root, 'PICKUP / 07', 1.6, 0.35, -4, 0.67, 3.53);
-  box(root, -3.3, 0.32, 3.55, 0.12, 0.12, 0.03, cyan);
-  box(root, -5.25, 1.7, 2.9, 0.09, 3.8, 0.09, steel);
-  label(root, 'C0saNostra', 2.7, 0.65, -4, 3.1, 3, '#e4b76b');
+  // The pickup hatch belongs to the shop, leaving the street and rider path clear.
+  box(root, -5.94, 1.65, pickup.z, 0.1, 1.15, 1.9, dark);
+  box(root, -5.35, 1.15, pickup.z, 1.3, 0.12, 1.9, alloy);
+  const pickupSign = label(root, 'PICKUP', 1.6, 0.3, -5.86, 2.14, pickup.z);
+  pickupSign.rotation.y = Math.PI / 2;
+  box(root, -5.83, 1.45, pickup.z + 0.86, 0.04, 0.15, 0.08, cyan);
   label(root, 'NO PARKING', 1.2, 0.28, 5.3, 1.75, 2.8, '#c77569');
   box(root, 5.3, 0.7, 2.75, 0.07, 2, 0.07, steel);
 
-  const carWheels = [];
+  const wheelSets = new Map();
   function makeCar(color, number) {
     const car = new THREE.Group();
+    const wheels = [];
+    wheelSets.set(car, wheels);
     root.add(car);
     const paint = material(color, { metalness: 0.65, roughness: 0.35 });
     wedge(
@@ -271,7 +275,7 @@ export function createCourier(scene) {
         box(car, -1.4 + i * 0.13, 0.52, z * 1.26, 0.07, 0.04, 0.025, paint);
     }
     for (const x of [-1.3, 1.35])
-      for (const z of [-0.94, 0.94]) carWheels.push(wheel(car, x, 0.24, z, 0.39, 0.23));
+      for (const z of [-0.94, 0.94]) wheels.push(wheel(car, x, 0.24, z, 0.39, 0.23));
     box(car, 2.12, 0.45, 0, 0.08, 0.12, 1.85, steel);
     box(car, -2.12, 0.49, 0, 0.09, 0.15, 1.85, steel);
     for (const z of [-0.62, 0.62]) {
@@ -416,26 +420,17 @@ export function createCourier(scene) {
 
   function frame(seconds, reduced = false) {
     // One deterministic timeline keeps reset, background tabs and reduced motion reliable.
-    const t = reduced ? 4.65 : Math.min(seconds, 9);
-    const collect = clamp(t / 1.65, 0, 1),
-      street = smooth((t - 1.65) / 2.15),
-      fire = clamp((t - 3.75) / 0.38, 0, 1);
-    const pull = smooth((t - 4.13) / 0.5),
-      departure = Math.max(0, t - 4.65);
-    const carX = -11.5 + 3.2 * t + departure * departure * 0.9;
+    const pose = courierPose(seconds, reduced);
+    const { t, street, fire, pull, carX } = pose;
     targetCar.position.set(carX, 0, -0.7);
     for (const item of traffic) {
       item.car.position.set(((item.offset + item.speed * t + 72) % 48) - 24, 0, item.lane);
+      for (const wheel of wheelSets.get(item.car))
+        wheel.rotation.z = (-Math.abs(item.speed) * t) / 0.39;
     }
-    const preX = mix(-8.3, -4.5, collect) + street * 1.4;
-    const towedX = carX - 4.6;
-    const pickupZ = mix(2.25, 4, smooth((collect - 0.65) / 0.35));
-    rider.position.set(
-      mix(preX, towedX, pull),
-      mix(0.04, -0.04, street),
-      mix(pickupZ, 0.65, street)
-    );
-    rider.rotation.y = Math.sin(street * Math.PI) * 0.5;
+    for (const wheel of wheelSets.get(targetCar)) wheel.rotation.z = -pose.carDistance / 0.39;
+    rider.position.set(pose.x, pose.y, pose.z);
+    rider.rotation.y = pose.yaw;
     board.rotation.x = Math.sin(street * Math.PI) * 0.12;
     board.rotation.z = (!reduced ? Math.sin(t * 17) * 0.012 : 0) - Math.sin(pull * Math.PI) * 0.035;
     const crouch = 0.16 * street + 0.12 * Math.sin(pull * Math.PI);
@@ -453,12 +448,7 @@ export function createCourier(scene) {
     legs[3](frontKnee, [0.45, 0.42, 0]);
     knees[0].position.set(...backKnee);
     knees[1].position.set(...frontKnee);
-    const reach = Math.sin(clamp((t - 1.1) / 1.1, 0, 1) * Math.PI);
-    const handZ =
-      t < 1.65
-        ? mix(0.4, -0.95, smooth((t - 1.1) / 0.55))
-        : mix(-0.95, 0.55, smooth((t - 1.65) / 0.6));
-    const boxHand = [0.4 + reach * 0.15, 1.16 - crouch * 0.3, handZ];
+    const boxHand = [0.4, 1.16 - crouch * 0.3, pose.handZ];
     const aimHand = [0.62 + fire * 0.12, 1.05 - crouch * 0.5, -0.25];
     const boxElbow = [0.02, 1.02 - crouch, 0.4],
       aimElbow = [0.34, 1.15 - crouch, -0.32];
@@ -470,15 +460,15 @@ export function createCourier(scene) {
     elbows[1].position.set(...aimElbow);
     launcher.position.set(...aimHand);
     root.updateMatrixWorld(true);
-    if (t < 1.65) parcel.position.set(-4, 1.28, 3.15);
+    if (t < 1.65) parcel.position.set(pickup.x, pickup.y, pickup.z);
     else {
       v1.set(boxHand[0] - 0.05, boxHand[1] + 0.08, boxHand[2] + 0.1);
       body.localToWorld(v1);
       parcel.position.copy(v1);
     }
-    parcel.rotation.z = t < 1.65 ? 0 : -0.05 - pull * 0.04;
-    launcher.getWorldPosition(hand);
-    hand.x += 0.2;
+    parcel.rotation.z = -0.05 * smooth((t - 1.65) / 0.6) - pull * 0.04;
+    parcel.rotation.y = pose.yaw;
+    launcher.localToWorld(hand.set(0.2, 0, 0));
     rear.set(carX - 2.17, 0.54, -0.7);
     towEnd.copy(hand).lerp(rear, fire);
     cable.visible = t >= 3.75;
@@ -495,8 +485,8 @@ export function createCourier(scene) {
     cableGeometry.computeBoundingSphere();
     sparks.visible = !reduced && t >= 4.1 && t < 4.3;
     sparks.position.copy(rear);
-    for (const wheel of carWheels) wheel.rotation.z = -t * 8;
-    for (const wheel of boardWheels) wheel.rotation.z = -t * 15;
+    for (const wheel of boardWheels)
+      wheel.rotation.z = -Math.hypot(pose.x + 3.9, pose.z - 7) / 0.23;
     const phase = t < 1.65 ? 'collect' : t < 3.75 ? 'approach' : t < 4.13 ? 'hook' : 'ride';
     return { done: seconds >= 9, phase };
   }

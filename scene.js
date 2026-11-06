@@ -39,10 +39,11 @@ export function createScene(host) {
   let deliveringNow = false;
   function frameCamera(delivering) {
     deliveringNow = delivering;
+    fireLight.visible = !delivering;
     const mobile = host.clientWidth < 500;
     if (delivering) {
-      camera.position.set(...(mobile ? [0, 6, 14] : [3, 9, 21]));
-      camera.lookAt(...(mobile ? [-2, 1.5, 1] : [-3, 2, 1]));
+      camera.position.set(...(mobile ? [1, 7, 17] : [3, 9, 21]));
+      camera.lookAt(...(mobile ? [-3, 1.5, 3] : [-3, 2, 1]));
     } else {
       camera.position.set(6.8, 9.7, 11.7);
       camera.lookAt(0, 0.1, -0.5);
