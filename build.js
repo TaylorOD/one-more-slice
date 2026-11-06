@@ -12,6 +12,8 @@ for (const file of [
   'geometry.js',
   'kitchen.js',
   'kitchen-room.js',
+  'pizza-oven.js',
+  'oven-motion.js',
   'order.js',
   'order-view.js',
   'pizza-input.js',

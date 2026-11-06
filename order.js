@@ -1,3 +1,4 @@
+import { bakingPose } from './oven-motion.js';
 import { createCourier } from './courier.js';
 import { maxToppings, decodeRecipe, randomSpot } from './recipe.js';
 import { updateOrderView, updateCourierPhase, say } from './order-view.js';
@@ -235,11 +236,9 @@ export function startOrder({
     if (mode === 'baking') {
       const t = Math.min((now - bakingStarted) / 1000 / bakeSeconds, 1);
       $('progress').value = t;
-      const travel = t < 0.16 ? t / 0.16 : t > 0.82 ? (1 - t) / 0.18 : 1;
-      const ease = travel * travel * (3 - 2 * travel);
-      carriage.position.z = -2.8 * ease;
-      carriage.position.y = 0.02 * ease;
-      carriage.scale.setScalar(1 - 0.28 * ease);
+      const pose = bakingPose(t);
+      carriage.position.set(0, pose.y, pose.z);
+      carriage.scale.setScalar(pose.scale);
       setCooked(Math.min(t * 1.3, 1));
       fireLight.intensity = 18;
       if (t === 1) {

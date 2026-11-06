@@ -201,6 +201,29 @@ try {
   );
   await ingredientsPage.close();
 
+  for (const [name, width, height] of [
+    ['desktop', 1440, 1300],
+    ['mobile', 390, 1700]
+  ]) {
+    const ovenPage = await checkedPage({ viewport: { width, height }, reducedMotion: 'reduce' });
+    await ovenPage.clock.install({ time: new Date('2026-01-01T00:00:00Z') });
+    await ovenPage.clock.pauseAt(new Date('2026-01-01T00:00:01Z'));
+    await ovenPage.goto(baseUrl);
+    await ovenPage.locator('#special').click();
+    await ovenPage.locator('#primary').click();
+    await ovenPage.clock.fastForward(750);
+    await ovenPage.screenshot({ path: `screenshots/oven-${name}-lift.png` });
+    await ovenPage.clock.fastForward(3250);
+    assert.equal(await ovenPage.locator('body').getAttribute('data-mode'), 'baking');
+    await ovenPage.screenshot({ path: `screenshots/oven-${name}-baking.png` });
+    await ovenPage.clock.fastForward(2700);
+    await ovenPage.screenshot({ path: `screenshots/oven-${name}-out.png` });
+    await ovenPage.clock.fastForward(1400);
+    assert.equal(await ovenPage.locator('body').getAttribute('data-mode'), 'baked');
+    await ovenPage.screenshot({ path: `screenshots/oven-${name}-done.png` });
+    await ovenPage.close();
+  }
+
   // A recipe opened mid order must render exactly like a fresh recipe.
   // Comparing the canvas catches stale rotation, slice offsets and oven scale.
   const recipePage = await checkedPage({
