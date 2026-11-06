@@ -6,7 +6,16 @@ import { bindSharing } from './sharing.js';
 const $ = (id) => document.getElementById(id);
 // Order state belongs here. The view renders it, the kitchen owns its meshes,
 // and the courier owns a deterministic delivery timeline.
-export function startOrder({ host, scene, camera, renderer, fireLight, frameCamera, kitchen }) {
+export function startOrder({
+  host,
+  scene,
+  camera,
+  renderer,
+  fireLight,
+  frameCamera,
+  kitchen,
+  city
+}) {
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const { carriage, pizza, slices, flames, makeTopping, sliceIndex, setCooked } = kitchen;
   const courier = createCourier(scene);
@@ -17,6 +26,7 @@ export function startOrder({ host, scene, camera, renderer, fireLight, frameCame
     courierPhase = '';
     delete document.body.dataset.courierPhase;
     kitchen.setVisible(true);
+    city.setVisible(false);
     frameCamera(false);
   }
   let toppings = [],
@@ -38,6 +48,7 @@ export function startOrder({ host, scene, camera, renderer, fireLight, frameCame
     courierPhase = '';
     frameCamera(true);
     kitchen.setVisible(false);
+    city.setVisible(true);
     courier.start();
     update();
     say('Courier at the pickup bay.');

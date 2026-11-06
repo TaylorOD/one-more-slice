@@ -5,6 +5,6 @@ import { startOrder } from './order.js';
 
 const host = document.getElementById('scene');
 const stage = createScene(host);
-createCity(stage.scene);
+const city = createCity(stage.scene);
 const kitchen = createKitchen(stage.scene);
-startOrder({ host, ...stage, kitchen });
+startOrder({ host, ...stage, kitchen, city });

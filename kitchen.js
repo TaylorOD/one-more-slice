@@ -1,14 +1,16 @@
 import * as THREE from './vendor/three.module.js';
 import { createGeometry } from './geometry.js';
+import { createKitchenRoom } from './kitchen-room.js';
 export function createKitchen(scene) {
   const root = new THREE.Group();
   scene.add(root);
+  createKitchenRoom(root);
   const { mesh, box, ball } = createGeometry(root);
   const material = (color, extra = {}) =>
     new THREE.MeshStandardMaterial({ color, roughness: 0.8, ...extra });
   const mats = {
-    wood: material('#364753', { metalness: 0.65, roughness: 0.4 }),
-    edge: material('#192833'),
+    wood: material('#b88e59'),
+    edge: material('#79532f'),
     crust: material('#e9b96b'),
     dough: material('#edc986'),
     cheese: material('#f4d575', { roughness: 0.52 }),
@@ -24,23 +26,20 @@ export function createKitchen(scene) {
     mozzarella: material('#fff0c7'),
     sausage: material('#815335'),
     chicken: material('#e4be83'),
-    brick: material('#273747', { metalness: 0.35 }),
-    grout: material('#485d70', { metalness: 0.5 }),
+    brick: material('#a85e3d'),
+    grout: material('#cfb997'),
     oven: material('#17222d'),
     black: material('#201f19'),
     coal: material('#382a21'),
     char: material('#96603a'),
-    cream: material('#8999a5'),
+    cream: material('#e9d8b4'),
     metal: material('#79796b', { metalness: 0.3 }),
-    towel: material('#243d51')
+    towel: material('#7d3730')
   };
-  const neon = material('#569cd6', { emissive: '#569cd6', emissiveIntensity: 2 });
-  box(4.4, 0.045, 0.045, neon, root, 0, 2.37, -4.0);
-  box(0.045, 0.035, 8, neon, root, -5, -0.28, -1.8);
-  box(0.045, 0.035, 8, neon, root, 5, -0.28, -1.8);
   const rimLight = new THREE.PointLight('#569cd6', 35, 16, 2);
   rimLight.position.set(-3, 3, -5);
   scene.add(rimLight);
+  rimLight.visible = false;
 
   // The brick oven is made from individual blocks around an arched opening.
   const oven = new THREE.Group();
@@ -79,7 +78,7 @@ export function createKitchen(scene) {
   signCanvas.width = 768;
   signCanvas.height = 128;
   const signContext = signCanvas.getContext('2d');
-  signContext.fillStyle = '#080d13';
+  signContext.fillStyle = '#493021';
   signContext.fillRect(0, 0, 768, 128);
   signContext.fillStyle = '#e8b96c';
   signContext.font = 'bold 66px monospace';
@@ -310,6 +309,7 @@ export function createKitchen(scene) {
     setCooked,
     setVisible(visible) {
       root.visible = visible;
+      rimLight.visible = !visible;
     }
   };
 }

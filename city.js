@@ -2,7 +2,10 @@ import * as THREE from './vendor/three.module.js';
 import { createGeometry } from './geometry.js';
 // Distances use roughly one metre per unit, matching the courier and cars.
 export function createCity(scene) {
-  const { mesh, box } = createGeometry(scene);
+  const root = new THREE.Group();
+  root.visible = false;
+  scene.add(root);
+  const { mesh, box } = createGeometry(root);
   const material = (color) => new THREE.MeshStandardMaterial({ color, roughness: 0.8 });
   const doorMaterial = material('#201f19');
   // A subtle tiled countertop, drawn here so the kitchen doesn't need image downloads.
@@ -33,7 +36,7 @@ export function createCity(scene) {
 
   // Full sized city blocks behind the kitchen and delivery street.
   const city = new THREE.Group();
-  scene.add(city);
+  root.add(city);
   const buildingMat = material('#101b28');
   const windowMat = new THREE.MeshStandardMaterial({
     color: '#569cd6',
@@ -53,4 +56,9 @@ export function createCity(scene) {
       }
     box(1.2, 2.4, 0.025, doorMaterial, city, x, 0.9, z + 3.02);
   }
+  return {
+    setVisible(visible) {
+      root.visible = visible;
+    }
+  };
 }
