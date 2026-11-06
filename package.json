@@ -6,7 +6,7 @@
     "build": "node build.js",
     "start": "node server.js",
     "test": "node --test recipe.test.js",
-    "test:browser": "node browser-check.js"
+    "test:browser": "node run-browser-tests.js"
   },
   "dependencies": {
     "@playwright/test": "1.65.0",

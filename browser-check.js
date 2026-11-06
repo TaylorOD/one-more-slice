@@ -3,10 +3,12 @@ import {mkdir} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 await mkdir('screenshots', {recursive:true});
 const browser = await chromium.launch({headless:true, args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+try {
 const page = await browser.newPage({viewport:{width:1440,height:1050}});
 const errors = [];
+const baseUrl = process.env.TEST_BASE_URL ?? 'http://127.0.0.1:5177';
 page.on('pageerror', e => errors.push(e.message));
-await page.goto('http://127.0.0.1:5177');
+await page.goto(baseUrl);
 await page.waitForSelector('canvas');
 assert.equal(await page.locator('#pickup-clock').textContent(), '01:30');
 const canvas = await page.locator('canvas').boundingBox();
@@ -69,7 +71,7 @@ assert.equal(await page.locator('body').getAttribute('data-toppings'), '0');
 assert.deepEqual(errors, []);
 const timerPage = await browser.newPage();
 await timerPage.clock.install();
-await timerPage.goto('http://127.0.0.1:5177');
+await timerPage.goto(baseUrl);
 await timerPage.locator('#special').click();
 await timerPage.clock.fastForward(91000);
 assert.equal(await timerPage.locator('#pickup-clock').textContent(), '00:00');
@@ -80,7 +82,7 @@ assert.equal(await timerPage.locator('body').getAttribute('data-mode'), 'baked')
 await timerPage.close();
 const reduced=await browser.newPage({reducedMotion:'reduce',viewport:{width:390,height:844}});
 await reduced.clock.install();
-await reduced.goto('http://127.0.0.1:5177');
+await reduced.goto(baseUrl);
 await reduced.locator('#primary').click();
 await reduced.clock.fastForward(9000);
 await reduced.locator('#dispatch').click();
@@ -104,7 +106,7 @@ assert.equal(await reduced.locator('body').getAttribute('data-mode'), 'prep');
 await reduced.close();
 const phases=await browser.newPage();
 await phases.clock.install();
-await phases.goto('http://127.0.0.1:5177');
+await phases.goto(baseUrl);
 await phases.locator('#primary').click();
 await phases.clock.fastForward(9000);
 await phases.locator('#dispatch').click();
@@ -123,6 +125,8 @@ await phases.locator('#dispatch').click();
 await phases.clock.fastForward(500);
 assert.equal(await phases.locator('body').getAttribute('data-courier-phase'),'collect');
 await phases.close();
-await browser.close();
+} finally {
+  await browser.close();
+}
 console.log('desktop, mobile, share, bake, slice, undo, reset, pickup clock, courier, interrupted pickup and reduced motion passed');
 
