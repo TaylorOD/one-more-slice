@@ -5,20 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#000000">
   <meta name="description" content="An overnight pizza dispatch terminal. Build an order, fire the oven and inspect a slice.">
-  <title>One More Slice | pizza dispatch</title>
+  <title>C0saNostra Pizza | pizza dispatch</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🍕%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="dispatch.css">
 </head>
 <body>
   <header class="header">
-    <a class="wordmark" href="./" aria-label="One More Slice home"><span class="brand-dot">&gt;_</span> one_more_slice<span class="period">()</span></a>
-    <span class="header-note">pizza dispatch <span>night shift / terminal 01</span></span>
+    <a class="wordmark" href="./" aria-label="C0saNostra Pizza home"><span class="brand-dot">&gt;_</span> C0saNostra Pizza<span class="period">()</span></a>
+    <span class="header-note">franchise dispatch <span>sector 07 / night shift</span></span>
     <a class="home-link" href="https://www.taylordorsett.com/">// back home</a>
   </header>
   <main>
     <section class="intro">
-      <div><p class="eyebrow"><span></span> // independent pizza logistics</p><h1>The city is asleep.<br><em>Your order is not.</em></h1></div>
+      <div><p class="eyebrow"><span></span> // the family business</p><h1>The city is asleep.<br><em>Your order is not.</em></h1></div>
       <p class="intro-copy"><strong>sector 07 / overnight dispatch</strong><br>Build the order. Fire the oven. Feed the city.</p>
     </section>
     <div class="kitchen">
@@ -50,7 +50,7 @@
         </div>
         <div id="bake-progress" hidden><div class="heat-display">450<span>°</span></div><p>Thermal cycle active.<br>Keep the dispatch lane clear.</p><progress id="progress" value="0" max="1" aria-label="Baking progress"></progress></div>
         <div id="finished" hidden><div class="stamp">ORDER STATUS<br><b>READY FOR<br>PICKUP</b></div><p>Thermal cycle complete.<br>Inspect a slice before it goes.</p></div>
-        <button id="primary" class="primary" disabled><span>fire oven()</span><span>↗</span></button>
+        <button id="dispatch" class="primary" hidden><span>call courier()</span><span>↗</span></button><p id="delivery-status" role="status" hidden></p><button id="primary" class="primary" disabled><span>fire oven()</span><span>↗</span></button>
         <div class="bottom-actions"><button id="reset">reset order</button><button id="share">copy order ↗</button></div>
         <p id="status" role="status" aria-live="polite">Drag to turn. Tap to top.</p>
       </aside>

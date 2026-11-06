@@ -1,4 +1,5 @@
 import * as THREE from './vendor/three.module.js';
+import {createCourier} from './courier.js';
 import {types, maxToppings, toppingRadius, encodeRecipe, decodeRecipe, randomSpot} from './recipe.js';
 
 const $ = id => document.getElementById(id);
@@ -88,6 +89,12 @@ for(let i=0;i<11;i++){const a=i/10*Math.PI;const b=box(.45,.45,.35,i%2?mats.bric
 for(const x of [-1.47,1.47])for(let j=0;j<2;j++)box(.43,.32,.36,mats.brick,oven,x,.17+j*.34,.62);
 box(4.55,.24,2.3,mats.grout,oven,0,2.2,-.35);
 box(.85,.85,.8,mats.brick,oven,1.05,2.7,-.65);box(1,.15,1,mats.oven,oven,1.05,3.16,-.65);
+const signCanvas=document.createElement('canvas');signCanvas.width=768;signCanvas.height=128;
+const signContext=signCanvas.getContext('2d');signContext.fillStyle='#080d13';signContext.fillRect(0,0,768,128);
+signContext.fillStyle='#e8b96c';signContext.font='bold 66px monospace';signContext.textAlign='center';signContext.fillText('C0saNostra Pizza',384,85);
+const signTexture=new THREE.CanvasTexture(signCanvas);signTexture.colorSpace=THREE.SRGBColorSpace;
+const shopSign=mesh(new THREE.PlaneGeometry(4.7,.78),new THREE.MeshBasicMaterial({map:signTexture}),oven);
+shopSign.position.set(0,2.85,.85);
 for(let i=0;i<8;i++)ball(-.85+i*.24,.12,.51,.13,.08,.12,mats.coal,oven);
 const flames=[];
 for(let i=0;i<7;i++){const m=mesh(new THREE.ConeGeometry(.12,.62,7),material('#ffb84a',{emissive:'#ff7221',emissiveIntensity:2}),oven);m.position.set(-.8+i*.27,.38,.52);flames.push(m);}
@@ -143,6 +150,10 @@ function makeTopping(type){
   return group;
 }
 
+const kitchenObjects=scene.children.filter(object=>!object.isLight&&object!==city&&object!==floor);
+const courier=createCourier(scene);
+let courierStarted=0;
+function restoreKitchen(){courier.reset();kitchenObjects.forEach(object=>object.visible=true);}
 let toppings=[], selected='pepperoni', mode='prep', bakingStarted=0, lastTime=0, sliceTarget=0;
 let rotationTarget=0, pointerStart=null;
 const bakeSeconds = 8;
@@ -153,13 +164,19 @@ function updateClock(now){
   $('pickup-clock').textContent=String(Math.floor(remaining/60)).padStart(2,'0')+':'+String(remaining%60).padStart(2,'0');
   $('dispatch-clock').classList.toggle('expired',remaining===0);
   $('clock-label').textContent=pickupFinished!==null?'ready for pickup':remaining===0?'courier waiting':pickupStarted===null?'pickup window':'pickup in';
+  if(mode==='pickup'||mode==='dispatched')$('clock-label').textContent=mode==='pickup'?'courier collecting':'order dispatched';
 }
 const say=text=>$('status').textContent=text;
 function update(){
   document.body.dataset.mode=mode; document.body.dataset.toppings=toppings.length;
   $('topping-count').textContent=`${toppings.length} / ${maxToppings}`;
   $('undo').disabled=!toppings.length||mode!=='prep';
-  $('primary').disabled=mode==='baking';
+  const delivering=mode==='pickup'||mode==='dispatched';
+  $('step-eat').innerHTML=delivering?'<b>03</b> dispatch':'<b>03</b> inspect';
+  $('primary').disabled=mode==='baking'||mode==='pickup';
+  $('dispatch').hidden=!['baked','sliced'].includes(mode);
+  document.querySelector('.turn-controls').hidden=delivering;
+  $('delivery-status').hidden=!delivering;
   $('prep-controls').hidden=mode!=='prep';$('bake-progress').hidden=mode!=='baking';$('finished').hidden=!['baked','sliced'].includes(mode);
   $('primary').innerHTML=mode==='prep'?'<span>fire oven()</span><span>↗</span>':mode==='baking'?'<span>oven.running</span><span>◌</span>':mode==='baked'?'<span>inspect slice()</span><span>↗</span>':'<span>return slice()</span><span>↙</span>';
   $('panel-title').innerHTML=mode==='prep'?'Incoming order.<br>Make it yours.':mode==='baking'?'Thermal cycle<br>in progress.':'Order complete.<br>Ready for pickup.';
@@ -168,7 +185,23 @@ function update(){
   $('oven-label').textContent=mode==='baking'?'BAKING AT 450°':'OVEN READY';
   $('scene-instruction').textContent=mode==='prep'?'pick a topping, then tap the pizza':mode==='baking'?'a little heat goes a long way':mode==='sliced'?'that one’s yours. you earned it.':'golden, bubbly, ready for a slice';
   ['prep','bake','eat'].forEach((s,i)=>$('step-'+s).classList.toggle('active',i===(mode==='prep'?0:mode==='baking'?1:2)));
+  if(delivering){
+    $('panel-title').innerHTML=mode==='pickup'?'Courier incoming.<br>Keep it hot.':'Order dispatched.<br>Catch you next shift.';
+    $('panel-copy').textContent=mode==='pickup'?'One board. One box. A borrowed ride.':'Your pizza is on its way through sector 07.';
+    $('primary').innerHTML=mode==='pickup'?'<span>pickup in progress</span>':'<span>new order()</span><span>↗</span>';
+    $('scene-label').textContent='STREET CAM / 07';
+    $('oven-label').textContent=mode==='pickup'?'COURIER ACTIVE':'DISPATCH COMPLETE';
+    $('scene-instruction').textContent=mode==='pickup'?'collect the box. hook the car. go.':'another order out into the night';
+    $('delivery-status').textContent=mode==='pickup'?'// handoff in progress':'// collected. hooked. dispatched.';
+  }
 }
+function dispatch(){
+  if(!['baked','sliced'].includes(mode))return;
+  mode='pickup';courierStarted=performance.now();sliceTarget=0;
+  kitchenObjects.forEach(object=>object.visible=false);courier.start();update();
+  say('Courier at the pickup bay.');
+}
+$('dispatch').addEventListener('click',dispatch);
 function addTopping(type, x, z, angle=Math.random()*Math.PI*2, animate=true){
   if(mode!=='prep'||toppings.length>=maxToppings)return;
   if(pickupStarted===null)pickupStarted=performance.now();
@@ -178,7 +211,7 @@ function addTopping(type, x, z, angle=Math.random()*Math.PI*2, animate=true){
   const topping={type,x,z,angle,group,y,velocity:0};toppings.push(topping);update();
 }
 function removeAll(){for(const t of toppings){t.group.removeFromParent();}toppings=[];}
-function reset(){removeAll();pickupStarted=null;pickupFinished=null;mode='prep';carriage.position.set(0,0,0);sliceTarget=0;slices[6].position.set(0,0,0);pizza.rotation.y=0;rotationTarget=0;setCooked(0);history.replaceState(null,'',location.pathname+location.search);update();say('Order cleared. Dispatch is standing by.');}
+function reset(){restoreKitchen();removeAll();pickupStarted=null;pickupFinished=null;mode='prep';carriage.position.set(0,0,0);sliceTarget=0;slices[6].position.set(0,0,0);pizza.rotation.y=0;rotationTarget=0;setCooked(0);history.replaceState(null,'',location.pathname+location.search);update();say('Order cleared. Dispatch is standing by.');}
 function setCooked(t){mats.crust.color.set('#e9b96b').lerp(new THREE.Color('#b96d2e'),t);mats.cheese.color.set('#f4d575').lerp(new THREE.Color('#e8b94f'),t);mats.dough.color.set('#edc986').lerp(new THREE.Color('#dca057'),t);cheeseSpots.forEach((spot,i)=>{spot.visible=t>.18+i%8*.065;});}
 function bake(){if(mode!=='prep')return;mode='baking';bakingStarted=performance.now();if(pickupStarted===null)pickupStarted=bakingStarted;$('progress').value=0;update();say('Into the oven. Give it eight seconds.');}
 document.querySelectorAll('[data-topping]').forEach(button=>button.addEventListener('click',()=>{selected=button.dataset.topping;document.querySelectorAll('[data-topping]').forEach(b=>b.setAttribute('aria-pressed',b===button));say(selected==='pineapple'?'A controversial choice. We support you.':`${button.textContent.trim()} it is. Tap the pizza or add a handful.`);}));
@@ -186,7 +219,7 @@ $('sprinkle').addEventListener('click',()=>{if(mode!=='prep')return;const before
 $('undo').addEventListener('click',()=>{if(mode!=='prep')return;const t=toppings.pop();t?.group.removeFromParent();update();say('Nobody saw that.');});
 $('special').addEventListener('click',()=>{if(mode!=='prep')return;removeAll();for(let i=0;i<23;i++){const p=randomSpot();addTopping(i<12?'pepperoni':i<18?'mushroom':'basil',p.x,p.z,p.angle);}say('Pepperoni, mushrooms and basil. A solid life choice.');});
 $('reset').addEventListener('click',()=>{if(toppings.length||mode!=='prep'){if(!confirm('Start over with fresh dough? Your current pizza will be cleared.'))return;}reset();});
-$('primary').addEventListener('click',()=>{if(mode==='prep')bake();else if(mode==='baked'){mode='sliced';sliceTarget=1;update();say('One slice. For quality control.');}else if(mode==='sliced'){mode='baked';sliceTarget=0;update();say('Back with the others. For now.');}});
+$('primary').addEventListener('click',()=>{if(mode==='dispatched'){reset();return;}if(mode==='prep')bake();else if(mode==='baked'){mode='sliced';sliceTarget=1;update();say('One slice. For quality control.');}else if(mode==='sliced'){mode='baked';sliceTarget=0;update();say('Back with the others. For now.');}});
 $('turn-left').addEventListener('click',()=>rotationTarget-=Math.PI/6);$('turn-right').addEventListener('click',()=>rotationTarget+=Math.PI/6);
 
 const raycaster=new THREE.Raycaster();const groundPlane=new THREE.Plane(new THREE.Vector3(0,1,0),-.28);
@@ -205,13 +238,16 @@ host.addEventListener('pointerup',event=>{
 });
 $('share').addEventListener('click',()=>{const url=new URL(location.href);url.hash='recipe='+encodeRecipe(toppings);$('share-url').value=url.href;$('copy-status').textContent='';$('share-dialog').showModal();$('share-url').select();});
 $('copy-link').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('share-url').value);$('copy-status').textContent='Copied. Send it to someone hungry.';}catch{$('share-url').focus();$('share-url').select();$('copy-status').textContent='Select the link above and copy it.';}});
-function openRecipe(){if(!location.hash)return;const recipe=decodeRecipe(location.hash);if(!recipe){say('That recipe link looks broken. Fresh dough is ready instead.');return;}removeAll();pickupStarted=null;pickupFinished=null;mode='prep';carriage.position.set(0,0,0);sliceTarget=0;slices[6].position.set(0,0,0);setCooked(0);for(const [type,x,z,angle]of recipe.t)addTopping(type,x,z,angle,false);update();say('Order received. Fresh pickup window. Ready to bake.');}
+function openRecipe(){if(!location.hash)return;const recipe=decodeRecipe(location.hash);if(!recipe){say('That recipe link looks broken. Fresh dough is ready instead.');return;}restoreKitchen();removeAll();pickupStarted=null;pickupFinished=null;mode='prep';carriage.position.set(0,0,0);sliceTarget=0;slices[6].position.set(0,0,0);setCooked(0);for(const [type,x,z,angle]of recipe.t)addTopping(type,x,z,angle,false);update();say('Order received. Fresh pickup window. Ready to bake.');}
 window.addEventListener('hashchange',openRecipe);
 const observer=new ResizeObserver(()=>{const width=host.clientWidth,height=host.clientHeight;renderer.setSize(width,height);camera.aspect=width/height;camera.fov=width<500?43:34;camera.updateProjectionMatrix();});observer.observe(host);
 
 function animate(now){
   const dt=Math.min((now-lastTime)/1000,.04);lastTime=now;
   updateClock(now);
+  if(mode==='pickup'&&courier.frame((now-courierStarted)/1000,reduceMotion)){
+    mode='dispatched';update();say('Pizza collected. Courier outbound.');
+  }
   pizza.rotation.y+=(rotationTarget-pizza.rotation.y)*(reduceMotion?1:Math.min(dt*12,1));
   for(const t of toppings)if(t.group.position.y>t.y){t.velocity+=dt*14;t.group.position.y-=t.velocity*dt;if(t.group.position.y<t.y)t.group.position.y=t.y;}
   flames.forEach((f,i)=>{f.scale.y=reduceMotion?1:.8+Math.sin(now*.008+i*2)*.2;});
