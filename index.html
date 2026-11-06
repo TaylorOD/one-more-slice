@@ -50,7 +50,20 @@
         </div>
         <div id="bake-progress" hidden><div class="heat-display">450<span>°</span></div><p>Thermal cycle active.<br>Keep the dispatch lane clear.</p><progress id="progress" value="0" max="1" aria-label="Baking progress"></progress></div>
         <div id="finished" hidden><div class="stamp">ORDER STATUS<br><b>READY FOR<br>PICKUP</b></div><p>Thermal cycle complete.<br>Inspect a slice before it goes.</p></div>
-        <button id="dispatch" class="primary" hidden><span>call courier()</span><span>↗</span></button><p id="delivery-status" role="status" hidden></p><button id="primary" class="primary" disabled><span>fire oven()</span><span>↗</span></button>
+        <button id="dispatch" class="primary" hidden><span>call courier()</span><span>↗</span></button>
+        <div id="delivery-status" hidden>
+          <p class="section-label">courier / 07 <span>freelance</span></p>
+          <p id="delivery-phase" role="status">01 / collect</p>
+          <ol class="delivery-steps" aria-label="Courier progress">
+            <li data-phase="collect"><span>01</span> collect the box</li>
+            <li data-phase="approach"><span>02</span> find a ride</li>
+            <li data-phase="hook"><span>03</span> magnetic lock</li>
+            <li data-phase="ride"><span>04</span> sector 07 outbound</li>
+          </ol>
+          <p class="delivery-note">// smartwheels. warm pizza.<br>// no time to park.</p>
+        </div>
+        <button id="primary" class="primary" disabled><span>fire oven()</span><span>↗</span></button>
+        <button id="replay" hidden>replay pickup ↗</button>
         <div class="bottom-actions"><button id="reset">reset order</button><button id="share">copy order ↗</button></div>
         <p id="status" role="status" aria-live="polite">Drag to turn. Tap to top.</p>
       </aside>

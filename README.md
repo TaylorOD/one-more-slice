@@ -2,7 +2,11 @@
 
 a pizza dispatch terminal inspired by snow crash. add toppings, fire the oven and inspect a slice before pickup.
 
-call the courier after baking. she collects the box on her skateboard, hooks onto the back of a car and skitches away. reduced motion shows a still handoff instead of the moving chase.
+call the courier after baking. she collects the box while rolling, skates up to the street and hooks a passing car. traffic keeps moving in both directions.
+
+she has a magnetic wrist launcher, a courier bag, knee pads and a smartwheel board. the cable shoots out, catches the bumper and pulls her into a crouch. replay pickup runs it again without rebuilding the pizza.
+
+reduced motion shows a still handoff instead of the moving chase.
 
 black background, monospace and the same syntax colors as my website. the kitchen sits in a city at night. the pizza is still pizza.
 

@@ -20,4 +20,10 @@ dialog{border-color:var(--red);border-radius:0}dialog::backdrop{background:#000c
 @media(max-width:740px){.header{height:70px;gap:12px}.header .brand-dot{font-size:18px;margin-right:3px}.wordmark{font-size:13px}.home-link{font-size:10px}h1{font-size:30px}.intro-copy{font-size:11px}.workbench{min-height:390px}.recipe-panel h2{font-size:24px}.stage-top{letter-spacing:0}.ticket-top{padding-bottom:13px}.special{font-size:10px}}
 #dispatch{border-color:var(--green);background:#203328;margin-bottom:12px}
 #delivery-status{color:var(--green);font-size:12px;border:1px solid var(--line);padding:24px 12px;margin:20px 0;flex:1}
+.delivery-steps{list-style:none;padding:0;margin:25px 0;color:var(--muted);font-size:11px}
+.delivery-steps li{padding:11px 0;border-bottom:1px solid var(--line)}
+.delivery-steps span{color:var(--red);margin-right:12px}
+.delivery-steps li.active{color:white}.delivery-steps li.complete{color:var(--green)}
+.delivery-note{color:var(--muted);font-size:10px;line-height:1.8}
+#delivery-phase{margin:24px 0 0}#replay{padding:12px 0;background:none;border:0;color:var(--red);font-size:10px;text-align:left}
 body[data-mode="pickup"] .drag-hint,body[data-mode="dispatched"] .drag-hint{display:none}
