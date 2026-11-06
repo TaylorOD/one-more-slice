@@ -1,5 +1,11 @@
 import * as THREE from './vendor/three.module.js';
-import { courierPose, pickup } from './courier-motion.js';
+import {
+  courierPose,
+  pickup,
+  deliveryDuration,
+  trafficRoutes,
+  trafficPosition
+} from './courier-motion.js';
 
 const clamp = THREE.MathUtils.clamp;
 const smooth = (t) => {
@@ -288,12 +294,10 @@ export function createCourier(scene) {
     return car;
   }
   const targetCar = makeCar('#384e5a', '07 204');
-  const traffic = [
-    { car: makeCar('#713d3d', '11 082'), offset: -1, speed: 5.5, lane: -0.7 },
-    { car: makeCar('#4c5363', '03 619'), offset: 10, speed: -4.5, lane: -4 },
-    { car: makeCar('#74715b', '18 036'), offset: 24, speed: -4.5, lane: -4 },
-    { car: makeCar('#334c4b', '05 192'), offset: -23, speed: 3.2, lane: -0.7 }
-  ];
+  const traffic = trafficRoutes.map((route) => ({
+    ...route,
+    car: makeCar(route.color, route.plate)
+  }));
   traffic.filter((t) => t.speed < 0).forEach((t) => (t.car.rotation.y = Math.PI));
 
   const rider = new THREE.Group();
@@ -414,6 +418,7 @@ export function createCourier(scene) {
       0.02,
       amber
     ).rotation.z = i;
+  const aimTarget = new THREE.Vector3();
   const hand = new THREE.Vector3(),
     rear = new THREE.Vector3(),
     towEnd = new THREE.Vector3();
@@ -424,7 +429,7 @@ export function createCourier(scene) {
     const { t, street, fire, pull, carX } = pose;
     targetCar.position.set(carX, 0, -0.7);
     for (const item of traffic) {
-      item.car.position.set(((item.offset + item.speed * t + 72) % 48) - 24, 0, item.lane);
+      item.car.position.set(trafficPosition(item, t), 0, item.lane);
       for (const wheel of wheelSets.get(item.car))
         wheel.rotation.z = (-Math.abs(item.speed) * t) / 0.39;
     }
@@ -432,7 +437,7 @@ export function createCourier(scene) {
     rider.position.set(pose.x, pose.y, pose.z);
     rider.rotation.y = pose.yaw;
     board.rotation.x = Math.sin(street * Math.PI) * 0.12;
-    board.rotation.z = (!reduced ? Math.sin(t * 17) * 0.012 : 0) - Math.sin(pull * Math.PI) * 0.035;
+    board.rotation.z = -Math.sin(pull * Math.PI) * 0.025;
     const crouch = 0.16 * street + 0.12 * Math.sin(pull * Math.PI);
     torso.position.set(0.06 + pull * 0.17, 1.15 - crouch, 0);
     torso.rotation.z = -0.15 - pull * 0.22;
@@ -460,6 +465,9 @@ export function createCourier(scene) {
     elbows[1].position.set(...aimElbow);
     launcher.position.set(...aimHand);
     root.updateMatrixWorld(true);
+    const target = body.worldToLocal(aimTarget.set(carX - 2.17, 0.54, -0.7));
+    launcher.rotation.y = Math.atan2(-(target.z - aimHand[2]), target.x - aimHand[0]) * fire;
+    launcher.updateMatrixWorld(true);
     if (t < 1.65) parcel.position.set(pickup.x, pickup.y, pickup.z);
     else {
       v1.set(boxHand[0] - 0.05, boxHand[1] + 0.08, boxHand[2] + 0.1);
@@ -488,7 +496,7 @@ export function createCourier(scene) {
     for (const wheel of boardWheels)
       wheel.rotation.z = -Math.hypot(pose.x + 3.9, pose.z - 7) / 0.23;
     const phase = t < 1.65 ? 'collect' : t < 3.75 ? 'approach' : t < 4.13 ? 'hook' : 'ride';
-    return { done: seconds >= 9, phase };
+    return { done: seconds >= deliveryDuration, phase };
   }
   return {
     start() {
