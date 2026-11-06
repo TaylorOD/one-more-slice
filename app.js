@@ -159,7 +159,17 @@ let courierPhase='';
 function restoreKitchen(){
   courier.reset();courierPhase='';delete document.body.dataset.courierPhase;
   kitchenObjects.forEach(object=>object.visible=true);
-  camera.position.set(6.8,9.7,11.7);camera.lookAt(0,.1,-.5);
+  frameCamera(false);
+}
+function frameCamera(delivering){
+  const mobile=host.clientWidth<500;
+  if(delivering){
+    camera.position.set(...(mobile?[0,6,14]:[3,9,21]));
+    camera.lookAt(...(mobile?[-2,1.5,1]:[-3,2,1]));
+  }else{
+    camera.position.set(6.8,9.7,11.7);
+    camera.lookAt(0,.1,-.5);
+  }
 }
 let toppings=[], selected='pepperoni', mode='prep', bakingStarted=0, lastTime=0, sliceTarget=0;
 let rotationTarget=0, pointerStart=null;
@@ -211,7 +221,7 @@ function dispatch(){
   if(!['baked','sliced','dispatched'].includes(mode))return;
   mode='pickup';courierStarted=performance.now();sliceTarget=0;
   courierPhase='';
-  camera.position.set(3,9,21);camera.lookAt(-3,2,1);
+  frameCamera(true);
   kitchenObjects.forEach(object=>object.visible=false);courier.start();update();
   say('Courier at the pickup bay.');
 }
@@ -255,7 +265,7 @@ $('share').addEventListener('click',()=>{const url=new URL(location.href);url.ha
 $('copy-link').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('share-url').value);$('copy-status').textContent='Copied. Send it to someone hungry.';}catch{$('share-url').focus();$('share-url').select();$('copy-status').textContent='Select the link above and copy it.';}});
 function openRecipe(){if(!location.hash)return;const recipe=decodeRecipe(location.hash);if(!recipe){say('That recipe link looks broken. Fresh dough is ready instead.');return;}restoreKitchen();removeAll();pickupStarted=null;pickupFinished=null;mode='prep';carriage.position.set(0,0,0);sliceTarget=0;slices[6].position.set(0,0,0);setCooked(0);for(const [type,x,z,angle]of recipe.t)addTopping(type,x,z,angle,false);update();say('Order received. Fresh pickup window. Ready to bake.');}
 window.addEventListener('hashchange',openRecipe);
-const observer=new ResizeObserver(()=>{const width=host.clientWidth,height=host.clientHeight;renderer.setSize(width,height);camera.aspect=width/height;camera.fov=width<500?43:34;camera.updateProjectionMatrix();});observer.observe(host);
+const observer=new ResizeObserver(()=>{const width=host.clientWidth,height=host.clientHeight;renderer.setSize(width,height);camera.aspect=width/height;camera.fov=width<500?43:34;frameCamera(mode==='pickup'||mode==='dispatched');camera.updateProjectionMatrix();});observer.observe(host);
 
 function animate(now){
   const dt=Math.min((now-lastTime)/1000,.04);lastTime=now;
