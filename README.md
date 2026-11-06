@@ -12,7 +12,7 @@ black background, monospace and the same syntax colors as my website. inside the
 
 pick a topping and tap the cheese. drag sideways to turn it, or use the arrow buttons. add a handful if you want less precision. the house special makes one for you.
 
-share saves the toppings in the link. no account or database.
+old recipe links still open, but there is no sharing button.
 
 sauce spreads across the pizza instead of stacking as pieces. spread sauce coats the whole pizza. undo removes the last pour. `sauce-surface.js` paints one shared texture for all slices and stops updating it once the sauce settles.
 
@@ -66,7 +66,6 @@ npm run test:browser
 | `order.js`          | order state, transitions, controls and frame loop            |
 | `order-view.js`     | ticket text, buttons and delivery steps                      |
 | `pizza-input.js`    | pointer capture, turning and topping placement               |
-| `sharing.js`        | share dialog and clipboard fallback                          |
 | `recipe.js`         | recipe encoding and validation without browser dependencies  |
 
 the normal order path is `prep → baking → baked → pickup → dispatched`. inspecting a slice toggles between `baked` and `sliced`. reset returns to `prep`, including during baking or pickup. replay starts another pickup with the same pizza.
