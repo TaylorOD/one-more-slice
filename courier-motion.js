@@ -1,6 +1,7 @@
 // Shared pickup coordinates and delivery timing.
 export const pickup = { x: -5.05, y: 1.28, z: 4.05 };
-export const deliveryDuration = 6.3;
+export const deliverySpeed = 1.2;
+export const deliveryDuration = 6.3 / deliverySpeed;
 export const trafficRoutes = [
   { color: '#713d3d', plate: '11 082', model: 'interceptor', offset: -1, speed: 8.5, lane: -0.7 },
   { color: '#4c5363', plate: '03 619', model: 'van', offset: 10, speed: -7, lane: -4 },
@@ -35,7 +36,7 @@ function path(t) {
   return [0.175 + 5.5 * departure + 1.2 * departure ** 2, 0.65];
 }
 export function courierPose(seconds, reduced = false) {
-  const t = reduced ? 4.65 : Math.max(0, Math.min(seconds, deliveryDuration));
+  const t = reduced ? 4.65 : Math.max(0, Math.min(seconds * deliverySpeed, 6.3));
   const [x, z] = path(t);
   const before = path(Math.max(0, t - 0.005)),
     after = path(t + 0.005);
