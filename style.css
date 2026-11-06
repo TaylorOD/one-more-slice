@@ -427,10 +427,6 @@ footer {
   color: var(--muted);
   gap: 12px;
 }
-footer span:first-child {
-  font-size: 9px;
-  letter-spacing: 1.4px;
-}
 dialog {
   background: var(--paper);
   color: var(--ink);

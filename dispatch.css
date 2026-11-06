@@ -163,10 +163,6 @@ h2 {
   font-size: 64px;
   color: #e8b96c;
 }
-footer span:first-child {
-  color: var(--green);
-  letter-spacing: 0;
-}
 dialog {
   border-color: var(--red);
   border-radius: 0;
