@@ -1,4 +1,15 @@
-export const types = ['pepperoni', 'mushroom', 'basil', 'olive', 'pineapple', 'pepper'];
+export const types = [
+  'pepperoni',
+  'mushroom',
+  'basil',
+  'olive',
+  'pineapple',
+  'pepper',
+  'cheese',
+  'sausage',
+  'sauce',
+  'chicken'
+];
 export const maxToppings = 80;
 export const toppingRadius = 1.72;
 

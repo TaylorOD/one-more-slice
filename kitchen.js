@@ -21,6 +21,9 @@ export function createKitchen(scene) {
     olive: material('#35392d'),
     pepper: material('#648b34'),
     pineapple: material('#f0c94b'),
+    mozzarella: material('#fff0c7'),
+    sausage: material('#815335'),
+    chicken: material('#e4be83'),
     brick: material('#273747', { metalness: 0.35 }),
     grout: material('#485d70', { metalness: 0.5 }),
     oven: material('#17222d'),
@@ -252,7 +255,30 @@ export function createKitchen(scene) {
       leaf.rotation.z = 0.2;
       const stem = mesh(toppingGeometry.basilStem, basilStemMaterial, group);
       stem.position.y = 0.013;
-    } else {
+    } else if (type === 'cheese') {
+      for (let i = 0; i < 3; i++) {
+        const shred = mesh(toppingGeometry.chunk, mats.mozzarella, group);
+        shred.scale.set(0.8, 0.35, 0.25);
+        shred.position.set((i - 1) * 0.09, i * 0.008, (i % 2) * 0.09);
+        shred.rotation.y = i * 1.2;
+      }
+    } else if (type === 'sauce') {
+      ball(0, 0, 0, 0.24, 0.018, 0.19, mats.sauce, group);
+      ball(0.14, 0.005, 0.05, 0.13, 0.015, 0.1, mats.sauce, group);
+    } else if (type === 'sausage') {
+      for (let i = 0; i < 3; i++) {
+        ball((i - 1) * 0.1, 0.025, (i % 2) * 0.1, 0.105, 0.085, 0.09, mats.sausage, group);
+      }
+    } else if (type === 'chicken') {
+      const piece = mesh(toppingGeometry.chunk, mats.chicken, group);
+      piece.scale.set(1.5, 0.7, 0.75);
+      piece.rotation.y = 0.3;
+      for (let i = 0; i < 3; i++) {
+        const grillMark = mesh(toppingGeometry.basilStem, mats.sausage, group);
+        grillMark.scale.set(2, 0.3, 0.38);
+        grillMark.position.set(-0.09 + i * 0.09, 0.048, 0);
+      }
+    } else if (type === 'mushroom') {
       const mushroom = new THREE.Group();
       group.add(mushroom);
       mushroom.rotation.x = Math.PI / 2;

@@ -27,3 +27,16 @@ test('random toppings stay on the cheese and survive sharing', () => {
   assert.ok(toppings.every((t) => Math.hypot(t.x, t.z) <= toppingRadius));
   assert.equal(decodeRecipe('#recipe=' + encodeRecipe(toppings)).t.length, 80);
 });
+
+test('the new ingredients survive recipe sharing', () => {
+  const toppings = ['cheese', 'sausage', 'sauce', 'chicken'].map((type) => ({
+    type,
+    x: 0,
+    z: 0,
+    angle: 0
+  }));
+  assert.deepEqual(
+    decodeRecipe('#recipe=' + encodeRecipe(toppings)).t.map((t) => t[0]),
+    toppings.map((t) => t.type)
+  );
+});

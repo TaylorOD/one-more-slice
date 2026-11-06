@@ -671,3 +671,24 @@ dialog label {
     transition: none !important;
   }
 }
+
+.ingredient.cheese {
+  background: #fff0c7;
+  border-radius: 3px;
+  transform: rotate(-20deg) scale(0.9, 0.6);
+}
+.ingredient.sausage {
+  background: #815335;
+  border-radius: 40% 55% 35% 50%;
+  box-shadow: inset 3px 2px #aa7950;
+}
+.ingredient.sauce {
+  background: #b84125;
+  border-radius: 50% 40% 50% 35%;
+  transform: scale(1, 0.6);
+}
+.ingredient.chicken {
+  background: repeating-linear-gradient(60deg, #e4be83 0 7px, #815335 8px 10px);
+  border-radius: 35%;
+  transform: rotate(-20deg) scale(1, 0.7);
+}

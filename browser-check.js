@@ -188,6 +188,27 @@ try {
     );
   }
   await memoryPage.close();
+  const ingredientsPage = await checkedPage({ reducedMotion: 'reduce' });
+  await ingredientsPage.goto(baseUrl);
+  for (const type of ['cheese', 'sausage', 'sauce', 'chicken']) {
+    await ingredientsPage.locator(`[data-topping="${type}"]`).click();
+    await ingredientsPage.locator('#sprinkle').click();
+  }
+  assert.equal(await ingredientsPage.locator('body').getAttribute('data-toppings'), '20');
+  await ingredientsPage.locator('#share').click();
+  const ingredientsLink = await ingredientsPage.locator('#share-url').inputValue();
+  await ingredientsPage.keyboard.press('Escape');
+  await ingredientsPage.goto(ingredientsLink);
+  await ingredientsPage.reload();
+  assert.equal(await ingredientsPage.locator('body').getAttribute('data-toppings'), '20');
+  await ingredientsPage.screenshot({ path: 'screenshots/new-toppings.png', fullPage: true });
+  await ingredientsPage.setViewportSize({ width: 390, height: 844 });
+  await ingredientsPage.screenshot({ path: 'screenshots/new-toppings-mobile.png', fullPage: true });
+  assert.ok(
+    await ingredientsPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth)
+  );
+  await ingredientsPage.close();
+
   // A recipe opened mid order must render exactly like a fresh recipe.
   // Comparing the canvas catches stale rotation, slice offsets and oven scale.
   const recipePage = await checkedPage({
