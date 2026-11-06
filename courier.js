@@ -89,6 +89,30 @@ export function createCourier(scene) {
   for(const x of [-7,6]){
     box(root,x,.15,3.1,.17,.55,.17,steel);box(root,x,.36,3.1,.19,.12,.19,amber);
   }
+  // A two storey corner shop, with a human sized door beside the pickup bay.
+  const masonry=material('#30404a'), glass=material('#203c4b',{metalness:.45,roughness:.22});
+  box(root,-9,2.95,6,6,6.2,6,masonry);
+  box(root,-9,6.1,6,6.25,.25,6.25,steel);
+  box(root,-9,3.1,2.96,6.1,.18,.16,alloy);
+  box(root,-5.96,3.1,6,.16,.18,6.1,alloy);
+  // Shopfront facing the road.
+  for(const x of [-10.6,-7.5]){
+    box(root,x,1.3,2.96,2.5,2.15,.04,glass);
+    box(root,x,1.3,2.91,.07,2.2,.08,alloy);
+    box(root,x,.2,2.91,2.6,.09,.08,alloy);
+    box(root,x,2.4,2.91,2.6,.09,.08,alloy);
+  }
+  for(const x of [-10.6,-8.8,-7])box(root,x,4.6,2.96,.9,1.35,.04,glass);
+  // The visible side entrance is taller than the courier.
+  box(root,-5.96,1.08,4.4,.04,2.3,1.1,dark);
+  box(root,-5.92,1.35,4.4,.04,1.25,.85,glass);
+  box(root,-5.88,1.05,4.83,.08,.09,.2,trim);
+  for(const z of [6.2,8])box(root,-5.96,1.35,z,.04,1.9,1.2,glass);
+  for(const z of [4.4,6.2,8])box(root,-5.96,4.6,z,.04,1.35,.9,glass);
+  box(root,-5.5,2.65,4.5,1.1,.12,2,steel);
+  const shopName=label(root,'C0saNostra Pizza',4.5,.7,-5.86,3.5,6,'#e4b76b');
+  shopName.rotation.y=Math.PI/2;
+  label(root,'C0saNostra Pizza',5,.7,-9,3.5,2.85,'#e4b76b');
   // Pickup locker and street furniture.
   box(root,-4,.48,2.9,2.1,1.25,1.2,steel);
   box(root,-4,1.15,2.9,2.25,.12,1.3,alloy);
@@ -218,7 +242,8 @@ export function createCourier(scene) {
     }
     const preX=mix(-8.3,-4.5,collect)+street*1.4;
     const towedX=carX-4.6;
-    rider.position.set(mix(preX,towedX,pull),mix(.04,-.04,street),mix(4,.65,street));
+    const pickupZ=mix(2.25,4,smooth((collect-.65)/.35));
+    rider.position.set(mix(preX,towedX,pull),mix(.04,-.04,street),mix(pickupZ,.65,street));
     rider.rotation.y=Math.sin(street*Math.PI)*.5;
     board.rotation.x=Math.sin(street*Math.PI)*.12;
     board.rotation.z=(!reduced?Math.sin(t*17)*.012:0)-Math.sin(pull*Math.PI)*.035;
