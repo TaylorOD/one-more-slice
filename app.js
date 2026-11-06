@@ -153,7 +153,12 @@ function makeTopping(type){
 const kitchenObjects=scene.children.filter(object=>!object.isLight&&object!==city&&object!==floor);
 const courier=createCourier(scene);
 let courierStarted=0;
-function restoreKitchen(){courier.reset();kitchenObjects.forEach(object=>object.visible=true);}
+let courierPhase='';
+function restoreKitchen(){
+  courier.reset();courierPhase='';delete document.body.dataset.courierPhase;
+  kitchenObjects.forEach(object=>object.visible=true);
+  camera.position.set(6.8,9.7,11.7);camera.lookAt(0,.1,-.5);
+}
 let toppings=[], selected='pepperoni', mode='prep', bakingStarted=0, lastTime=0, sliceTarget=0;
 let rotationTarget=0, pointerStart=null;
 const bakeSeconds = 8;
@@ -175,6 +180,7 @@ function update(){
   $('step-eat').innerHTML=delivering?'<b>03</b> dispatch':'<b>03</b> inspect';
   $('primary').disabled=mode==='baking'||mode==='pickup';
   $('dispatch').hidden=!['baked','sliced'].includes(mode);
+  $('replay').hidden=mode!=='dispatched';
   document.querySelector('.turn-controls').hidden=delivering;
   $('delivery-status').hidden=!delivering;
   $('prep-controls').hidden=mode!=='prep';$('bake-progress').hidden=mode!=='baking';$('finished').hidden=!['baked','sliced'].includes(mode);
@@ -192,16 +198,23 @@ function update(){
     $('scene-label').textContent='STREET CAM / 07';
     $('oven-label').textContent=mode==='pickup'?'COURIER ACTIVE':'DISPATCH COMPLETE';
     $('scene-instruction').textContent=mode==='pickup'?'collect the box. hook the car. go.':'another order out into the night';
-    $('delivery-status').textContent=mode==='pickup'?'// handoff in progress':'// collected. hooked. dispatched.';
+    $('delivery-phase').textContent=mode==='pickup'?'01 / collect':'// collected. hooked. dispatched.';
+    document.querySelectorAll('[data-phase]').forEach(item=>{
+      item.classList.remove('active');
+      item.classList.toggle('complete',mode==='dispatched');
+    });
   }
 }
 function dispatch(){
-  if(!['baked','sliced'].includes(mode))return;
+  if(!['baked','sliced','dispatched'].includes(mode))return;
   mode='pickup';courierStarted=performance.now();sliceTarget=0;
+  courierPhase='';
+  camera.position.set(4,7.2,13.5);camera.lookAt(-1.5,.65,1);
   kitchenObjects.forEach(object=>object.visible=false);courier.start();update();
   say('Courier at the pickup bay.');
 }
 $('dispatch').addEventListener('click',dispatch);
+$('replay').addEventListener('click',dispatch);
 function addTopping(type, x, z, angle=Math.random()*Math.PI*2, animate=true){
   if(mode!=='prep'||toppings.length>=maxToppings)return;
   if(pickupStarted===null)pickupStarted=performance.now();
@@ -245,8 +258,25 @@ const observer=new ResizeObserver(()=>{const width=host.clientWidth,height=host.
 function animate(now){
   const dt=Math.min((now-lastTime)/1000,.04);lastTime=now;
   updateClock(now);
-  if(mode==='pickup'&&courier.frame((now-courierStarted)/1000,reduceMotion)){
-    mode='dispatched';update();say('Pizza collected. Courier outbound.');
+  if(mode==='pickup'){
+    const delivery=courier.frame((now-courierStarted)/1000,reduceMotion);
+    if(delivery.phase!==courierPhase){
+      courierPhase=delivery.phase;document.body.dataset.courierPhase=courierPhase;
+      const messages={
+        collect:['01 / collect','Box on the counter. She’s already rolling.'],
+        approach:['02 / find a ride','Traffic moving. Courier approaching the street.'],
+        hook:['03 / magnetic lock','Tow line fired. Catching the next car.'],
+        ride:['04 / outbound','Cable tight. Pizza secure. Sector 07 outbound.']
+      };
+      $('delivery-phase').textContent=messages[courierPhase][0];
+      const phases=['collect','approach','hook','ride'];
+      document.querySelectorAll('[data-phase]').forEach(item=>{
+        item.classList.toggle('active',item.dataset.phase===courierPhase);
+        item.classList.toggle('complete',phases.indexOf(item.dataset.phase)<phases.indexOf(courierPhase));
+      });
+      say(messages[courierPhase][1]);
+    }
+    if(delivery.done){mode='dispatched';update();say('Pizza collected. Courier outbound.');}
   }
   pizza.rotation.y+=(rotationTarget-pizza.rotation.y)*(reduceMotion?1:Math.min(dt*12,1));
   for(const t of toppings)if(t.group.position.y>t.y){t.velocity+=dt*14;t.group.position.y-=t.velocity*dt;if(t.group.position.y<t.y)t.group.position.y=t.y;}
