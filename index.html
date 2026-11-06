@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f0e5">
+  <meta name="description" content="A tiny 3D pizza kitchen. Drop your toppings, turn up the heat and grab a slice.">
+  <title>One More Slice · a tiny pizza kitchen</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🍕%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <a class="wordmark" href="./" aria-label="One More Slice home"><span class="brand-dot">✳</span> one more slice<span class="period">.</span></a>
+    <span class="header-note">a tiny pizza kitchen <span>by taylor</span></span>
+    <a class="home-link" href="https://www.taylordorsett.com/">back to taylor ↗</a>
+  </header>
+  <main>
+    <section class="intro">
+      <div><p class="eyebrow"><span></span> OPEN UNTIL YOU'RE HUNGRY</p><h1>Your pizza.<br><em>Questionable decisions.</em></h1></div>
+      <p class="intro-copy">A little dough. A lot of possibilities.<br>Make something good. Or put pineapple on it.</p>
+    </section>
+    <div class="kitchen">
+      <section class="workbench" aria-label="3D pizza kitchen">
+        <div class="stage-top"><span id="scene-label">THE PREP COUNTER</span><span class="live-badge"><i></i> <span id="oven-label">OVEN READY</span></span></div>
+        <div id="scene" role="img" aria-label="A 3D pizza on a wooden peel in front of a brick oven. Select a topping and click the pizza to add it. Drag to rotate."><p id="loading">warming up the kitchen…</p></div>
+        <div class="scene-caption"><span id="scene-instruction">pick a topping, then tap the pizza</span><span class="drag-hint">↔ drag to turn</span></div>
+        <div class="turn-controls" aria-label="Turn the pizza"><button id="turn-left" aria-label="Turn pizza left">↶</button><button id="turn-right" aria-label="Turn pizza right">↷</button></div>
+        <div class="step-strip" aria-label="Pizza progress"><span class="active" id="step-prep"><b>01</b> Make a mess</span><span id="step-bake"><b>02</b> Into the oven</span><span id="step-eat"><b>03</b> One more slice</span></div>
+      </section>
+      <aside class="recipe-panel">
+        <div class="ticket-top"><span>YOUR ORDER</span><span>NO. 001</span></div>
+        <h2 id="panel-title">Good things<br>start with cheese.</h2>
+        <p class="panel-copy" id="panel-copy">Sauce and mozzarella are on the house.<br>The rest is on you.</p>
+        <div id="prep-controls">
+          <div class="section-label"><span>CHOOSE YOUR TOPPINGS</span><span id="topping-count">0 / 80</span></div>
+          <div class="toppings" role="group" aria-label="Toppings">
+            <button data-topping="pepperoni" aria-pressed="true"><span class="ingredient pepperoni" aria-hidden="true"></span><span>Pepperoni</span></button>
+            <button data-topping="mushroom" aria-pressed="false"><span class="ingredient mushroom" aria-hidden="true">♠</span><span>Mushroom</span></button>
+            <button data-topping="basil" aria-pressed="false"><span class="ingredient basil" aria-hidden="true"></span><span>Basil</span></button>
+            <button data-topping="olive" aria-pressed="false"><span class="ingredient olive" aria-hidden="true"></span><span>Olives</span></button>
+            <button data-topping="pineapple" aria-pressed="false"><span class="ingredient pineapple" aria-hidden="true"></span><span>Pineapple</span></button>
+            <button data-topping="pepper" aria-pressed="false"><span class="ingredient pepper" aria-hidden="true"></span><span>Peppers</span></button>
+          </div>
+          <div class="small-actions"><button id="sprinkle">+ add a handful</button><button id="undo" disabled>undo</button></div>
+          <div class="ticket-line"></div>
+          <button id="special" class="special">feeling indecisive? <strong>house special ↗</strong></button>
+        </div>
+        <div id="bake-progress" hidden><div class="heat-display">450<span>°</span></div><p>Eight seconds in here.<br>A lifetime in pizza years.</p><progress id="progress" value="0" max="1" aria-label="Baking progress"></progress></div>
+        <div id="finished" hidden><div class="stamp">BAKED WITH<br><b>QUESTIONABLE<br>JUDGMENT</b></div><p>Golden edges. Melted cheese.<br>Absolutely no dishes to wash.</p></div>
+        <button id="primary" class="primary" disabled><span>Into the oven</span><span>↗</span></button>
+        <div class="bottom-actions"><button id="reset">start over</button><button id="share">share recipe ↗</button></div>
+        <p id="status" role="status" aria-live="polite">Drag to turn. Tap to top.</p>
+      </aside>
+    </div>
+    <footer><span>HANDMADE. BROWSER BAKED.</span><span>no delivery fee. no actual pizza either.</span><a href="https://www.taylordorsett.com/">made by taylor ↗</a></footer>
+  </main>
+  <dialog id="share-dialog"><form method="dialog"><button class="dialog-close" aria-label="Close share dialog">×</button></form><p class="eyebrow">SPECIAL DELIVERY</p><h2>Send your creation.</h2><p>This link saves the toppings. Your friend gets to bake it.</p><label for="share-url">Recipe link</label><input id="share-url" readonly><button id="copy-link" class="primary">Copy link</button><p id="copy-status" role="status"></p></dialog>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "one-more-slice",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.js",
+    "start": "node server.js",
+    "test": "node --test recipe.test.js"
+  },
+  "dependencies": {
+    "@playwright/test": "1.65.0",
+    "three": "0.187.0"
+  }
+}
