@@ -56,9 +56,12 @@ export function createKitchenRoom(root) {
     box(2.4, 0.28, 7.5, stone, root, x, -0.4, 0.7);
     box(2.1, 1.85, 7, wood, root, x, -1.45, 0.7);
   }
-  box(10.4, 0.28, 1.5, stone, root, 0, -0.4, 4.1);
-  box(10, 1.85, 1.2, wood, root, 0, -1.45, 4.1);
-  for (const x of [-4, -2, 0, 2, 4]) {
+  // Leave a 2.4 unit entrance between the two front counter sections.
+  for (const x of [-3.2, 3.2]) {
+    box(4, 0.28, 1.5, stone, root, x, -0.4, 4.1);
+    box(3.8, 1.85, 1.2, wood, root, x, -1.45, 4.1);
+  }
+  for (const x of [-4.2, -2.2, 2.2, 4.2]) {
     box(1.7, 1.45, 0.07, oak, root, x, -1.35, 4.75);
     box(0.34, 0.07, 0.08, copper, root, x, -0.82, 4.81);
   }
@@ -129,7 +132,7 @@ export function createKitchenRoom(root) {
   box(13.4, 0.045, 0.06, cyan, root, 0, 4.45, -6.55);
   box(0.06, 0.045, 10, pink, root, -6.7, 4.45, -0.9);
   for (const x of [-2.78, 2.78]) box(0.035, 0.045, 6.9, cyan, root, x, -0.22, 0.7);
-  box(10, 0.045, 0.035, pink, root, 0, -0.22, 3.35);
+  for (const x of [-3.2, 3.2]) box(4, 0.045, 0.035, pink, root, x, -0.22, 3.35);
   for (const y of [3.7, 4.05]) box(7, 0.09, 0.12, wood, root, -2.8, y, -6.45);
   for (const x of [-5.8, -3.2, -0.6]) box(0.14, 0.55, 0.18, copper, root, x, 3.9, -6.4);
   const accent = new THREE.PointLight('#ee4eaa', 22, 12, 2);

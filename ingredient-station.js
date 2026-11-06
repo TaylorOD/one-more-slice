@@ -17,10 +17,10 @@ export function createIngredientStation(root, makeTopping) {
     ['sauce', 4, -1.4],
     ['chicken', 4, 0.45],
     ['basil', 4, 2.3],
-    ['pepperoni', -3, 4.1],
-    ['olive', -1, 4.1],
-    ['pepper', 1, 4.1],
-    ['pineapple', 3, 4.1]
+    ['pepperoni', -4.2, 4.1],
+    ['olive', -2.2, 4.1],
+    ['pepper', 2.2, 4.1],
+    ['pineapple', 4.2, 4.1]
   ];
   for (const [type, x, z] of trays) {
     const tray = new THREE.Group();
