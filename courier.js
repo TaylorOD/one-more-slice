@@ -67,7 +67,7 @@ export function createCourier(scene) {
   const parcel=new THREE.Group();root.add(parcel);
   box(parcel,0,0,0,1.05,.16,1.05,mat('#dcc695'));
   box(parcel,0,.085,0,.78,.012,.78,mat('#9a4e39'));
-  const seal=box(parcel,0,.1,0,.12,.012,.85,amber);
+  box(parcel,0,.1,0,.12,.012,.85,amber);
   const cableGeometry=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]);
   const cable=new THREE.Line(cableGeometry,new THREE.LineBasicMaterial({color:'#89b6dc'}));root.add(cable);
   const smooth=t=>{t=THREE.MathUtils.clamp(t,0,1);return t*t*(3-2*t);};
