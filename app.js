@@ -60,17 +60,19 @@ ctx.strokeStyle='#274154';ctx.lineWidth=2;ctx.strokeRect(0,0,128,128);ctx.stroke
 const texture = new THREE.CanvasTexture(tile);texture.wrapS=texture.wrapT=THREE.RepeatWrapping;texture.repeat.set(8,8);texture.colorSpace=THREE.SRGBColorSpace;
 const floor=mesh(new THREE.PlaneGeometry(30,30),new THREE.MeshStandardMaterial({map:texture,roughness:1}));floor.rotation.x=-Math.PI/2;floor.position.y=-.32;
 
-// A small city beyond the kitchen. The food stays warm under the work light.
+// Full sized city blocks behind the kitchen and delivery street.
 const city = new THREE.Group();scene.add(city);
 const buildingMat = material('#101b28');
 const windowMat = material('#569cd6', {emissive:'#569cd6',emissiveIntensity:1.2});
 for(let i=0;i<12;i++){
-  const x=-11+i*2, height=2.5+(i*7%5)*.85;
-  box(1.4,height,1.5,buildingMat,city,x,height/2-.3,-10-(i%2)*1.3);
-  for(let y=.7;y<height-.4;y+=.8)for(const dx of [-.35,.35]){
+  const x=-38+i*7.5, height=12+(i*7%5)*4;
+  const z=-17-(i%2)*6;
+  box(6,height,6,buildingMat,city,x,height/2-.3,z);
+  for(let y=3.8;y<height-.8;y+=3.2)for(const dx of [-2,0,2]){
     if((i+Math.round(y*10)+Math.round(dx*10))%3===0)continue;
-    box(.17,.25,.02,windowMat,city,x+dx,y,-9.24-(i%2)*1.3);
+    box(.8,1.4,.02,windowMat,city,x+dx,y,z+3.01);
   }
+  box(1.2,2.4,.025,mats.black,city,x,.9,z+3.02);
 }
 const neon = material('#569cd6',{emissive:'#569cd6',emissiveIntensity:2});
 box(4.4,.045,.045,neon,scene,0,2.37,-4.0);
@@ -209,7 +211,7 @@ function dispatch(){
   if(!['baked','sliced','dispatched'].includes(mode))return;
   mode='pickup';courierStarted=performance.now();sliceTarget=0;
   courierPhase='';
-  camera.position.set(4,7.2,13.5);camera.lookAt(-1.5,.65,1);
+  camera.position.set(3,9,21);camera.lookAt(-3,2,1);
   kitchenObjects.forEach(object=>object.visible=false);courier.start();update();
   say('Courier at the pickup bay.');
 }
