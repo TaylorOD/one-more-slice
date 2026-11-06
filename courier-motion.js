@@ -2,10 +2,10 @@
 export const pickup = { x: -5.05, y: 1.28, z: 4.05 };
 export const deliveryDuration = 6.3;
 export const trafficRoutes = [
-  { color: '#713d3d', plate: '11 082', offset: -1, speed: 8.5, lane: -0.7 },
-  { color: '#4c5363', plate: '03 619', offset: 10, speed: -7, lane: -4 },
-  { color: '#74715b', plate: '18 036', offset: 24, speed: -7, lane: -4 },
-  { color: '#334c4b', plate: '05 192', offset: -14, speed: 8.5, lane: -0.7 }
+  { color: '#713d3d', plate: '11 082', model: 'interceptor', offset: -1, speed: 8.5, lane: -0.7 },
+  { color: '#4c5363', plate: '03 619', model: 'van', offset: 10, speed: -7, lane: -4 },
+  { color: '#74715b', plate: '18 036', model: 'taxi', offset: 24, speed: -7, lane: -4 },
+  { color: '#334c4b', plate: '05 192', model: 'hatch', offset: -14, speed: 8.5, lane: -0.7 }
 ];
 export const trafficPosition = (route, t) => ((route.offset + route.speed * t + 72) % 48) - 24;
 const clamp = (t) => Math.max(0, Math.min(1, t));
