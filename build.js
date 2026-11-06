@@ -21,8 +21,7 @@ for (const file of [
   'oven-motion.js',
   'order.js',
   'order-view.js',
-  'pizza-input.js',
-  'sharing.js'
+  'pizza-input.js'
 ]) {
   await copyFile(file, 'dist/' + file);
 }

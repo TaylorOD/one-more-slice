@@ -32,10 +32,7 @@ try {
   await page.waitForTimeout(1500);
   assert.equal(await page.locator('body').getAttribute('data-toppings'), '23');
   await page.screenshot({ path: 'screenshots/desktop.png', fullPage: true });
-  await page.locator('#share').click();
-  const shared = await page.locator('#share-url').inputValue();
-  await page.keyboard.press('Escape');
-  await page.goto(shared);
+  await expect(page.locator('#share')).toHaveCount(0);
   assert.equal(await page.locator('body').getAttribute('data-toppings'), '23');
   await page.locator('#undo').click();
   assert.equal(await page.locator('body').getAttribute('data-toppings'), '22');
@@ -195,12 +192,6 @@ try {
     await ingredientsPage.locator('#sprinkle').click();
   }
   assert.equal(await ingredientsPage.locator('body').getAttribute('data-toppings'), '16');
-  await ingredientsPage.locator('#share').click();
-  const ingredientsLink = await ingredientsPage.locator('#share-url').inputValue();
-  await ingredientsPage.keyboard.press('Escape');
-  await ingredientsPage.goto(ingredientsLink);
-  await ingredientsPage.reload();
-  assert.equal(await ingredientsPage.locator('body').getAttribute('data-toppings'), '16');
   await ingredientsPage.screenshot({ path: 'screenshots/new-toppings.png', fullPage: true });
   await ingredientsPage.setViewportSize({ width: 390, height: 844 });
   await ingredientsPage.screenshot({ path: 'screenshots/new-toppings-mobile.png', fullPage: true });
@@ -282,5 +273,5 @@ try {
   await browser.close();
 }
 console.log(
-  'desktop, mobile, share, bake, slice, undo, reset, untimed preparation, courier, interrupted pickup, reduced motion, gpu memory and recipe loading passed'
+  'desktop, mobile, bake, slice, undo, reset, untimed preparation, courier, interrupted pickup, reduced motion, gpu memory and recipe loading passed'
 );

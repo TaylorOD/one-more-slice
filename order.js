@@ -3,7 +3,6 @@ import { createCourier } from './courier.js';
 import { maxToppings, decodeRecipe, randomSpot } from './recipe.js';
 import { updateOrderView, updateCourierPhase, say } from './order-view.js';
 import { bindPizzaInput } from './pizza-input.js';
-import { bindSharing } from './sharing.js';
 const $ = (id) => document.getElementById(id);
 // Order state belongs here. The view renders it, the kitchen owns its meshes,
 // and the courier owns a deterministic delivery timeline.
@@ -216,7 +215,6 @@ export function startOrder({
       say(toppings.length >= maxToppings ? '80 topping limit reached.' : 'Topping placed.');
     }
   });
-  bindSharing(() => toppings);
   function openRecipe() {
     if (!location.hash) return;
     const recipe = decodeRecipe(location.hash);

@@ -131,7 +131,7 @@
           <button id="bite" class="bite-button" hidden>take a bite</button>
           <button id="replay" hidden>replay delivery ↗</button>
           <div class="bottom-actions">
-            <button id="reset">reset order</button><button id="share">share recipe ↗</button>
+            <button id="reset">reset order</button>
           </div>
           <p id="status" role="status" aria-live="polite"></p>
         </aside>
@@ -140,21 +140,6 @@
         <a href="https://www.taylordorsett.com/">a Taylor Dorsett production ↗</a>
       </footer>
     </main>
-    <dialog id="share-dialog">
-      <form method="dialog">
-        <button class="dialog-close" aria-label="Close share dialog">×</button>
-      </form>
-
-      <h2>Share this recipe.</h2>
-      <p>This link saves the toppings. Open it to make the same pizza.</p>
-      <label for="share-url">Recipe link</label><input id="share-url" readonly /><button
-        id="copy-link"
-        class="primary"
-      >
-        Copy link
-      </button>
-      <p id="copy-status" role="status"></p>
-    </dialog>
     <script type="module" src="app.js"></script>
   </body>
 </html>

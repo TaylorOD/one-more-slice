@@ -427,45 +427,6 @@ footer {
   color: var(--muted);
   gap: 12px;
 }
-dialog {
-  background: var(--paper);
-  color: var(--ink);
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 32px;
-  max-width: 440px;
-  width: calc(100% - 32px);
-}
-dialog::backdrop {
-  background: #1c291eb3;
-  backdrop-filter: blur(5px);
-}
-dialog p {
-  color: var(--muted);
-  font-size: 13px;
-}
-dialog input {
-  width: 100%;
-  padding: 10px;
-  background: var(--cream);
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  margin-top: 7px;
-}
-dialog label {
-  font-size: 11px;
-}
-.dialog-close {
-  position: absolute;
-  top: 12px;
-  right: 15px;
-  font-size: 25px;
-  background: none;
-  border: 0;
-}
-#copy-status {
-  min-height: 20px;
-}
 @media (min-width: 1500px) {
   .workbench {
     min-height: 630px;

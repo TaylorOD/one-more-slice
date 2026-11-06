@@ -24,9 +24,8 @@ export async function checkSauce(page, baseUrl) {
     )
     .toBe(false);
   const covered = await canvas.screenshot({ path: 'screenshots/sauce-covered.png' });
-  await page.locator('#share').click();
-  const recipe = await page.locator('#share-url').inputValue();
-  await page.keyboard.press('Escape');
+  const recipe =
+    baseUrl + '#recipe=' + encodeURIComponent(JSON.stringify({ v: 1, t: [['sauce', 0, 0, 0]] }));
   await page.locator('#undo').click();
   await expect
     .poll(
