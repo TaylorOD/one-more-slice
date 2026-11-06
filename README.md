@@ -51,20 +51,21 @@ npm run test:browser
 
 ## code layout
 
-| file              | job                                                         |
-| ----------------- | ----------------------------------------------------------- |
-| `app.js`          | put the scene, city, kitchen and order controller together  |
-| `scene.js`        | renderer, lighting, resize handling and camera framing      |
-| `city.js`         | ground and buildings at roughly one metre per unit          |
-| `geometry.js`     | small mesh helpers and shared sphere geometry               |
-| `kitchen.js`      | oven, pizza, toppings and cooked appearance                 |
-| `kitchen-room.js` | kitchen walls, counters, shelves and room lighting          |
-| `courier.js`      | street, courier, traffic and pickup animation               |
-| `order.js`        | order state, transitions, controls and frame loop           |
-| `order-view.js`   | ticket text, buttons and delivery steps                     |
-| `pizza-input.js`  | pointer capture, turning and topping placement              |
-| `sharing.js`      | share dialog and clipboard fallback                         |
-| `recipe.js`       | recipe encoding and validation without browser dependencies |
+| file                | job                                                          |
+| ------------------- | ------------------------------------------------------------ |
+| `app.js`            | put the scene, city, kitchen and order controller together   |
+| `scene.js`          | renderer, lighting, resize handling and camera framing       |
+| `city.js`           | ground and buildings at roughly one metre per unit           |
+| `geometry.js`       | small mesh helpers and shared sphere geometry                |
+| `kitchen.js`        | oven, pizza, toppings and cooked appearance                  |
+| `kitchen-room.js`   | kitchen walls, counters, shelves and room lighting           |
+| `courier.js`        | street, courier, traffic and pickup animation                |
+| `courier-motion.js` | pickup position and courier path shared with clearance tests |
+| `order.js`          | order state, transitions, controls and frame loop            |
+| `order-view.js`     | ticket text, buttons and delivery steps                      |
+| `pizza-input.js`    | pointer capture, turning and topping placement               |
+| `sharing.js`        | share dialog and clipboard fallback                          |
+| `recipe.js`         | recipe encoding and validation without browser dependencies  |
 
 the normal order path is `prep → baking → baked → pickup → dispatched`. inspecting a slice toggles between `baked` and `sliced`. reset returns to `prep`, including during baking or pickup. replay starts another pickup with the same pizza.
 
@@ -75,6 +76,8 @@ the oven has a separate firebox below its stone deck. the floating pizza rises i
 the order controller owns state. scene files own geometry. the view reads state and updates the page. keep those boundaries when adding things.
 
 toppings share their geometry and materials for the life of the page. clearing a topping removes its meshes without disposing shared resources. a new topping type should reuse resources too. the browser test counts gpu buffers across repeated orders to catch leaks.
+
+the pickup counter is attached to the side of the shop. the courier follows a clear walkway and dropped curb before hooking the car. clearance tests cover the shop, counter and rear bumper through the full route. the box meets her hand at pickup without jumping.
 
 the courier uses elapsed seconds rather than accumulated frame steps. reset, replay and a slow frame should all land on the same pose. the timeline checks use a paused browser clock so they also work on slower github runners.
 
