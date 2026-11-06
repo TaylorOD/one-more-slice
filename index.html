@@ -15,6 +15,7 @@
     />
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="dispatch.css" />
+    <link rel="stylesheet" href="orders.css" />
   </head>
   <body>
     <header class="header">
@@ -29,7 +30,15 @@
         <div>
           <h1>Pizza dispatch.</h1>
         </div>
-        <p class="intro-copy">Prepare the pizza. Bake it. Send the courier.</p>
+        <p class="intro-copy">Take the call. Make the order. Send it.</p>
+      </section>
+      <section class="customer-call" aria-label="Customer phone call">
+        <div>
+          <p class="call-label" id="call-state">incoming call</p>
+          <h2 id="caller-name"></h2>
+          <p id="caller-location"></p>
+        </div>
+        <blockquote id="caller-words"></blockquote>
       </section>
       <div class="kitchen">
         <section class="workbench" aria-label="3D pizza kitchen">
@@ -58,6 +67,15 @@
           </div>
         </section>
         <aside class="recipe-panel">
+          <section class="order-ticket" aria-label="Requested pizza">
+            <p class="call-label">customer order</p>
+            <h2 id="pizza-request"></h2>
+            <ul id="requested-toppings"></ul>
+            <small
+              >Counts are extra toppings. Sauce and mozzarella are already on the base. Match the
+              ticket for 100 points.</small
+            >
+          </section>
           <h2 id="panel-title">Build the order.</h2>
           <p class="panel-copy" id="panel-copy">
             Sauce and mozzarella included.<br />Choose extra toppings below.
@@ -124,6 +142,17 @@
               <li data-phase="hook"><span>03</span> attach tow line</li>
               <li data-phase="ride"><span>04</span> depart</li>
             </ol>
+          </div>
+          <section id="order-receipt" aria-label="Delivery receipt" aria-live="polite" hidden>
+            <p class="call-label">order accuracy</p>
+            <p class="score-number"><strong id="order-score"></strong><span> / 100</span></p>
+            <h2 id="receipt-title"></h2>
+            <p id="score-details"></p>
+            <p id="receipt-time"></p>
+          </section>
+          <div class="round-timer">
+            <div id="order-clock" role="timer" aria-live="off">2:00 left</div>
+            <p id="clock-note"></p>
           </div>
           <button id="primary" class="primary" disabled>
             <span>bake pizza</span><span>↗</span>

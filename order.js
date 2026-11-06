@@ -1,3 +1,4 @@
+import { createOrderTicket } from './order-ticket.js';
 import { bakingPose, ovenLayout } from './oven-motion.js';
 import { createCourier } from './courier.js';
 import { maxToppings, decodeRecipe, randomSpot } from './recipe.js';
@@ -19,6 +20,7 @@ export function startOrder({
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const { carriage, pizza, slices, flames, makeTopping, sliceIndex, setCooked } = kitchen;
   const courier = createCourier(scene);
+  const ticket = createOrderTicket();
   let courierStarted = 0;
   let courierPhase = '';
   function restoreKitchen() {
@@ -39,6 +41,7 @@ export function startOrder({
   let bitten = false;
   const bakeSeconds = 8;
   function update() {
+    ticket.update(toppings);
     kitchen.updateSauce(toppings, performance.now());
     updateOrderView({ mode, toppingCount: toppings.length, bitten });
   }
@@ -80,6 +83,7 @@ export function startOrder({
       placedAt: animate && !reduceMotion ? performance.now() : -Infinity
     };
     toppings.push(topping);
+    if (animate) ticket.begin();
     update();
   }
   function removeAll() {
@@ -91,6 +95,7 @@ export function startOrder({
   // Reset every part of an order together. Recipe loading uses the same path
   // without removing its URL, including when it interrupts baking or pickup.
   function clearOrder() {
+    ticket.reset();
     restoreKitchen();
     removeAll();
     mode = 'prep';
@@ -112,6 +117,7 @@ export function startOrder({
   }
   function bake() {
     if (mode !== 'prep') return;
+    ticket.begin();
     mode = 'baking';
     bakingStarted = performance.now();
     $('progress').value = 0;
@@ -171,6 +177,7 @@ export function startOrder({
   });
   $('primary').addEventListener('click', () => {
     if (mode === 'dispatched') {
+      ticket.next();
       reset();
       return;
     }
@@ -240,6 +247,7 @@ export function startOrder({
       }
       if (delivery.done) {
         mode = 'dispatched';
+        ticket.finish(toppings, bitten);
         update();
         say('Pizza collected. Courier outbound.');
       }
@@ -277,6 +285,7 @@ export function startOrder({
     s.position.x += (Math.cos(a) * sliceTarget * 0.8 - s.position.x) * Math.min(dt * 7, 1);
     s.position.z += (-Math.sin(a) * sliceTarget * 0.8 - s.position.z) * Math.min(dt * 7, 1);
     s.position.y += (sliceTarget * 0.28 - s.position.y) * Math.min(dt * 7, 1);
+    ticket.tick(now);
     kitchen.updateSauce(toppings, now);
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
