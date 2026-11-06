@@ -3,6 +3,7 @@ import { createGeometry } from './geometry.js';
 import { createKitchenRoom } from './kitchen-room.js';
 import { createPizzaOven } from './pizza-oven.js';
 import { ovenLayout } from './oven-motion.js';
+import { createIngredientStation } from './ingredient-station.js';
 export function createKitchen(scene) {
   const root = new THREE.Group();
   scene.add(root);
@@ -11,8 +12,6 @@ export function createKitchen(scene) {
   const material = (color, extra = {}) =>
     new THREE.MeshStandardMaterial({ color, roughness: 0.8, ...extra });
   const mats = {
-    wood: material('#b88e59'),
-    edge: material('#79532f'),
     crust: material('#e9b96b'),
     dough: material('#edc986'),
     cheese: material('#f4d575', { roughness: 0.52 }),
@@ -41,9 +40,9 @@ export function createKitchen(scene) {
   const { flames } = createPizzaOven(root);
   // Flour bowl, basil pot and a folded tea towel.
   const bowl = mesh(new THREE.CylinderGeometry(0.55, 0.38, 0.36, 32), mats.cream);
-  bowl.position.set(-3.6, -0.03, -1.65);
+  bowl.position.set(-5.3, -0.03, -4.2);
   const flour = mesh(new THREE.CylinderGeometry(0.49, 0.49, 0.03, 32), material('#f9efd9'));
-  flour.position.set(-3.6, 0.16, -1.65);
+  flour.position.set(-5.3, 0.16, -4.2);
   const pot = mesh(new THREE.CylinderGeometry(0.32, 0.24, 0.5, 24), mats.brick);
   pot.position.set(3.4, -0.05, -2.5);
   for (let i = 0; i < 8; i++) {
@@ -60,7 +59,7 @@ export function createKitchen(scene) {
     );
     leaf.rotation.z = a;
   }
-  const cloth = box(1.1, 0.035, 1.65, mats.towel, root, 3.4, -0.27, 0.1);
+  const cloth = box(1.1, 0.035, 1.65, mats.towel, root, 5.1, -0.27, -4.3);
   cloth.rotation.y = -0.3;
   for (let i = 0; i < 5; i++) {
     const stripe = box(0.025, 0.04, 1.65, mats.cream, cloth, -0.4 + i * 0.2, 0.03, 0);
@@ -69,18 +68,21 @@ export function createKitchen(scene) {
 
   const carriage = new THREE.Group();
   root.add(carriage);
-  const peel = mesh(
-    new THREE.CylinderGeometry(ovenLayout.peelRadius, ovenLayout.peelRadius, 0.16, 80),
-    mats.wood,
-    carriage
-  );
-  peel.position.y = -0.1;
-  box(0.48, 0.16, 2.1, mats.edge, carriage, 0, -0.1, 3.1);
-  for (let i = 0; i < 9; i++) {
-    const x = -2 + i * 0.5;
-    const length = 2 * Math.sqrt(2.6 ** 2 - x * x);
-    box(0.012, 0.004, length, mats.edge, carriage, x, -0.016, 0);
+  carriage.position.y = ovenLayout.prepHeight;
+  const fieldMaterial = material('#52deef', {
+    emissive: '#32c9e8',
+    emissiveIntensity: 2,
+    transparent: true,
+    opacity: 0.7
+  });
+  for (const radius of [2.35, 2.55]) {
+    const ring = mesh(new THREE.TorusGeometry(radius, 0.018, 6, 80), fieldMaterial, root);
+    ring.rotation.x = -Math.PI / 2;
+    ring.position.y = 0.15;
   }
+  const fieldLight = new THREE.PointLight('#31dbe9', 8, 7, 2);
+  fieldLight.position.set(0, 0.4, 1);
+  root.add(fieldLight);
   const pizza = new THREE.Group();
   carriage.add(pizza);
   const slices = [];
@@ -230,6 +232,8 @@ export function createKitchen(scene) {
     }
     return group;
   }
+
+  createIngredientStation(root, makeTopping);
 
   function setCooked(t) {
     mats.crust.color.set('#e9b96b').lerp(new THREE.Color('#b96d2e'), t);

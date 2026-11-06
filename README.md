@@ -8,7 +8,7 @@ she has a magnetic wrist launcher, a courier bag, knee pads and a smartwheel boa
 
 reduced motion shows a still handoff instead of the moving chase.
 
-black background, monospace and the same syntax colors as my website. inside the shop is a warm italian kitchen with tiled walls, stone counters, wood cabinets and a brick oven. the courier heads out into the city at night.
+black background, monospace and the same syntax colors as my website. inside the shop is an italian kitchen retrofitted with neon lighting, dark counters and a wall display. the pizza floats between stocked ingredient counters, with a brick oven behind it. the courier heads out into the city at night.
 
 pick a topping and tap the cheese. drag sideways to turn it, or use the arrow buttons. add a handful if you want less precision. the house special makes one for you.
 
@@ -70,7 +70,7 @@ the normal order path is `prep → baking → baked → pickup → dispatched`. 
 
 opening a recipe replaces the current order and resets its rotation, slice and oven position. a broken link leaves the current order alone. browser checks compare the resulting pizza with a fresh recipe after interrupting baking, inspection and pickup.
 
-the oven has a separate firebox below its stone deck. the peel lifts before entering, stays above the fire, then comes back out before lowering onto the counter. `oven-motion.js` shares its dimensions with `pizza-oven.js`. clearance checks cover the whole entry and exit path.
+the oven has a separate firebox below its stone deck. the floating pizza rises into the oven, stays above the fire, then returns to its hovering position. `oven-motion.js` shares its dimensions with `pizza-oven.js`. clearance checks cover the whole entry and exit path. topping placement follows the pizza height. `ingredient-station.js` builds the surrounding trays using the same shared ingredient models.
 
 the order controller owns state. scene files own geometry. the view reads state and updates the page. keep those boundaries when adding things.
 

@@ -1,4 +1,4 @@
-import { bakingPose } from './oven-motion.js';
+import { bakingPose, ovenLayout } from './oven-motion.js';
 import { createCourier } from './courier.js';
 import { maxToppings, decodeRecipe, randomSpot } from './recipe.js';
 import { updateOrderView, updateCourierPhase, say } from './order-view.js';
@@ -83,7 +83,7 @@ export function startOrder({
     restoreKitchen();
     removeAll();
     mode = 'prep';
-    carriage.position.set(0, 0, 0);
+    carriage.position.set(0, ovenLayout.prepHeight, 0);
     carriage.scale.setScalar(1);
     sliceTarget = 0;
     slices[6].position.set(0, 0, 0);
@@ -243,7 +243,7 @@ export function startOrder({
       fireLight.intensity = 18;
       if (t === 1) {
         mode = 'baked';
-        carriage.position.set(0, 0, 0);
+        carriage.position.set(0, ovenLayout.prepHeight, 0);
         carriage.scale.setScalar(1);
         update();
         say('Thermal cycle complete. Order ready for pickup.');
