@@ -60,6 +60,7 @@ export function startOrder({
   function addTopping(type, x, z, angle = Math.random() * Math.PI * 2, animate = true) {
     if (mode !== 'prep' || toppings.length >= maxToppings) return;
     const group = makeTopping(type);
+    if (type === 'sauce') group.visible = false;
     const parent = slices[sliceIndex(x, z)];
     parent.add(group);
     let stack = 0;
@@ -68,7 +69,16 @@ export function startOrder({
     const y = 0.3 + stack;
     group.position.set(x, animate && !reduceMotion ? y + 2 : y, z);
     group.rotation.y = angle;
-    const topping = { type, x, z, angle, group, y, velocity: 0 };
+    const topping = {
+      type,
+      x,
+      z,
+      angle,
+      group,
+      y,
+      velocity: 0,
+      placedAt: animate && !reduceMotion ? performance.now() : -Infinity
+    };
     toppings.push(topping);
     update();
   }
@@ -111,23 +121,30 @@ export function startOrder({
   document.querySelectorAll('[data-topping]').forEach((button) =>
     button.addEventListener('click', () => {
       selected = button.dataset.topping;
+      $('sprinkle').textContent = selected === 'sauce' ? 'spread sauce' : '+ add 5';
       document
         .querySelectorAll('[data-topping]')
         .forEach((b) => b.setAttribute('aria-pressed', b === button));
-      say(`${button.textContent.trim()} selected. Tap the pizza or add 5.`);
+      say(
+        selected === 'sauce'
+          ? 'Tap the pizza to pour sauce, or spread it across the whole pizza.'
+          : `${button.textContent.trim()} selected. Tap the pizza or add 5.`
+      );
     })
   );
   $('sprinkle').addEventListener('click', () => {
     if (mode !== 'prep') return;
     const before = toppings.length;
-    for (let i = 0; i < 5; i++) {
-      const p = randomSpot();
+    for (let i = 0; i < (selected === 'sauce' ? 1 : 5); i++) {
+      const p = selected === 'sauce' ? { x: 0, z: 0, angle: 0 } : randomSpot();
       addTopping(selected, p.x, p.z, p.angle);
     }
     say(
       toppings.length === before
         ? 'Topping limit reached. Undo a topping or bake the pizza.'
-        : `Added ${toppings.length - before} toppings.`
+        : selected === 'sauce'
+          ? 'Sauce spread across the pizza.'
+          : `Added ${toppings.length - before} toppings.`
     );
   });
   $('undo').addEventListener('click', () => {
@@ -261,6 +278,7 @@ export function startOrder({
     s.position.x += (Math.cos(a) * sliceTarget * 0.8 - s.position.x) * Math.min(dt * 7, 1);
     s.position.z += (-Math.sin(a) * sliceTarget * 0.8 - s.position.z) * Math.min(dt * 7, 1);
     s.position.y += (sliceTarget * 0.28 - s.position.y) * Math.min(dt * 7, 1);
+    kitchen.updateSauce(toppings, now);
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
   }

@@ -1,3 +1,4 @@
+import { createSauceSurface } from './sauce-surface.js';
 import { sliceShape } from './slice-shape.js';
 import * as THREE from './vendor/three.module.js';
 import { createGeometry } from './geometry.js';
@@ -95,6 +96,7 @@ export function createKitchen(scene) {
   }
   const pizza = new THREE.Group();
   carriage.add(pizza);
+  const sauceSurface = createSauceSurface();
   const slices = [];
   const biteLayers = [];
   let isBitten = false;
@@ -135,12 +137,19 @@ export function createKitchen(scene) {
     base.position.y = 0.025;
     function layer(radius, y, mat) {
       const sh = sliceShape(start, radius);
-      const m = mesh(new THREE.ShapeGeometry(sh, 24), mat, group);
+      const geometry = new THREE.ShapeGeometry(sh, 24);
+      if (mat === sauceSurface.material) sauceSurface.mapGeometry(geometry);
+      const m = mesh(geometry, mat, group);
       if (i === 6)
         biteLayers.push({
           mesh: m,
           whole: m.geometry,
-          bitten: new THREE.ShapeGeometry(sliceShape(start, radius, true), 24)
+          bitten:
+            mat === sauceSurface.material
+              ? sauceSurface.mapGeometry(
+                  new THREE.ShapeGeometry(sliceShape(start, radius, true), 24)
+                )
+              : new THREE.ShapeGeometry(sliceShape(start, radius, true), 24)
         });
       m.rotation.x = -Math.PI / 2;
       m.position.y = y;
@@ -148,6 +157,7 @@ export function createKitchen(scene) {
     }
     layer(1.99, 0.241, mats.sauce);
     layer(1.91, 0.247, mats.cheese);
+    layer(1.91, 0.257, sauceSurface.material);
     const rim = mesh(
       new THREE.TorusGeometry(2.03, 0.17, 10, 20, Math.PI / 4 + 0.008),
       mats.crust,
@@ -279,6 +289,7 @@ export function createKitchen(scene) {
     slices,
     flames,
     makeTopping,
+    updateSauce: sauceSurface.update,
     sliceIndex,
     setCooked,
     setBitten(value) {
