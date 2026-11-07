@@ -33,7 +33,7 @@ jobs:
         if: always()
         with:
           name: browser-screenshots
-          path: screenshots/
+          path: artifacts/screenshots/
           retention-days: 7
       - run: npm run build
       - uses: actions/upload-pages-artifact@v4

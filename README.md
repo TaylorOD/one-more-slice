@@ -1,106 +1,72 @@
 # Snowcrust
 
-Snowcrust is the project. C0saN0stra Pizza is the franchise you work for. a customer calls from the franchise district, gives you an order and rates it after delivery. add toppings, fire the oven and send the courier.
+make the pizza. get it out the door.
 
-call the courier after baking. she collects the box while rolling, skates up to the street and hooks a passing car. traffic keeps moving in both directions.
+[play Snowcrust](https://www.taylordorsett.com/snowcrust/)
 
-she has a magnetic wrist launcher, a courier bag, knee pads and a smartwheel board. the cable shoots out, catches the bumper and pulls her into a crouch. replay pickup runs it again without rebuilding the pizza.
+a small 3d pizza project set around C0saN0stra Pizza. take a call, match the toppings, bake it and send a RadiKS kourier into traffic.
 
-reduced motion shows a still handoff instead of the moving chase.
+Snowcrust is the project name. C0saN0stra Pizza is the restaurant.
 
-black background, monospace and the same syntax colors as my website. inside the shop is an italian kitchen retrofitted with neon lighting, dark counters and a wall display. the pizza floats between stocked ingredient counters, with a brick oven behind it. the courier heads out into the city at night.
+## how it works
 
-14 toppings, including bacon, red onion, jalapeño and anchovies. the trays use the same meshes as the pizza. pick a topping and tap the cheese. drag sideways to turn it, or use the arrow buttons. add a handful if you want less precision. the house special makes one for you. solid toppings land with a small rebound and squash, then settle. sauce still spreads. reduced motion and old recipe links place toppings directly.
+six callers order from a menu of 14 toppings. sauce and mozzarella are already on the base. the ticket shows the extras they want.
 
-old recipe links still open, but there is no sharing button.
+you get two minutes once prep starts. the ticket is already 28 minutes into the franchise's thirty minute guarantee. the clock keeps running through pickup. being late does not stop the order.
 
-sauce spreads across the pizza instead of stacking as pieces. spread sauce coats the whole pizza. undo removes the last pour. `sauce-surface.js` paints one shared texture for all slices and stops updating it once the sauce settles.
+the customer scores the pizza from 0 to 100 based on the toppings. extras count against you. inspecting a slice lets you take a bite, which costs 10 points. delivery time is reported separately.
 
-six original callers rotate through the neighborhood. each has a named pizza and a ticket with exact topping counts. sauce and mozzarella are already on the base. ticket counts are extras.
-
-the two minute timer starts with your first topping or when you bake. it keeps running through pickup. going over time does not end the round. the receipt records an on time or late delivery.
-
-accuracy is 0 to 100. matched toppings divided by requested toppings plus extras, rounded to the nearest whole point. taking a bite costs 10 points. time is reported separately. an exact order gets 100. an empty or completely wrong order gets 0.
-
-reset clears the pizza and timer but keeps the caller. next call changes the customer. replay keeps the original score and delivery time.
+reset clears the pizza and timer but keeps the caller. next call changes the customer. replay shows the pickup again with the original score and time.
 
 ## run it
 
-```sh
-npm install
-npm run build
-npm start
-```
+use Node 24.
 
-open http://localhost:5177
+    npm ci
+    npm run build
+    npm start
 
-## tests
+open [localhost:5177](http://localhost:5177). rebuild after changing the source. the server serves dist, so there is no automatic reload.
 
-```sh
-npm test
-```
+## check it
 
-install the browser once with `npx playwright install chromium`, then run `npm run test:browser`. it builds the site and starts its own server on a free port.
+    npm run lint
+    npm run format:check
+    npm test
+    npx playwright install chromium
+    npm run test:browser
 
-github runs both sets of tests on every pr and before publishing. browser screenshots are saved with the workflow run, including failed runs.
+install Chromium once. on Linux, use npx playwright install with the --with-deps option if the browser needs system packages.
 
-## working on it
+the browser checks build their own copy and start a server on a free port. they cover desktop, mobile, baking, pickup, scoring, reset, old recipe links and reduced motion. screenshots go in artifacts/screenshots.
 
-use node 24, which is also what github runs. install the exact dependencies with `npm ci`.
+use npm run format to format the code. look at the actual changed area on desktop and mobile before pushing. add screenshots to the PR.
 
-```sh
-npm run lint
-npm run format:check
-npm test
-npm run test:browser
-```
+## where things live
 
-`npm run format` formats the source. lint and formatting checks run in github too. screenshots are evidence to look at, not an automatic visual approval. check the part you changed on desktop and a phone before pushing.
+| folder         | what belongs there                                      |
+| -------------- | ------------------------------------------------------- |
+| src/kitchen/   | pizza, ingredients, oven, peel and cooking motion       |
+| src/delivery/  | kourier, traffic and pickup motion                      |
+| src/order/     | order flow, callers, score, timer and recipe data       |
+| src/ui/        | page updates and pointer controls                       |
+| src/scene/     | renderer, camera, city and shared scene helpers         |
+| src/styles/    | page styles                                             |
+| scripts/       | build, local server and browser test runner             |
+| tests/unit/    | scoring, recipes and motion checks without a browser    |
+| tests/browser/ | browser flows and screenshot helpers                    |
+| docs/          | architecture, world references and saved PR screenshots |
+| artifacts/     | generated test output, ignored by git                   |
+| dist/          | generated site, ignored by git                          |
 
-## code layout
+index.html is the page. src/app.js connects the scene, kitchen and order controller.
 
-| file                | job                                                            |
-| ------------------- | -------------------------------------------------------------- |
-| `app.js`            | put the scene, city, kitchen and order controller together     |
-| `scene.js`          | renderer, lighting, resize handling and camera framing         |
-| `city.js`           | ground and buildings at roughly one metre per unit             |
-| `geometry.js`       | small mesh helpers and shared sphere geometry                  |
-| `kitchen.js`        | oven, pizza, toppings and cooked appearance                    |
-| `kitchen-room.js`   | kitchen walls, counters, shelves and room lighting             |
-| `courier.js`        | street, courier, traffic and pickup animation                  |
-| `courier-motion.js` | pickup position and courier path shared with clearance tests   |
-| `topping-motion.js` | elapsed time poses for the drop, rebound and settling          |
-| `order.js`          | order state, transitions, controls and frame loop              |
-| `orders.js`         | callers, scoring and round timing without browser dependencies |
-| `order-ticket.js`   | caller transcript, ticket counts, clock and receipt            |
-| `order-view.js`     | ticket text, buttons and delivery steps                        |
-| `pizza-input.js`    | pointer capture, turning and topping placement                 |
-| `recipe.js`         | recipe encoding and validation without browser dependencies    |
+[architecture and editing guide](docs/ARCHITECTURE.md) / [world references](docs/WORLD.md)
 
-the normal order path is `prep → baking → baked → pickup → dispatched`. inspecting a slice toggles between `baked` and `sliced`. reset returns to `prep`, including during baking or pickup. replay starts another pickup with the same pizza.
+## publishing
 
-opening a recipe replaces the current order and resets its rotation, slice and oven position. a broken link leaves the current order alone. browser checks compare the resulting pizza with a fresh recipe after interrupting baking, inspection and pickup.
+GitHub Actions runs the checks on PRs and on main. merging to main publishes through GitHub Pages.
 
-the oven has a separate firebox below its stone deck. the perforated metal peel has a narrow neck, bolted collar and separate wooden grip. the floating pizza rises into the oven, stays above the fire, then returns to its hovering position. `oven-motion.js` shares its dimensions with `pizza-oven.js`. clearance checks cover the whole entry and exit path. topping placement follows the pizza height. `ingredient-station.js` builds the surrounding trays using the same shared ingredient models.
+the build copies the page, source and Three.js into dist. tests, docs and screenshots are not published. everything is static. there is no backend.
 
-the order controller owns state. scene files own geometry. the view reads state and updates the page. keep those boundaries when adding things.
-
-toppings share their geometry and materials for the life of the page. clearing a topping removes its meshes without disposing shared resources. a new topping type should reuse resources too. the browser test counts gpu buffers across repeated orders to catch leaks.
-
-the pickup counter is attached to the side of the shop. the courier follows a clear walkway and dropped curb before hooking the car. clearance tests cover the shop, counter and rear bumper through the full route. the box meets her hand at pickup without jumping.
-
-the courier uses elapsed seconds rather than accumulated frame steps. reset, replay and a slow frame should all land on the same pose. the timeline checks use a paused browser clock so they also work on slower github runners. pickup runs at 1.2 times the original speed, with traffic and the tow line on the same timeline.
-
-the minimatch override keeps the lint tools on its patched release. it is a development dependency and is not shipped with the site.
-
-## where it fits
-
-keep it as a separate project at /snowcrust/ with a pizza_delivery() link from the projects page. the homepage stays light. the game shares the site's colors and type, with a back home link.
-
-the project address is https://www.taylordorsett.com/snowcrust/. changes deploy after merging to main.
-
-the dist folder is the whole site. it works on static hosting. recipe links work once the site has a public address.
-
-built with three.js. needs a browser with webgl.
-
-World details and adaptation choices are in [WORLD.md](WORLD.md).
+built with Three.js. needs WebGL. reduced motion uses a still handoff. old recipe links still work, but there is no share button.
