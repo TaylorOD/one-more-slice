@@ -1,3 +1,4 @@
+import { toppingPose } from './topping-motion.js';
 import { createOrderTicket } from './order-ticket.js';
 import { bakingPose, ovenLayout } from './oven-motion.js';
 import { createCourier } from './courier.js';
@@ -79,7 +80,6 @@ export function startOrder({
       angle,
       group,
       y,
-      velocity: 0,
       placedAt: animate && !reduceMotion ? performance.now() : -Infinity
     };
     toppings.push(topping);
@@ -254,12 +254,12 @@ export function startOrder({
     }
     pizza.rotation.y +=
       (rotationTarget - pizza.rotation.y) * (reduceMotion ? 1 : Math.min(dt * 12, 1));
-    for (const t of toppings)
-      if (t.group.position.y > t.y) {
-        t.velocity += dt * 14;
-        t.group.position.y -= t.velocity * dt;
-        if (t.group.position.y < t.y) t.group.position.y = t.y;
-      }
+    for (const topping of toppings) {
+      if (topping.type === 'sauce') continue;
+      const pose = toppingPose((now - topping.placedAt) / 1000);
+      topping.group.position.y = topping.y + pose.offset;
+      topping.group.scale.set(pose.scaleXZ, pose.scaleY, pose.scaleXZ);
+    }
     flames.forEach((f, i) => {
       f.scale.y = reduceMotion ? 1 : 0.8 + Math.sin(now * 0.008 + i * 2) * 0.2;
     });
