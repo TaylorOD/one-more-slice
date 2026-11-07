@@ -6,7 +6,7 @@ export const customers = [
   {
     name: 'Mara Voss',
     job: 'burbclave gate operator',
-    neighborhood: 'Valley franchise strip',
+    neighborhood: 'TMAWH burbclave',
     pizza: 'Gatehouse double meat',
     call: 'Deliverator. Gate six. The scanner thinks I am a visitor again. Pepperoni and sausage. Leave it at the guard window before the next shift locks me out.',
     toppings: { pepperoni: 5, sausage: 5 }
@@ -14,14 +14,14 @@ export const customers = [
   {
     name: 'Jax Relay',
     job: 'freelance data kourier',
-    neighborhood: 'Long Beach container stacks',
+    neighborhood: 'U-Stor-It, Inglewood',
     pizza: 'Night shift chicken',
-    call: 'C0saN0stra? Container 88, upper deck. Chicken, peppers and extra sauce. Knock twice. The doorbell belongs to a company I no longer work for.',
+    call: 'C0saN0stra? Storage unit 88. Chicken, peppers and extra sauce. Knock twice. The doorbell belongs to a company I no longer work for.',
     toppings: { chicken: 5, pepper: 5, sauce: 1 }
   },
   {
     name: 'Nina Static',
-    job: 'Metaverse club technician',
+    job: 'The Black Sun avatar technician',
     neighborhood: 'LAX motel district',
     pizza: 'Afterhours mushroom',
     call: 'Room 19. Mushrooms, olives and basil. The club is still open but my avatar can finish the shift. I need actual food.',
@@ -30,7 +30,7 @@ export const customers = [
   {
     name: 'Vic Sato',
     job: 'franchise tow dispatcher',
-    neighborhood: 'Harbor toll road',
+    neighborhood: 'Greater Hong Kong franchulate',
     pizza: 'Tollbooth special',
     call: 'Dispatch booth, under the blue sign. Pepperoni, pineapple, extra cheese. Tell your kourier the east ramp is clear. I just towed the barricade.',
     toppings: { pepperoni: 5, pineapple: 5, cheese: 5 }
@@ -38,7 +38,7 @@ export const customers = [
   {
     name: 'Rae Switch',
     job: 'private road signal tech',
-    neighborhood: 'Valley burbclave perimeter',
+    neighborhood: 'TMAWH service perimeter',
     pizza: 'Perimeter heat',
     call: 'C0saN0stra. Signal cabinet nine. Bacon, red onion and jalapeños. The light is stuck on red. Your kourier can use the service lane.',
     toppings: { bacon: 5, onion: 5, jalapeno: 5 }
@@ -46,9 +46,9 @@ export const customers = [
   {
     name: 'Len Port',
     job: 'container lease broker',
-    neighborhood: 'Long Beach cargo district',
+    neighborhood: 'U-Stor-It, Inglewood',
     pizza: 'Dockside salt',
-    call: 'Anchovies, red onion, basil. Stack four, ground level. Ignore the eviction notice. It belongs to the previous tenant. So does the lock.',
+    call: 'Anchovies, red onion, basil. Storage unit four. Ignore the eviction notice. It belongs to the previous tenant. So does the lock.',
     toppings: { anchovy: 5, onion: 5, basil: 5 }
   }
 ];

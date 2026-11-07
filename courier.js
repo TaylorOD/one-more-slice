@@ -24,9 +24,9 @@ export function createCourier(scene) {
     dark = material('#10161b'),
     rubber = material('#171b21');
   const alloy = material('#8e9ca4', { metalness: 0.75, roughness: 0.3 }),
-    jacket = material('#765783'),
-    trim = material('#c59c5c');
-  const pants = material('#273344'),
+    jacket = material('#ed731e'),
+    trim = material('#2679bb');
+  const pants = material('#22527f'),
     skin = material('#bc8b70'),
     hair = material('#392922'),
     bagMat = material('#8c4542');
@@ -272,6 +272,8 @@ export function createCourier(scene) {
     for (let i = 0; i < 3; i++)
       box(torso, 0.1 - i * 0.08, 0.02, z, 0.035, 0.015, 0.015, trim).rotation.z = 0.3;
   }
+  // Orange and blue armorgel uniform, with an outward facing employer patch.
+  label(torso, 'RadiKS', 0.34, 0.09, 0, 0.19, 0.295, '#ffffff', '#22527f');
   box(torso, -0.25, 0.02, 0, 0.16, 0.5, 0.4, bagMat);
   box(torso, -0.34, 0.03, 0, 0.025, 0.36, 0.28, dark);
   box(torso, 0, 0.31, 0, 0.5, 0.1, 0.58, steel);
@@ -335,6 +337,10 @@ export function createCourier(scene) {
   const logo = label(parcel, 'C0saN0stra', 0.75, 0.19, 0, 0.072, 0, '#ac4439', '#bbae85');
   logo.rotation.x = -Math.PI / 2;
   box(parcel, 0, 0.075, 0, 0.045, 0.009, 0.95, bagMat);
+  // The address travels in the box. A recessed status panel leaves the lid clear.
+  box(parcel, 0.28, 0.079, -0.29, 0.24, 0.012, 0.19, dark);
+  for (let i = 0; i < 5; i++) box(parcel, 0.2 + i * 0.035, 0.088, -0.29, 0.012, 0.008, 0.12, white);
+  box(parcel, 0.41, 0.08, -0.29, 0.04, 0.015, 0.12, cyan);
   for (const x of [-0.35, 0.35])
     for (let i = 0; i < 3; i++) box(parcel, x, 0, -0.18 + i * 0.18, 0.035, 0.025, 0.04, dark);
   const cableGeometry = new THREE.BufferGeometry().setFromPoints(

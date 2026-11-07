@@ -56,7 +56,7 @@ export function updateOrderView({ mode, toppingCount, bitten = false }) {
     $('panel-title').innerHTML = mode === 'pickup' ? 'Kourier pickup.' : 'Pizza delivered.';
     $('panel-copy').textContent =
       mode === 'pickup'
-        ? 'Kourier collecting cargo. Next stop: the customer.'
+        ? 'RadiKS pickup. Delivery address loaded in the smart box.'
         : 'Check the receipt, replay the pickup or take the next call.';
     $('primary').innerHTML =
       mode === 'pickup'
@@ -75,9 +75,9 @@ export function updateOrderView({ mode, toppingCount, bitten = false }) {
 }
 export function updateCourierPhase(phase) {
   const messages = {
-    collect: ['Collecting cargo', 'Kourier collecting the pizza box.'],
+    collect: ['Collecting cargo', 'RadiKS kourier collecting the smart box.'],
     approach: ['Approaching traffic', 'Traffic moving. Kourier looking for a tow.'],
-    hook: ['Attaching tow line', 'Tow line fired. Catching the next car.'],
+    hook: ['Attaching tow line', 'Electromagnetic harpoon attached. Catching the next car.'],
     ride: ['Leaving the franchise', 'Tow line attached. Kourier outbound.']
   };
   $('delivery-phase').textContent = messages[phase][0];

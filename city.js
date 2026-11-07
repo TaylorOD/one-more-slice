@@ -1,3 +1,4 @@
+import { addFranchiseStreet } from './franchise-details.js';
 import * as THREE from './vendor/three.module.js';
 import { createGeometry } from './geometry.js';
 // Distances use roughly one metre per unit, matching the courier and cars.
@@ -56,6 +57,7 @@ export function createCity(scene) {
       }
     box(1.2, 2.4, 0.025, doorMaterial, city, x, 0.9, z + 3.02);
   }
+  addFranchiseStreet(root);
   return {
     setVisible(visible) {
       root.visible = visible;

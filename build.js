@@ -14,6 +14,7 @@ for (const file of [
   'courier-motion.js',
   'scene.js',
   'city.js',
+  'franchise-details.js',
   'geometry.js',
   'kitchen.js',
   'sauce-surface.js',
