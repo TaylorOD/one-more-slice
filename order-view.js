@@ -28,10 +28,10 @@ export function updateOrderView({ mode, toppingCount, bitten = false }) {
           ? '<span>inspect slice</span><span>↗</span>'
           : '<span>return slice</span><span>↙</span>';
   $('panel-title').innerHTML =
-    mode === 'prep' ? 'Build the order.' : mode === 'baking' ? 'Baking.' : 'Ready for pickup.';
+    mode === 'prep' ? 'Load the ticket.' : mode === 'baking' ? 'Baking.' : 'Cargo ready.';
   $('panel-copy').innerHTML =
     mode === 'prep'
-      ? 'Sauce and mozzarella included.<br>Choose extra toppings below.'
+      ? 'Sauce and mozzarella included.<br>Load the extras on the ticket.'
       : mode === 'baking'
         ? 'Toppings are locked while the pizza bakes.'
         : 'Inspect a slice or dispatch the pizza.';
@@ -56,17 +56,17 @@ export function updateOrderView({ mode, toppingCount, bitten = false }) {
     $('panel-title').innerHTML = mode === 'pickup' ? 'Kourier pickup.' : 'Pizza delivered.';
     $('panel-copy').textContent =
       mode === 'pickup'
-        ? 'The skateboard courier collects the box and catches a tow.'
+        ? 'Kourier collecting cargo. Next stop: the customer.'
         : 'Check the receipt, replay the pickup or take the next call.';
     $('primary').innerHTML =
       mode === 'pickup'
         ? '<span>pickup in progress</span>'
         : '<span>next call</span><span>↗</span>';
     $('scene-label').textContent = 'STREET';
-    $('oven-label').textContent = mode === 'pickup' ? 'COURIER ACTIVE' : 'DISPATCH COMPLETE';
+    $('oven-label').textContent = mode === 'pickup' ? 'KOURIER ACTIVE' : 'CARGO DELIVERED';
     $('scene-instruction').textContent =
-      mode === 'pickup' ? 'courier pickup and magnetic tow' : 'delivery animation complete';
-    $('delivery-phase').textContent = mode === 'pickup' ? 'Collecting pizza' : 'Pickup complete';
+      mode === 'pickup' ? 'kourier pickup and bumper tow' : 'delivery confirmed';
+    $('delivery-phase').textContent = mode === 'pickup' ? 'Collecting cargo' : 'Delivery confirmed';
     document.querySelectorAll('[data-phase]').forEach((item) => {
       item.classList.remove('active');
       item.classList.toggle('complete', mode === 'dispatched');
@@ -75,10 +75,10 @@ export function updateOrderView({ mode, toppingCount, bitten = false }) {
 }
 export function updateCourierPhase(phase) {
   const messages = {
-    collect: ['Collecting pizza', 'Courier collecting the pizza box.'],
-    approach: ['Approaching traffic', 'Traffic moving. Courier approaching the street.'],
+    collect: ['Collecting cargo', 'Kourier collecting the pizza box.'],
+    approach: ['Approaching traffic', 'Traffic moving. Kourier looking for a tow.'],
     hook: ['Attaching tow line', 'Tow line fired. Catching the next car.'],
-    ride: ['Leaving the franchise', 'Tow line attached. Courier departing.']
+    ride: ['Leaving the franchise', 'Tow line attached. Kourier outbound.']
   };
   $('delivery-phase').textContent = messages[phase][0];
   const phases = ['collect', 'approach', 'hook', 'ride'];

@@ -42,8 +42,8 @@ export function createOrderTicket() {
       : !round.started
         ? 'starts when you add toppings or bake'
         : late
-          ? 'running late. finish the delivery.'
-          : 'get it there in two minutes';
+          ? 'deadline missed. the customer is still waiting.'
+          : 'two minutes to the customer';
     if ($('clock-note').textContent !== note) $('clock-note').textContent = note;
   }
   function update(toppings) {
@@ -57,7 +57,7 @@ export function createOrderTicket() {
   function reset() {
     round.reset();
     $('order-receipt').hidden = true;
-    $('call-state').textContent = 'incoming call';
+    $('call-state').textContent = 'franchise line open';
     tick(performance.now());
   }
   renderCustomer();
@@ -68,7 +68,7 @@ export function createOrderTicket() {
     reset,
     begin() {
       round.start(performance.now());
-      $('call-state').textContent = 'order in progress';
+      $('call-state').textContent = 'ticket in production';
     },
     next() {
       round.next();
@@ -83,7 +83,7 @@ export function createOrderTicket() {
         result.score === 100
           ? 'Exactly what I ordered.'
           : result.score >= 70
-            ? 'Close. Check the ticket next time.'
+            ? 'Close. Read the ticket, Deliverator.'
             : 'That is not my order.';
       const notes = [];
       if (result.missing.length) notes.push(`Missing: ${result.missing.join(', ')}.`);

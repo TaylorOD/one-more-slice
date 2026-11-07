@@ -56,7 +56,7 @@ export function startOrder({
     city.setVisible(true);
     courier.start();
     update();
-    say('Courier approaching the pickup counter.');
+    say('Kourier rolling up to the cargo window.');
   }
   $('dispatch').addEventListener('click', dispatch);
   $('replay').addEventListener('click', dispatch);
@@ -113,7 +113,7 @@ export function startOrder({
     clearOrder();
     history.replaceState(null, '', location.pathname + location.search);
     update();
-    say('Order cleared. Sauce and mozzarella remain.');
+    say('Ticket cleared. Franchise standard base restored.');
   }
   function bake() {
     if (mode !== 'prep') return;
@@ -249,7 +249,7 @@ export function startOrder({
         mode = 'dispatched';
         ticket.finish(toppings, bitten);
         update();
-        say('Pizza collected. Courier outbound.');
+        say('Delivery confirmed. Customer receipt is in.');
       }
     }
     pizza.rotation.y +=
@@ -276,7 +276,7 @@ export function startOrder({
         carriage.position.set(0, ovenLayout.prepHeight, 0);
         carriage.scale.setScalar(1);
         update();
-        say('Pizza baked. Ready to dispatch.');
+        say('Cargo baked. Call the kourier.');
       }
     } else fireLight.intensity = 13;
     if (mode === 'prep') carriage.scale.setScalar(1);

@@ -6,9 +6,9 @@
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="A neon pizza kitchen. Choose toppings, bake a pizza and dispatch a skateboard courier."
+      content="Snowcrust: a C0saN0stra Pizza dispatch terminal. Take a call from the burbclaves, build the pizza and send a kourier into traffic."
     />
-    <title>C0saNostra Pizza | pizza dispatch</title>
+    <title>Snowcrust | franchise dispatch</title>
     <link
       rel="icon"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🍕%3C/text%3E%3C/svg%3E"
@@ -19,22 +19,22 @@
   </head>
   <body>
     <header class="header">
-      <a class="wordmark" href="./" aria-label="C0saNostra Pizza home"
-        ><span class="brand-dot">&gt;_</span> C0saNostra Pizza<span class="period">()</span></a
+      <a class="wordmark" href="./" aria-label="Snowcrust home"
+        ><span class="brand-dot">&gt;_</span> C0saN0stra Pizza<span class="period">()</span></a
       >
-      <span class="header-note">franchise kitchen</span>
+      <span class="header-note">Snowcrust / franchise kitchen</span>
       <a class="home-link" href="https://www.taylordorsett.com/">back to site</a>
     </header>
     <main>
       <section class="intro">
         <div>
-          <h1>Pizza dispatch.</h1>
+          <h1>Franchise dispatch.</h1>
         </div>
-        <p class="intro-copy">Take the call. Make the order. Send it.</p>
+        <p class="intro-copy">Read the ticket. Load the oven. Call the kourier.</p>
       </section>
-      <section class="customer-call" aria-label="Customer phone call">
+      <section class="customer-call" aria-label="Franchise order line">
         <div>
-          <p class="call-label" id="call-state">incoming call</p>
+          <p class="call-label" id="call-state">franchise line open</p>
           <h2 id="caller-name"></h2>
           <p id="caller-location"></p>
         </div>
@@ -68,7 +68,7 @@
         </section>
         <aside class="recipe-panel">
           <section class="order-ticket" aria-label="Requested pizza">
-            <p class="call-label">customer order</p>
+            <p class="call-label">dispatch ticket</p>
             <h2 id="pizza-request"></h2>
             <ul id="requested-toppings"></ul>
             <small
@@ -131,16 +131,16 @@
           </div>
 
           <button id="dispatch" class="primary" hidden>
-            <span>dispatch pizza</span><span>↗</span>
+            <span>call kourier</span><span>↗</span>
           </button>
           <div id="delivery-status" hidden>
             <p id="delivery-phase" role="status">Collecting pizza</p>
             <p id="delivery-comment" role="status" hidden>hey someone took a bite out of this!</p>
-            <ol class="delivery-steps" aria-label="Courier progress">
-              <li data-phase="collect"><span>01</span> collect the box</li>
-              <li data-phase="approach"><span>02</span> approach traffic</li>
-              <li data-phase="hook"><span>03</span> attach tow line</li>
-              <li data-phase="ride"><span>04</span> depart</li>
+            <ol class="delivery-steps" aria-label="Kourier progress">
+              <li data-phase="collect"><span>01</span> collect the cargo</li>
+              <li data-phase="approach"><span>02</span> find a tow</li>
+              <li data-phase="hook"><span>03</span> hook the bumper</li>
+              <li data-phase="ride"><span>04</span> ride out</li>
             </ol>
           </div>
           <section id="order-receipt" aria-label="Delivery receipt" aria-live="polite" hidden>
