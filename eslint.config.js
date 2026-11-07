@@ -2,10 +2,10 @@ import js from '@eslint/js';
 import globals from 'globals';
 
 export default [
-  { ignores: ['dist/**', 'node_modules/**'] },
+  { ignores: ['dist/**', 'node_modules/**', 'artifacts/**'] },
   js.configs.recommended,
   {
-    files: ['*.js'],
+    files: ['**/*.js'],
     languageOptions: { globals: { ...globals.browser, ...globals.node } },
     rules: { 'no-unused-vars': ['error', { argsIgnorePattern: '^_' }] }
   }

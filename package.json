@@ -3,10 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node build.js",
-    "start": "node server.js",
-    "test": "node --test topping-motion.test.js orders.test.js recipe.test.js oven-motion.test.js courier-motion.test.js",
-    "test:browser": "node run-browser-tests.js",
+    "build": "node scripts/build.js",
+    "start": "node scripts/server.js",
+    "test": "node --test tests/unit/*.test.js",
+    "test:browser": "node scripts/run-browser-tests.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint ."
