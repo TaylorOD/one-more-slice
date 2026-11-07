@@ -587,3 +587,24 @@ footer {
   border-radius: 35%;
   transform: rotate(-20deg) scale(1, 0.7);
 }
+.ingredient.bacon {
+  background: repeating-linear-gradient(90deg, #aa4c3f 0 5px, #edba9c 5px 8px);
+  border-radius: 15%;
+  transform: rotate(-20deg) scale(0.6, 1);
+}
+.ingredient.onion {
+  background: transparent;
+  border: 4px solid #bd81bb;
+  border-right-color: transparent;
+  border-radius: 50%;
+}
+.ingredient.jalapeno {
+  background: #c5c69a;
+  border: 7px solid #358337;
+  border-radius: 50%;
+}
+.ingredient.anchovy {
+  background: #718c8c;
+  border-radius: 70% 70% 30% 30%;
+  transform: rotate(-30deg) scale(0.5, 1);
+}

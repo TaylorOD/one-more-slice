@@ -10,13 +10,13 @@ reduced motion shows a still handoff instead of the moving chase.
 
 black background, monospace and the same syntax colors as my website. inside the shop is an italian kitchen retrofitted with neon lighting, dark counters and a wall display. the pizza floats between stocked ingredient counters, with a brick oven behind it. the courier heads out into the city at night.
 
-pick a topping and tap the cheese. drag sideways to turn it, or use the arrow buttons. add a handful if you want less precision. the house special makes one for you.
+14 toppings, including bacon, red onion, jalapeño and anchovies. the trays use the same meshes as the pizza. pick a topping and tap the cheese. drag sideways to turn it, or use the arrow buttons. add a handful if you want less precision. the house special makes one for you.
 
 old recipe links still open, but there is no sharing button.
 
 sauce spreads across the pizza instead of stacking as pieces. spread sauce coats the whole pizza. undo removes the last pour. `sauce-surface.js` paints one shared texture for all slices and stops updating it once the sauce settles.
 
-four original callers rotate through the neighborhood. each has a named pizza and a ticket with exact topping counts. sauce and mozzarella are already on the base. ticket counts are extras.
+six original callers rotate through the neighborhood. each has a named pizza and a ticket with exact topping counts. sauce and mozzarella are already on the base. ticket counts are extras.
 
 the two minute timer starts with your first topping or when you bake. it keeps running through pickup. going over time does not end the round. the receipt records an on time or late delivery.
 

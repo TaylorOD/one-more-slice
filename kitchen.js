@@ -29,6 +29,11 @@ export function createKitchen(scene) {
     mozzarella: material('#fff0c7'),
     sausage: material('#815335'),
     chicken: material('#e4be83'),
+    bacon: material('#aa4c3f'),
+    baconFat: material('#edba9c'),
+    onion: material('#bd81bb'),
+    jalapeno: material('#358337'),
+    anchovy: material('#718c8c', { metalness: 0.25, roughness: 0.45 }),
     brick: material('#a85e3d'),
     char: material('#96603a'),
     cream: material('#e9d8b4'),
@@ -201,6 +206,7 @@ export function createKitchen(scene) {
   // only detaches its meshes. Disposing shared geometry would break other toppings.
   const toppingGeometry = {
     disc: new THREE.CylinderGeometry(0.205, 0.205, 0.048, 18),
+    onionArc: new THREE.TorusGeometry(0.17, 0.026, 6, 18, Math.PI * 1.5),
     ring: new THREE.TorusGeometry(0.115, 0.041, 7, 14),
     chunk: new THREE.BoxGeometry(0.23, 0.12, 0.18),
     stem: new THREE.CylinderGeometry(0.045, 0.06, 0.18, 9),
@@ -252,6 +258,45 @@ export function createKitchen(scene) {
         grillMark.scale.set(2, 0.3, 0.38);
         grillMark.position.set(-0.09 + i * 0.09, 0.048, 0);
       }
+    } else if (type === 'bacon') {
+      for (let i = 0; i < 3; i++) {
+        const strip = mesh(toppingGeometry.chunk, mats.bacon, group);
+        strip.scale.set(0.55, 0.3, 0.85);
+        strip.position.set(Math.sin(i * 2) * 0.025, (i % 2) * 0.015, (i - 1) * 0.13);
+        const fat = mesh(toppingGeometry.chunk, mats.baconFat, group);
+        fat.scale.set(0.14, 0.08, 0.85);
+        fat.position.copy(strip.position);
+        fat.position.y += 0.022;
+      }
+    } else if (type === 'onion') {
+      const arc = mesh(toppingGeometry.onionArc, mats.onion, group);
+      arc.rotation.x = Math.PI / 2;
+      const inner = mesh(toppingGeometry.onionArc, mats.mozzarella, group);
+      inner.rotation.x = Math.PI / 2;
+      inner.scale.setScalar(0.8);
+    } else if (type === 'jalapeno') {
+      const ring = mesh(toppingGeometry.ring, mats.jalapeno, group);
+      ring.rotation.x = Math.PI / 2;
+      ring.scale.setScalar(1.15);
+      for (let i = 0; i < 3; i++) {
+        const angle = i * 2.1;
+        ball(
+          Math.cos(angle) * 0.065,
+          0.01,
+          Math.sin(angle) * 0.065,
+          0.025,
+          0.012,
+          0.015,
+          mats.mozzarella,
+          group
+        );
+      }
+    } else if (type === 'anchovy') {
+      ball(0, 0.025, 0, 0.065, 0.035, 0.23, mats.anchovy, group);
+      const tail = mesh(toppingGeometry.chunk, mats.anchovy, group);
+      tail.scale.set(0.55, 0.22, 0.45);
+      tail.position.z = 0.21;
+      ball(0.035, 0.05, -0.14, 0.012, 0.012, 0.012, mats.olive, group);
     } else if (type === 'mushroom') {
       const mushroom = new THREE.Group();
       group.add(mushroom);

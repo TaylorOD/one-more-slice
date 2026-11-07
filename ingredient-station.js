@@ -11,21 +11,27 @@ export function createIngredientStation(root, makeTopping) {
   });
   const inside = new THREE.MeshStandardMaterial({ color: '#172127', roughness: 0.8 });
   const trays = [
-    ['cheese', -4, -1.4],
-    ['sausage', -4, 0.45],
-    ['mushroom', -4, 2.3],
-    ['sauce', 4, -1.4],
-    ['chicken', 4, 0.45],
-    ['basil', 4, 2.3],
-    ['pepperoni', -4.2, 4.1],
-    ['olive', -2.2, 4.1],
-    ['pepper', 2.2, 4.1],
-    ['pineapple', 4.2, 4.1]
+    ['cheese', -4, -2.35],
+    ['sausage', -4, -0.9],
+    ['mushroom', -4, 0.55],
+    ['onion', -4, 2],
+    ['sauce', 4, -2.35],
+    ['chicken', 4, -0.9],
+    ['basil', 4, 0.55],
+    ['anchovy', 4, 2],
+    ['pepperoni', -4.5, 4.1],
+    ['olive', -3.2, 4.1],
+    ['bacon', -1.9, 4.1],
+    ['jalapeno', 1.9, 4.1],
+    ['pepper', 3.2, 4.1],
+    ['pineapple', 4.5, 4.1]
   ];
   for (const [type, x, z] of trays) {
     const tray = new THREE.Group();
     tray.position.set(x, -0.15, z);
     root.add(tray);
+    // Narrow front trays keep the central walk through open.
+    if (z === 4.1) tray.scale.setScalar(0.85);
     box(1.4, 0.12, 1.1, steel, tray);
     box(1.25, 0.025, 0.94, inside, tray, 0, 0.07, 0);
     for (const side of [-1, 1]) {
