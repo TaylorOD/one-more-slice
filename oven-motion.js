@@ -29,3 +29,9 @@ export function bakingPose(progress) {
     scale: 1 - (1 - ovenLayout.bakingScale) * lift
   };
 }
+
+// The pizza is fully behind the mouth at 27 percent and starts exiting at 76.
+// Only that dwell on the hot deck changes its cooked appearance.
+export function bakingDoneness(progress) {
+  return Math.max(0, Math.min(1, (progress - 0.27) / 0.49));
+}

@@ -1,6 +1,6 @@
 import { toppingPose } from './topping-motion.js';
 import { createOrderTicket } from './order-ticket.js';
-import { bakingPose, ovenLayout } from './oven-motion.js';
+import { bakingPose, bakingDoneness, ovenLayout } from './oven-motion.js';
 import { createCourier } from './courier.js';
 import { maxToppings, decodeRecipe, randomSpot } from './recipe.js';
 import { updateOrderView, updateCourierPhase, say } from './order-view.js';
@@ -19,7 +19,7 @@ export function startOrder({
   city
 }) {
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const { carriage, pizza, slices, flames, makeTopping, sliceIndex, setCooked } = kitchen;
+  const { carriage, pizza, slices, makeTopping, sliceIndex, setCooked } = kitchen;
   const courier = createCourier(scene);
   const ticket = createOrderTicket();
   let courierStarted = 0;
@@ -260,16 +260,22 @@ export function startOrder({
       topping.group.position.y = topping.y + pose.offset;
       topping.group.scale.set(pose.scaleXZ, pose.scaleY, pose.scaleXZ);
     }
-    flames.forEach((f, i) => {
-      f.scale.y = reduceMotion ? 1 : 0.8 + Math.sin(now * 0.008 + i * 2) * 0.2;
-    });
+    kitchen.updateOven(now, reduceMotion);
     if (mode === 'baking') {
       const t = Math.min((now - bakingStarted) / 1000 / bakeSeconds, 1);
       $('progress').value = t;
+      const ovenStep =
+        t < 0.27
+          ? 'loading the oven'
+          : t < 0.76
+            ? 'baking on the hot deck'
+            : 'bringing the pizza out';
+      if ($('scene-instruction').textContent !== ovenStep)
+        $('scene-instruction').textContent = ovenStep;
       const pose = bakingPose(t);
       carriage.position.set(0, pose.y, pose.z);
       carriage.scale.setScalar(pose.scale);
-      setCooked(Math.min(t * 1.3, 1));
+      setCooked(bakingDoneness(t));
       fireLight.intensity = 18;
       if (t === 1) {
         mode = 'baked';
