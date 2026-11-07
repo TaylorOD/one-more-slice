@@ -102,3 +102,5 @@ the project address is https://www.taylordorsett.com/snowcrust/. changes deploy 
 the dist folder is the whole site. it works on static hosting. recipe links work once the site has a public address.
 
 built with three.js. needs a browser with webgl.
+
+World details and adaptation choices are in [WORLD.md](WORLD.md).

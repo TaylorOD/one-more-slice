@@ -40,10 +40,10 @@ export function createOrderTicket() {
     const note = round.result
       ? 'delivery time recorded'
       : !round.started
-        ? 'starts when you add toppings or bake'
+        ? 'ticket age 28:00. clock starts with prep.'
         : late
-          ? 'deadline missed. the customer is still waiting.'
-          : 'two minutes to the customer';
+          ? 'thirty minutes missed. HQ notified.'
+          : 'thirty minute guarantee. two minutes left at intake.';
     if ($('clock-note').textContent !== note) $('clock-note').textContent = note;
   }
   function update(toppings) {

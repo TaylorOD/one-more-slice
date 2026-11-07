@@ -1,3 +1,4 @@
+import { addDispatchDetails } from './franchise-details.js';
 import * as THREE from './vendor/three.module.js';
 import { createGeometry } from './geometry.js';
 
@@ -154,4 +155,5 @@ export function createKitchenRoom(root) {
   const warmLight = new THREE.PointLight('#83b9dc', 28, 18, 2);
   warmLight.position.set(1, 5, 2);
   root.add(warmLight);
+  addDispatchDetails(root);
 }
