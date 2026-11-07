@@ -1,4 +1,4 @@
-// The clearance envelope includes the wooden paddle beneath the pizza.
+// The clearance envelope includes the peel blade beneath the pizza.
 // These dimensions are shared by the oven model and its animation so the pizza
 // clears the opening and rests above the stone instead of passing through fire.
 export const ovenLayout = {
