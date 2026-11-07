@@ -37,7 +37,7 @@ export function updateOrderView({ mode, toppingCount, bitten = false }) {
         : 'Inspect a slice or dispatch the pizza.';
   $('scene-label').textContent =
     mode === 'baking' ? 'OVEN' : mode === 'prep' ? 'KITCHEN' : 'PICKUP';
-  $('oven-label').textContent = mode === 'baking' ? 'BAKING AT 450°C' : 'OVEN READY';
+  $('oven-label').textContent = mode === 'baking' ? 'BAKING AT 500°C' : 'OVEN READY';
   $('scene-instruction').textContent =
     mode === 'prep'
       ? 'pick a topping, then tap the pizza'

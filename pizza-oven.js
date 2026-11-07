@@ -11,7 +11,12 @@ export function createPizzaOven(parent) {
   const brick = material('#a85e3d'),
     mortar = material('#cfb997'),
     soot = material('#30251c');
-  const stone = material('#b9a58a'),
+  const stone = new THREE.MeshStandardMaterial({
+      color: '#9b8065',
+      emissive: '#bc4710',
+      emissiveIntensity: 0.22,
+      roughness: 0.9
+    }),
     coal = material('#382a21');
 
   // Separate walls leave an actual hollow chamber behind the front opening.
@@ -96,5 +101,34 @@ export function createPizzaOven(parent) {
     new THREE.MeshBasicMaterial({ map: texture })
   );
   sign.position.set(0, 3.72, 1.75);
-  return { flames };
+  // Rear flames rise behind the pizza. Their nearest edge stays behind the
+  // pizza while it rests at the centre of the deck.
+  const rearFlames = [];
+  const fireCore = new THREE.MeshBasicMaterial({ color: '#fff0ab' });
+  for (let i = 0; i < 9; i++) {
+    const flame = mesh(new THREE.ConeGeometry(0.11, 1.1 + (i % 3) * 0.13, 7), flameMaterial);
+    flame.position.set(-1.45 + i * 0.36, 1.48, -1.68);
+    rearFlames.push(flame);
+    const core = mesh(new THREE.ConeGeometry(0.06, 0.65, 7), fireCore);
+    core.position.set(flame.position.x, 1.16, -1.64);
+  }
+  const glow = new THREE.PointLight('#ff791d', 50, 6, 2);
+  glow.position.set(0, 1.8, -0.8);
+  oven.add(glow);
+  const embers = new THREE.MeshStandardMaterial({
+    color: '#e66d14',
+    emissive: '#ff5008',
+    emissiveIntensity: 3
+  });
+  for (let i = 0; i < 12; i++) ball(-1.2 + i * 0.22, 0.06, 1.5, 0.09, 0.045, 0.07, embers, oven);
+  const animatedFlames = [...flames, ...rearFlames];
+  return {
+    update(now, reduced) {
+      animatedFlames.forEach((flame, i) => {
+        flame.scale.y = reduced ? 1 : 0.88 + Math.sin(now * 0.009 + i * 1.8) * 0.12;
+        flame.rotation.z = reduced ? 0 : Math.sin(now * 0.006 + i) * 0.07;
+      });
+      glow.intensity = reduced ? 50 : 48 + Math.sin(now * 0.012) * 2;
+    }
+  };
 }

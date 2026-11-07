@@ -14,7 +14,7 @@ export function createKitchen(scene) {
   const material = (color, extra = {}) =>
     new THREE.MeshStandardMaterial({ color, roughness: 0.8, ...extra });
   const mats = {
-    crust: material('#e9b96b'),
+    crust: material('#ead8ad'),
     dough: material('#edc986'),
     cheese: material('#f4d575', { roughness: 0.52 }),
     sauce: material('#b84125'),
@@ -44,7 +44,7 @@ export function createKitchen(scene) {
   scene.add(rimLight);
   rimLight.visible = false;
 
-  const { flames } = createPizzaOven(root);
+  const oven = createPizzaOven(root);
   // Flour bowl, basil pot and a folded tea towel.
   const bowl = mesh(new THREE.CylinderGeometry(0.55, 0.38, 0.36, 32), mats.cream);
   bowl.position.set(-5.3, -0.03, -4.2);
@@ -177,6 +177,7 @@ export function createKitchen(scene) {
   }
   // Small toasted spots are geometry, so they stay on their own slice.
   const cheeseSpots = [];
+  const crustSpots = [];
   for (let i = 0; i < 85; i++) {
     const a = i * 2.39996;
     const r = Math.sqrt((i + 0.5) / 85) * 1.82;
@@ -199,7 +200,18 @@ export function createKitchen(scene) {
     const a = (i * Math.PI * 2) / 64;
     const x = Math.cos(a) * 2.05,
       z = Math.sin(a) * 2.05;
-    ball(x, 0.35, z, 0.028 + (i % 3) * 0.01, 0.012, 0.028, mats.char, slices[sliceIndex(x, z)]);
+    const spot = ball(
+      x,
+      0.35,
+      z,
+      0.028 + (i % 3) * 0.01,
+      0.012,
+      0.028,
+      mats.char,
+      slices[sliceIndex(x, z)]
+    );
+    spot.visible = false;
+    crustSpots.push(spot);
   }
 
   // Toppings borrow these resources for the lifetime of the root. Removing one
@@ -315,7 +327,10 @@ export function createKitchen(scene) {
 
   function setCooked(t) {
     cooked = t;
-    mats.crust.color.set('#e9b96b').lerp(new THREE.Color('#b96d2e'), t);
+    mats.crust.color.set('#ead8ad').lerp(new THREE.Color('#b96d2e'), t);
+    crustSpots.forEach((spot, i) => {
+      spot.visible = t > 0.3 + (i % 8) * 0.07;
+    });
     mats.cheese.color.set('#f4d575').lerp(new THREE.Color('#e8b94f'), t);
     mats.dough.color.set('#edc986').lerp(new THREE.Color('#dca057'), t);
     cheeseSpots.forEach((spot, i) => {
@@ -332,7 +347,7 @@ export function createKitchen(scene) {
     carriage,
     pizza,
     slices,
-    flames,
+    updateOven: oven.update,
     makeTopping,
     updateSauce: sauceSurface.update,
     sliceIndex,
