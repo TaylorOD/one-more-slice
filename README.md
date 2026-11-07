@@ -81,7 +81,7 @@ the normal order path is `prep → baking → baked → pickup → dispatched`. 
 
 opening a recipe replaces the current order and resets its rotation, slice and oven position. a broken link leaves the current order alone. browser checks compare the resulting pizza with a fresh recipe after interrupting baking, inspection and pickup.
 
-the oven has a separate firebox below its stone deck. the floating pizza rises into the oven, stays above the fire, then returns to its hovering position. `oven-motion.js` shares its dimensions with `pizza-oven.js`. clearance checks cover the whole entry and exit path. topping placement follows the pizza height. `ingredient-station.js` builds the surrounding trays using the same shared ingredient models.
+the oven has a separate firebox below its stone deck. the perforated metal peel has a narrow neck, bolted collar and separate wooden grip. the floating pizza rises into the oven, stays above the fire, then returns to its hovering position. `oven-motion.js` shares its dimensions with `pizza-oven.js`. clearance checks cover the whole entry and exit path. topping placement follows the pizza height. `ingredient-station.js` builds the surrounding trays using the same shared ingredient models.
 
 the order controller owns state. scene files own geometry. the view reads state and updates the page. keep those boundaries when adding things.
 

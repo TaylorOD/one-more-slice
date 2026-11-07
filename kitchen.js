@@ -1,3 +1,4 @@
+import { createPizzaPeel } from './pizza-peel.js';
 import { createSauceSurface } from './sauce-surface.js';
 import { sliceShape } from './slice-shape.js';
 import * as THREE from './vendor/three.module.js';
@@ -90,15 +91,7 @@ export function createKitchen(scene) {
   const fieldLight = new THREE.PointLight('#31dbe9', 8, 7, 2);
   fieldLight.position.set(0, 0.4, 1);
   root.add(fieldLight);
-  const paddleWood = material('#b88e59');
-  const paddleEdge = material('#79532f');
-  const peel = mesh(new THREE.CylinderGeometry(2.65, 2.65, 0.16, 80), paddleWood, carriage);
-  peel.position.y = -0.1;
-  box(0.48, 0.16, 2.1, paddleEdge, carriage, 0, -0.1, 3.1);
-  for (let i = 0; i < 9; i++) {
-    const x = -2 + i * 0.5;
-    box(0.012, 0.004, 2 * Math.sqrt(2.6 ** 2 - x * x), paddleEdge, carriage, x, -0.016, 0);
-  }
+  createPizzaPeel(carriage);
   const pizza = new THREE.Group();
   carriage.add(pizza);
   const sauceSurface = createSauceSurface();
